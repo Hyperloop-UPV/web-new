@@ -1,0 +1,91 @@
+---
+import BlobReveal from './BlobReveal.astro';
+---
+
+<section class="bg-[#050505] relative h-screen overflow-hidden">
+	<div class="absolute inset-0 z-0">
+		<BlobReveal
+			primaryImage="/img/pod_full.jpeg"
+			secondaryImage="/img/pod_sketch.jpg"
+			class="w-full h-full"
+		/>
+	</div>
+
+	<div class="absolute inset-0 z-[1] pointer-events-none">
+		<div class="hero-grid-bg absolute -inset-[20%]"></div>
+		<div class="hero-glow-bg absolute top-[30%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] blur-[40px]"></div>
+	</div>
+
+	<div class="absolute inset-x-0 bottom-0 h-[55vh] z-[2] pointer-events-none bg-gradient-to-t from-black via-black/90 to-transparent"></div>
+</section>
+
+<section class="top-0 left-1/2 -translate-x-1/2 pb-32 hero-section absolute h-screen w-full max-w-[1500px] px-6 md:px-10 lg:px-16 flex items-end justify-start overflow-hidden text-white pointer-events-none z-[10]">
+	<div class="relative z-10 text-left">
+		<p class="hero-eyebrow text-sm font-medium uppercase tracking-[0.25em] text-white/45 mb-6">
+			Universitat Politècnica de València · H11 · EHW
+		</p>
+		<h1 class="hero-title m-0 leading-[0.95]">
+			<span class="line-1 block text-[clamp(3rem,10vw,8rem)] font-bold -tracking-wider">Hyperloop UPV</span>
+		</h1>
+		<p class="hero-description mt-12 text-[clamp(1rem,2vw,1.2rem)] leading-relaxed text-white/55">
+			Un equipo de estudiantes multidisciplinar que <br>
+            desarrolla tecnología Hyperloop en la Universidad Politécnica de Valencia
+		</p>
+		<div class="hero-cta mt-10 flex gap-4 flex-wrap">
+			<a href="#about" class="inline-block py-3.5 px-8 text-[0.95rem] font-semibold rounded-lg no-underline transition-all duration-300 bg-white text-[#050505] hover:bg-violet-400 hover:text-white cursor-pointer">
+				Descubrir Más
+			</a>
+			<a href="#team" class="inline-block py-3.5 px-8 text-[0.95rem] font-semibold rounded-lg no-underline transition-all duration-300 bg-transparent text-white border border-white/20 hover:border-white/50 hover:bg-white/5 cursor-pointer">
+                Conocer al Equipo
+
+			</a>
+		</div>
+	</div>
+</section>
+
+<script>
+	import gsap from 'gsap';
+
+	// Hero entrance animation
+	const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+
+	tl.from('.hero-eyebrow', {
+		y: 20,
+		opacity: 0,
+		duration: 1,
+		delay: 0.2,
+	})
+	.from('.line-1', {
+		y: 80,
+		opacity: 0,
+		duration: 1.2,
+	}, '-=0.6')
+	.from('.hero-description', {
+		y: 30,
+		opacity: 0,
+		duration: 1,
+	}, '-=0.6')
+	.from('.hero-cta', {
+		y: 20,
+		opacity: 0,
+		duration: 0.8,
+	}, '-=0.5');
+
+	// Subtle floating glow animation
+	gsap.to('.hero-glow-bg', {
+		y: 20,
+		scale: 1.05,
+		duration: 4,
+		repeat: -1,
+		yoyo: true,
+		ease: 'sine.inOut',
+	});
+
+	// Grid drift
+	gsap.to('.hero-grid-bg', {
+		backgroundPosition: '40px 40px',
+		duration: 8,
+		repeat: -1,
+		ease: 'none',
+	});
+</script>

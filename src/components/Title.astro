@@ -1,0 +1,83 @@
+---
+interface Props {
+	text: string;
+	tag?: 'h1' | 'h2' | 'h3' | 'p' | 'div' | 'span';
+	class?: string;
+}
+
+const { text, tag = 'h2', class: className = '' } = Astro.props;
+const Tag = tag;
+const words = text.trim().split(/\s+/);
+---
+
+<Tag data-title-reveal class:list={['title-reveal', className]} aria-label={text}>
+	{words.map((word, i) => (
+		<span class="title-word-mask" style={`--word-index:${i}`}>
+			<span class="title-word">{word}</span>
+		</span>
+	))}
+</Tag>
+
+<script>
+	const initTitleReveal = () => {
+		const titles = document.querySelectorAll<HTMLElement>('[data-title-reveal]');
+		if (!titles.length) return;
+
+		titles.forEach((title) => {
+			if (title.dataset.revealInit === 'true') return;
+			title.dataset.revealInit = 'true';
+
+			const observer = new IntersectionObserver(
+				(entries) => {
+					entries.forEach((entry) => {
+						if (!entry.isIntersecting) return;
+						title.classList.add('is-visible');
+						observer.unobserve(title);
+					});
+				},
+				{ threshold: 0.2, rootMargin: '0px 0px -12% 0px' }
+			);
+
+			observer.observe(title);
+		});
+	};
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initTitleReveal, { once: true });
+	} else {
+		initTitleReveal();
+	}
+
+	document.addEventListener('astro:page-load', initTitleReveal);
+</script>
+
+<style>
+	.title-reveal {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.3em;
+		line-height: 1.02;
+	}
+
+	.title-word-mask {
+		display: inline-block;
+		overflow: hidden;
+		padding-bottom: 0.08em;
+	}
+
+	.title-word {
+		display: inline-block;
+		transform: translateY(112%);
+		opacity: 0;
+		transition:
+			transform 0.72s cubic-bezier(0.42, 0, 0.58, 1),
+			opacity 0.55s ease-in-out;
+		transition-delay: calc(var(--word-index) * 70ms);
+		will-change: transform, opacity;
+	}
+
+	.title-reveal.is-visible .title-word {
+		transform: translateY(0%);
+		opacity: 1;
+	}
+</style>

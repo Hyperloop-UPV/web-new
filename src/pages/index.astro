@@ -1,0 +1,281 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import MissionImageScatter from '../components/MissionImageScatter.astro';
+import SubsystemsAccordion from '../components/SubsystemsAccordion.astro';
+import VehicleTimeline from '../components/VehicleTimeline.astro';
+
+const missionImages = [
+	'/img/1.jpg',
+	'/img/2.jpg',
+	'/img/3.jpg',
+	'/img/4.jpg',
+	'/img/5.jpg',
+	'/img/6.jpg',
+	'/img/7.jpg',
+	'/img/8.jpg',
+	'/img/9.jpg',
+];
+
+const subsystemItems = [
+	{
+		label: 'Direction',
+		href: '#',
+		icon: '/img/subsystems/icon/DIRECTION.png',
+		description: 'Guide the team forward, make decisive team decisions and lead by example.',
+		image: '/img/subsystems/direction.png',
+		funImage: '/img/subsystems/directionFun.png',
+	},
+	{
+		label: 'Economics',
+		href: '#',
+		icon: '/img/subsystems/icon/ECONOMICS.png',
+		description: 'Builds cost and energy models to optimize capex, operations, and maintenance while preserving safety and performance targets.',
+		image: '/img/subsystems/economics.png',
+		funImage: '/img/subsystems/economicsFun.png',
+	},
+	{
+		label: 'Electro',
+		href: '#',
+		icon: '/img/subsystems/icon/ELECTROMAGNETICS.png',
+		description: 'Designs and validates levitation, guidance, and linear propulsion magnetic systems, including field control, losses, and thermal behavior.',
+		image: '/img/subsystems/electromagnetics.png',
+		funImage: '/img/subsystems/electromagneticsFun.png',
+	},
+	{
+		label: 'Firmware',
+		href: '#',
+		icon: '/img/subsystems/icon/FIRMWARE.png',
+		description: 'Implements deterministic embedded control for sensors, motor drives, braking, and fault handling with tight real-time constraints.',
+		image: '/img/subsystems/firmware.png',
+		funImage: '/img/subsystems/firmwareFun.png',
+	},
+	{
+		label: 'Software',
+		href: '#',
+		icon: '/img/subsystems/icon/SOFTWARE.png',
+		description: 'Develops autonomy, telemetry, diagnostics, and operator tooling that coordinate vehicle state estimation and supervisory control.',
+		image: '/img/subsystems/software.png',
+		funImage: '/img/subsystems/softwareFun.png',
+	},
+	{
+		label: 'Hardware',
+		href: '#',
+		icon: '/img/subsystems/icon/HARDWARE.png',
+		description: 'Integrates power electronics, sensing, communications, and compute platforms into robust onboard systems qualified for test campaigns.',
+		image: '/img/subsystems/hardware.png',
+		funImage: '/img/subsystems/hardwareFun.png',
+	},
+	{
+		label: 'Mechanics',
+		href: '#',
+		icon: '/img/subsystems/icon/MECHANICS.png',
+		description: 'Engineers chassis, suspension interfaces, braking components, and manufacturable assemblies to withstand acceleration and vibration loads.',
+		image: '/img/subsystems/mechanics.png',
+		funImage: '/img/subsystems/mechanicsFun.png',
+	},
+	{
+		label: 'Outreach',
+		href: '#',
+		icon: '/img/subsystems/icon/OUTREACH.png',
+		description: 'Builds partnerships, sponsors, and public communication that support testing logistics, funding continuity, and technology adoption.',
+		image: '/img/subsystems/outreach.png',
+		funImage: '/img/subsystems/outreachFun.png',
+	},
+];
+
+const vehicleTimeline = [
+	{
+		code: 'VÉSPER',
+		years: '2023 - 2024',
+		vehicleName: 'H9',
+		description:
+			'Next-generation platform focused on higher stability at speed, modular serviceability, and tighter integration between levitation, guidance, and control software.',
+		accolades: ['Vehicle architecture milestone', 'Integrated controls validation', 'Expanded test envelope'],
+		image: '/img/timeline/h11.png',
+	},
+	{
+		code: 'KÉNOS & ATLAS',
+		years: '2022 - 2023',
+		vehicleName: 'H8',
+		description:
+			'Iteration centered on reliability upgrades, powertrain efficiency, and repeatable dynamic tests under stricter safety and telemetry constraints.',
+		accolades: ['Full-stack systems integration', 'Advanced telemetry campaign', 'High-repeatability test runs'],
+		image: '/img/timeline/h10.png',
+	},
+	{
+		code: 'AURAN',
+		years: '2021 - 2022',
+		vehicleName: 'H7',
+		description:
+			'The first vehicle to achieve dynamic levitation in vacuum conditions, defining a major performance milestone and earning world champion status.',
+		accolades: ['Top 1 in European Hyperloop Week'],
+		image: '/img/timeline/h9.png',
+	},
+	{
+		code: 'IGNIS',
+		years: '2020 - 2021',
+		vehicleName: 'H6',
+		description:
+			'The most complete vehicle of its cycle, combining levitation and vacuum operation to reduce friction and validate end-to-end subsystem coordination.',
+		accolades: ['Top 3 in European Hyperloop Week', 'Special Mention for Infrastructure'],
+		image: '/img/timeline/h8.png',
+	},
+];
+---
+
+<Layout>
+	<Header slot="header" />
+	<Hero />
+
+	<MissionImageScatter
+		title="Our mission"
+		description="Disenamos y desarrollamos sistemas hyperloop combinando ingenieria, innovacion y pruebas reales para superar los limites del transporte de alta velocidad."
+		images={missionImages}
+		imageHeight={300}
+		class="bg-[#0f0f0f]"
+	/>
+
+	<SubsystemsAccordion title="Subsystems" items={subsystemItems} />
+
+	<VehicleTimeline items={vehicleTimeline} />
+
+	<!-- Parallax Section -->
+	<section class="min-h-screen flex flex-col items-center justify-center py-16 px-8 bg-[#0f0f0f] text-white relative overflow-hidden">
+		<div class="parallax-bg absolute -inset-y-1/2 inset-x-0 bg-gradient-to-b from-[#533483] to-[#0f3460] z-0"></div>
+		<h2 class="parallax-text relative z-10 text-[clamp(2rem,5vw,4rem)] font-black" data-speed="0.6">Parallax Effect</h2>
+	</section>
+
+	<!-- Scale & Pin Section -->
+	<section class="min-h-[200vh] flex flex-col items-center justify-center py-16 px-8 bg-[#0f0f0f] text-white relative">
+		<div class="pin-content sticky top-0 h-screen flex flex-col items-center justify-center text-center">
+			<h2 class="text-[clamp(2rem,5vw,3.5rem)] font-black">Pinned & Scaled</h2>
+			<p class="mt-4 text-xl opacity-70">This section pins in place and scales as you scroll.</p>
+		</div>
+	</section>
+
+	<!-- Footer -->
+	<section class="min-h-[50vh] flex flex-col items-center justify-center py-16 px-8 bg-[#0a0a0a] text-white">
+		<h2 class="fade-up text-4xl">That's a wrap!</h2>
+	</section>
+</Layout>
+
+
+<script>
+	import gsap from 'gsap';
+	import { ScrollTrigger } from 'gsap/ScrollTrigger';
+	import { ScrollSmoother } from 'gsap/ScrollSmoother';
+	import { Observer } from 'gsap/all';
+
+	gsap.registerPlugin(ScrollTrigger, ScrollSmoother, Observer);
+
+	// --- ScrollSmoother: silky smooth scrolling ---
+	const smoother = ScrollSmoother.create({
+		wrapper: '#smooth-wrapper',
+		content: '#smooth-content',
+		smooth: 1.5,
+		effects: true,
+		smoothTouch: 0.1,
+	});
+
+	// --- Hero lock: prevent scroll until a forceful scroll, then snap past ---
+	let heroLocked = true;
+	smoother.paused(true);
+
+	const heroHeight = document.querySelector('.hero-section')?.getBoundingClientRect().height || window.innerHeight;
+
+	const heroObserver = Observer.create({
+		target: window,
+		type: 'wheel,touch',
+		onDown: () => {
+			if (!heroLocked) return;
+			heroLocked = false;
+			heroObserver.disable();
+			smoother.paused(false);
+			smoother.scrollTo(heroHeight, true, 'top top');
+		},
+		tolerance: 50,
+		preventDefault: true,
+	});
+
+	// Re-lock hero when user scrolls back to top
+	ScrollTrigger.create({
+		start: 1,
+		end: 2,
+		onLeaveBack: () => {
+			heroLocked = true;
+			smoother.paused(true);
+			heroObserver.enable();
+		},
+	});
+
+	// --- Fade-up animations ---
+	gsap.utils.toArray<HTMLElement>('.fade-up').forEach((el) => {
+		gsap.from(el, {
+			y: 60,
+			opacity: 0,
+			duration: 1,
+			ease: 'power3.out',
+			scrollTrigger: {
+				trigger: el,
+				start: 'top 85%',
+				toggleActions: 'play none none reverse',
+			},
+		});
+	});
+
+	// --- Horizontal scroll ---
+	const track = document.querySelector<HTMLElement>('.horizontal-track');
+	const panels = gsap.utils.toArray<HTMLElement>('.panel');
+	if (track && panels.length) {
+		gsap.to(track, {
+			x: () => -(track.scrollWidth - window.innerWidth),
+			ease: 'none',
+			scrollTrigger: {
+				trigger: '.horizontal-scroll-wrapper',
+				pin: true,
+				scrub: 1,
+				end: () => `+=${track.scrollWidth - window.innerWidth}`,
+				invalidateOnRefresh: true,
+			},
+		});
+	}
+
+	// --- Parallax background ---
+	const parallaxBg = document.querySelector('.parallax-bg');
+	if (parallaxBg) {
+		gsap.to(parallaxBg, {
+			yPercent: 30,
+			ease: 'none',
+			scrollTrigger: {
+				trigger: '.parallax-section',
+				start: 'top bottom',
+				end: 'bottom top',
+				scrub: true,
+			},
+		});
+	}
+
+	// --- Pin section scale effect ---
+	const pinContent = document.querySelector('.pin-content');
+	if (pinContent) {
+		gsap.fromTo(
+			pinContent,
+			{ scale: 0.8, opacity: 0.3 },
+			{
+				scale: 1,
+				opacity: 1,
+				ease: 'power2.out',
+				scrollTrigger: {
+					trigger: '.pin-section',
+					start: 'top 60%',
+					end: 'top 10%',
+					scrub: true,
+				},
+			}
+		);
+	}
+</script>
+
+

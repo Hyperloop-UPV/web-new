@@ -1,0 +1,291 @@
+---
+import Title from './title.astro';
+
+interface VehicleTimelineItem {
+	code: string;
+	years: string;
+	vehicleName: string;
+	description: string;
+	accolades: string[];
+	image: string;
+}
+
+interface Props {
+	title?: string;
+	subtitle?: string;
+	items: VehicleTimelineItem[];
+	class?: string;
+}
+
+const {
+	title = 'Vehicle Timeline',
+	subtitle = 'Our latest creations, the pods that take flight',
+	items = [],
+	class: className = '',
+} = Astro.props;
+---
+
+<section class:list={['horizontal-scroll-wrapper timeline-section overflow-hidden h-screen bg-[#ff7f24] text-white', className]}>
+	<div class="timeline-heade max-w-[1500px] left-1/2 -translate-x-1/2 pt-28 relative">
+		<Title text={title} class="fade-up text-[clamp(1.8rem,3vw,3rem)] font-black tracking-tight" />
+		<Title text={subtitle} class="text-white/70 mt-2 text-sm md:text-base" />
+	</div>
+	<div class="horizontal-track timeline-track flex w-fit mt-10 items-center">
+		{items.map((vehicle, index) => (
+			<article
+				class:list={[
+					'panel',
+					'timeline-panel',
+					'shrink-0',
+					index === 0 && 'timeline-panel-first',
+					index === items.length - 1 && 'timeline-panel-last',
+				]}
+				aria-label={`${vehicle.code} timeline entry`}
+			>
+				<div class="timeline-line" aria-hidden="true">
+					<span class="timeline-node"></span>
+				</div>
+				<div class="timeline-card mt-30" data-tilt-card>
+					<div class="timeline-card-inner">
+						<div class="timeline-content">
+							<p class="timeline-meta">{vehicle.years}</p>
+							<h3 class="timeline-code">{vehicle.code}</h3>
+							<p class="timeline-name">{vehicle.vehicleName}</p>
+							<p class="timeline-description">{vehicle.description}</p>
+							<ul class="timeline-accolades">
+								{vehicle.accolades.map((accolade) => (
+									<li>{accolade}</li>
+								))}
+							</ul>
+						</div>
+                        						<div class="timeline-image-slot">
+							<img src={vehicle.image} alt={`${vehicle.code} vehicle`} loading="lazy" decoding="async" />
+						</div>
+					</div>
+				</div>
+			</article>
+		))}
+	</div>
+</section>
+
+<script>
+	const initTimeline3D = () => {
+		const cards = document.querySelectorAll<HTMLElement>('[data-tilt-card]');
+		if (!cards.length) return;
+
+		cards.forEach((card) => {
+			if (card.dataset.tiltInit === 'true') return;
+			card.dataset.tiltInit = 'true';
+
+			const setDefault = () => {
+				card.style.setProperty('--mx', '50%');
+				card.style.setProperty('--my', '50%');
+				card.style.setProperty('--rx', '0deg');
+				card.style.setProperty('--ry', '0deg');
+			};
+
+			const onMove = (event: MouseEvent) => {
+				const rect = card.getBoundingClientRect();
+				const x = event.clientX - rect.left;
+				const y = event.clientY - rect.top;
+				const nx = Math.max(0, Math.min(1, x / rect.width));
+				const ny = Math.max(0, Math.min(1, y / rect.height));
+
+				const rotateY = (nx - 0.5) * 12;
+				const rotateX = (0.5 - ny) * 10;
+
+				card.style.setProperty('--mx', `${(nx * 100).toFixed(2)}%`);
+				card.style.setProperty('--my', `${(ny * 100).toFixed(2)}%`);
+				card.style.setProperty('--rx', `${rotateX.toFixed(2)}deg`);
+				card.style.setProperty('--ry', `${rotateY.toFixed(2)}deg`);
+			};
+
+			const onLeave = () => setDefault();
+
+			setDefault();
+			card.addEventListener('mousemove', onMove);
+			card.addEventListener('mouseleave', onLeave);
+		});
+	};
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initTimeline3D, { once: true });
+	} else {
+		initTimeline3D();
+	}
+
+	document.addEventListener('astro:page-load', initTimeline3D);
+</script>
+
+<style>
+	.timeline-track {
+		gap: 1.5rem;
+	}
+
+	.timeline-panel {
+		width: min(86vw, 1080px);
+		height: min(78vh, 620px);
+		position: relative;
+		display: flex;
+		align-items: center;
+	}
+
+	.timeline-line {
+		position: absolute;
+		left: -1.2rem;
+		right: -1.2rem;
+		top: 4%;
+		height: 2px;
+		background: white;
+	}
+
+	.timeline-node {
+		position: absolute;
+		left: 3.6rem;
+		top: 50%;
+		width: 16px;
+		height: 16px;
+		border-radius: 999px;
+		transform: translateY(-50%);
+		background: #ffffff;
+		box-shadow: 0 0 0 6px rgba(194, 194, 194, 0.2);
+	}
+
+	.timeline-card {
+		width: 100%;
+		height: 100%;
+		perspective: 1200px;
+		--mx: 50%;
+		--my: 50%;
+		--rx: 0deg;
+		--ry: 0deg;
+	}
+
+	.timeline-card-inner {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		display: flex;
+        flex-direction: column;
+		grid-template-columns: minmax(260px, 34%) 1fr;
+		gap: 1.2rem;
+		padding: 2.2rem;
+		border-radius: 20px;
+		border: 1px solid rgba(180, 230, 236, 0.25);
+		background: #20274c;
+		box-shadow: 0 28px 60px rgba(0, 0, 0, 0.4);
+		transform-style: preserve-3d;
+		transform: rotateX(var(--rx)) rotateY(var(--ry));
+		transition: transform 120ms ease-out;
+		overflow: hidden;
+	}
+
+	.timeline-card-inner::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: radial-gradient(ellipse 280px 170px at var(--mx) var(--my), rgba(118, 220, 232, 0.26), rgba(118, 220, 232, 0.08) 35%, transparent 72%);
+		pointer-events: none;
+		mix-blend-mode: screen;
+	}
+
+	.timeline-image-slot {
+		height: 100%;
+		min-height: 280px;
+	}
+
+	.timeline-image-slot img {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+		object-position: center;
+	}
+
+	.timeline-content {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 0.7rem;
+		transform: translateZ(34px);
+	}
+
+	.timeline-meta {
+		font-size: 0.84rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: rgba(255, 255, 255, 0.58);
+		margin: 0;
+	}
+
+	.timeline-code {
+		margin: 0;
+		font-size: clamp(2rem, 4vw, 3rem);
+		line-height: 1;
+		font-weight: 900;
+	}
+
+	.timeline-name {
+		margin: 0;
+		font-size: 1.1rem;
+		font-weight: 700;
+		color: rgba(217, 243, 246, 0.95);
+	}
+
+	.timeline-description {
+		margin: 0.2rem 0 0;
+		font-size: 0.98rem;
+		line-height: 1.55;
+		max-width: 62ch;
+		color: rgba(255, 255, 255, 0.88);
+	}
+
+	.timeline-accolades {
+		margin: 0.55rem 0 0;
+		padding: 0;
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.55rem;
+	}
+
+	.timeline-accolades li {
+		padding: 0.36rem 0.62rem;
+		border-radius: 999px;
+		font-size: 0.78rem;
+		font-weight: 700;
+		background: rgba(102, 182, 191, 0.17);
+		border: 1px solid rgba(153, 216, 224, 0.32);
+		color: rgba(220, 247, 251, 0.95);
+	}
+
+	@media (max-width: 900px) {
+		.timeline-panel {
+			width: min(94vw, 900px);
+			height: min(82vh, 680px);
+		}
+
+		.timeline-card-inner {
+			grid-template-columns: 1fr;
+			grid-template-rows: 220px 1fr;
+			padding: 1.25rem;
+		}
+
+		.timeline-line {
+			top: 18%;
+		}
+
+		.timeline-node {
+			left: 1.4rem;
+		}
+	}
+
+	@media (min-width: 1280px) {
+		.timeline-panel-first {
+			margin-left: 550px;
+		}
+
+		.timeline-panel-last {
+			margin-right: 600px;
+		}
+	}
+</style>

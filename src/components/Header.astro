@@ -1,0 +1,107 @@
+---
+const navItems = [
+	{ label: 'About', href: '#about' },
+	{ label: 'Team', href: '#team' },
+	{ label: 'Trajectory', href: '#trajectory' },
+	{ label: 'Investigation', href: '#investigation' },
+	{ label: 'Partners', href: '#partners' },
+	{ label: 'Contact', href: '#contact' },
+];
+---
+
+<header class="mt-3 mx-3 rounded-full top-0 left-0 w-full max-w-[1500px] left-1/2 -translate-x-1/2 z-[1000] flex items-center justify-between px-8 py-4 bg-[rgba(10,10,10,0.85)] backdrop-blur-xl border border-white/[0.06] fixed">
+	<!-- Logo -->
+	<a href="/" class="no-underline text-white text-xl tracking-tight flex items-center gap-3 z-10">
+		<img src="/img/isotype_white.svg" alt="Logo" class="logo-light block h-8" /><img src="/img/isotype_text.svg" alt="Logo" class="logo-bold block h-4" />
+	</a>
+
+	<!-- Desktop nav -->
+	<nav class="hidden md:flex gap-8">
+		{navItems.map((item) => (
+			<a href={item.href} class="text-sm text-white/60 hover:text-white transition-colors duration-200 no-underline uppercase tracking-widest">
+				{item.label}
+			</a>
+		))}
+	</nav>
+
+	<!-- Hamburger button (mobile) -->
+	<button
+		id="menu-toggle"
+		class="md:hidden relative z-10 flex flex-col justify-center items-center w-10 h-10 gap-1.5 bg-transparent border-none cursor-pointer"
+		aria-label="Toggle menu"
+		aria-expanded="false"
+	>
+		<span class="menu-bar block w-6 h-px bg-white transition-all duration-300 origin-center"></span>
+		<span class="menu-bar block w-6 h-px bg-white transition-all duration-300 origin-center"></span>
+		<span class="menu-bar block w-6 h-px bg-white transition-all duration-300 origin-center"></span>
+	</button>
+</header>
+
+<!-- Fullscreen mobile menu -->
+<div id="mobile-menu" class="fixed inset-0 z-[999] flex flex-col items-center justify-center bg-[#050505]/95 backdrop-blur-2xl opacity-0 pointer-events-none transition-opacity duration-300">
+	<nav class="flex flex-col items-center gap-8">
+		{navItems.map((item) => (
+			<a href={item.href} class="mobile-nav-link text-2xl font-semibold text-white/70 hover:text-white no-underline uppercase tracking-widest transition-colors duration-200">
+				{item.label}
+			</a>
+		))}
+	</nav>
+</div>
+
+<script>
+	import gsap from 'gsap';
+	import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+	gsap.registerPlugin(ScrollTrigger);
+
+	// --- Fade isotype text on scroll: visible only at top ---
+	const isotypeText = document.querySelector('.logo-bold') as HTMLElement;
+	if (isotypeText) {
+		gsap.to(isotypeText, {
+			x: -18,
+			opacity: 0,
+			ease: 'none',
+			scrollTrigger: {
+				start: 0,
+				end: 200,
+				scrub: true,
+			},
+		});
+	}
+
+	// --- Mobile menu toggle ---
+	const toggle = document.getElementById('menu-toggle')!;
+	const menu = document.getElementById('mobile-menu')!;
+	const bars = toggle.querySelectorAll('.menu-bar');
+	const links = menu.querySelectorAll('.mobile-nav-link');
+	let isOpen = false;
+
+	function openMenu() {
+		isOpen = true;
+		toggle.setAttribute('aria-expanded', 'true');
+		menu.classList.remove('opacity-0', 'pointer-events-none');
+		menu.classList.add('opacity-100', 'pointer-events-auto');
+		document.body.style.overflow = 'hidden';
+		// Animate bars to X
+		gsap.to(bars[0], { rotate: 45, y: 5, duration: 0.3 });
+		gsap.to(bars[1], { opacity: 0, duration: 0.2 });
+		gsap.to(bars[2], { rotate: -45, y: -7, duration: 0.3 });
+		// Stagger links
+		gsap.from(links, { y: 30, opacity: 0, duration: 0.4, stagger: 0.06, ease: 'power3.out', delay: 0.1 });
+	}
+
+	function closeMenu() {
+		isOpen = false;
+		toggle.setAttribute('aria-expanded', 'false');
+		menu.classList.add('opacity-0', 'pointer-events-none');
+		menu.classList.remove('opacity-100', 'pointer-events-auto');
+		document.body.style.overflow = '';
+		// Reset bars
+		gsap.to(bars[0], { rotate: 0, y: 0, duration: 0.3 });
+		gsap.to(bars[1], { opacity: 1, duration: 0.2 });
+		gsap.to(bars[2], { rotate: 0, y: 0, duration: 0.3 });
+	}
+
+	toggle.addEventListener('click', () => (isOpen ? closeMenu() : openMenu()));
+	links.forEach((link) => link.addEventListener('click', closeMenu));
+</script>

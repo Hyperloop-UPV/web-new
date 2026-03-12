@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+@media (pointer: fine) {
+	html.has-custom-cursor,
+	html.has-custom-cursor body,
+	html.has-custom-cursor a,
+	html.has-custom-cursor button,
+	html.has-custom-cursor [role="button"] {
+		cursor: none !important;
+	}
+}
+
+.app-cursor {
+	position: fixed;
+	left: 0;
+	top: 0;
+	--cursor-stretch: 0;
+	--cursor-shift: 0px;
+	width: 0;
+	height: 0;
+	pointer-events: none;
+	z-index: 99999;
+	opacity: 1;
+	transition: opacity 0.2s ease;
+}
+
+.app-cursor.is-hidden {
+	opacity: 0;
+}
+
+.app-cursor-dot,
+.app-cursor-ring {
+	position: absolute;
+	left: 0;
+	top: 0;
+	border-radius: 9999px;
+}
+
+.app-cursor-dot {
+	width: calc(12px - (var(--cursor-stretch) * 2px));
+	height: calc(12px + (var(--cursor-stretch) * 20px));
+	min-width: 10px;
+	max-width: 12px;
+	border-radius: 999px;
+	transform: translate(-50%, -50%) translateY(var(--cursor-shift));
+	background: rgba(255, 255, 255, 0.95);
+	box-shadow: 0 0 20px rgba(255, 255, 255, 0.35);
+	transition: width 0.12s ease, height 0.12s ease;
+	will-change: transform;
+}
+
+.app-cursor-ring {
+	width: 34px;
+	height: 34px;
+	transform: translate(-50%, -50%) translateY(calc(var(--cursor-shift) * 0.55));
+	border: 1.5px solid rgba(255, 255, 255, 0.85);
+	opacity: 0;
+	transition: opacity 0.16s ease;
+	will-change: transform;
+}
+
+.app-cursor.is-link .app-cursor-ring {
+	opacity: 1;
+}
+
+.app-cursor.is-down .app-cursor-dot {
+	width: 8px;
+	height: 8px;
+}
+
+@layer components {
+	.hero-grid-bg {
+		background-image:
+			linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+		background-size: 80px 80px;
+	}
+
+	.hero-glow-bg {
+		background: radial-gradient(ellipse, rgba(100, 60, 255, 0.15) 0%, transparent 70%);
+	}
+
+	.gradient-text {
+		background: linear-gradient(135deg, #ffffff 30%, #a78bfa 100%);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+	}
+}

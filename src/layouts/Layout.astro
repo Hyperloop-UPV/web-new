@@ -1,0 +1,134 @@
+---
+import '../styles/global.css';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro Basics</title>
+	</head>
+	<body class="m-0 w-full h-full font-sans bg-[#0f0f0f] text-white">
+		<div id="app-cursor" aria-hidden="true" class="app-cursor hidden">
+			<div class="app-cursor-dot"></div>
+			<div class="app-cursor-ring"></div>
+		</div>
+
+		<slot name="header" />
+		<div id="smooth-wrapper" class="overflow-hidden fixed inset-0 w-full h-full">
+			<div id="smooth-content">
+				<slot />
+			</div>
+		</div>
+
+		<script>
+			const cursor = document.getElementById('app-cursor');
+			if (!cursor || !window.matchMedia('(pointer: fine)').matches) {
+				if (cursor) cursor.remove();
+			} else {
+				const dot = cursor.querySelector('.app-cursor-dot');
+				const ring = cursor.querySelector('.app-cursor-ring');
+				if (!dot || !ring) {
+					cursor.remove();
+				} else {
+					document.documentElement.classList.add('has-custom-cursor');
+					cursor.classList.remove('hidden');
+
+					const move = (x: number, y: number) => {
+						cursor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+					};
+
+					let stretch = 0;
+					let stretchTarget = 0;
+					let shift = 0;
+					let shiftTarget = 0;
+					let morphRaf = 0;
+
+					const animateMorph = () => {
+						stretchTarget *= 0.84;
+						shiftTarget *= 0.82;
+
+						stretch += (stretchTarget - stretch) * 0.22;
+						shift += (shiftTarget - shift) * 0.2;
+
+						cursor.style.setProperty('--cursor-stretch', stretch.toFixed(3));
+						cursor.style.setProperty('--cursor-shift', `${shift.toFixed(2)}px`);
+
+						const active =
+							Math.abs(stretch) > 0.01 ||
+							Math.abs(stretchTarget) > 0.01 ||
+							Math.abs(shift) > 0.1 ||
+							Math.abs(shiftTarget) > 0.1;
+
+						if (active) {
+							morphRaf = window.requestAnimationFrame(animateMorph);
+						} else {
+							stretch = 0;
+							stretchTarget = 0;
+							shift = 0;
+							shiftTarget = 0;
+							cursor.style.setProperty('--cursor-stretch', '0');
+							cursor.style.setProperty('--cursor-shift', '0px');
+							morphRaf = 0;
+						}
+					};
+
+					const kickMorph = (deltaY: number) => {
+						const amount = Math.min(Math.abs(deltaY) / 240, 1);
+						stretchTarget = Math.min(1, stretchTarget + amount * 0.9);
+						shiftTarget = Math.max(-8, Math.min(8, shiftTarget + Math.sign(deltaY || 1) * (1.6 + amount * 4.2)));
+
+						if (!morphRaf) {
+							morphRaf = window.requestAnimationFrame(animateMorph);
+						}
+					};
+
+					const isInteractive = (target: EventTarget | null) => {
+						if (!(target instanceof Element)) return false;
+						return !!target.closest('a, button, [role="button"], input[type="button"], input[type="submit"], summary');
+					};
+
+					document.addEventListener('mousemove', (e) => {
+						move(e.clientX, e.clientY);
+					});
+
+					document.addEventListener('wheel', (e) => {
+						kickMorph(e.deltaY);
+					}, { passive: true });
+
+					document.addEventListener('mouseover', (e) => {
+						if (isInteractive(e.target)) {
+							cursor.classList.add('is-link');
+						}
+					});
+
+					document.addEventListener('mouseout', (e) => {
+						if (isInteractive(e.target)) {
+							cursor.classList.remove('is-link');
+						}
+					});
+
+					document.addEventListener('mousedown', () => {
+						cursor.classList.add('is-down');
+					});
+
+					document.addEventListener('mouseup', () => {
+						cursor.classList.remove('is-down');
+					});
+
+					document.addEventListener('mouseleave', () => {
+						cursor.classList.add('is-hidden');
+					});
+
+					document.addEventListener('mouseenter', () => {
+						cursor.classList.remove('is-hidden');
+					});
+				}
+			}
+		</script>
+	</body>
+</html>
