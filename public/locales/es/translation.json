@@ -1,0 +1,54 @@
+{
+  "site": {
+    "title": "Hyperloop UPV",
+    "description": "Hyperloop UPV diseña y valida sistemas de transporte de alta velocidad mediante ingeniería real y pruebas."
+  },
+  "nav": {
+    "about": "Nosotros",
+    "team": "Equipo",
+    "trajectory": "Trayectoria",
+    "investigation": "Investigación",
+    "partners": "Socios",
+    "contact": "Contacto"
+  },
+  "mission": {
+    "title": "Nuestra misión",
+    "description": "Diseñamos y desarrollamos sistemas Hyperloop combinando ingeniería, innovación y pruebas reales para superar los límites del transporte de alta velocidad."
+  },
+  "hero": {
+    "discover": "Descubrir más",
+    "team": "Conocer al equipo"
+  },
+  "team": {
+    "title": "Las caras detrás del pod",
+    "subtitle": "Un equipo en crecimiento de ingenieros, diseñadores y creadores impulsando el pod hacia adelante. Desplázate para conocer a las personas que construyen el futuro.",
+    "roleFallback": "Miembro del equipo",
+    "cta": "Únete al equipo"
+  },
+  "vehicles": {
+    "title": "Línea de vehículos",
+    "subtitle": "Nuestras creaciones más recientes, los pods que marcan el camino"
+  },
+  "partners": {
+    "title": "Impulsado por tu apoyo",
+    "body": "Somos impulsados por nuestros patrocinadores y socios. Si quieres ayudar a hacer realidad este proyecto, ¡considera apoyarnos!",
+    "cta": "Apóyanos"
+  },
+  "footer": {
+    "title": "Shaping the Future.",
+    "contact": "Contacto",
+    "navigate": "Navegar",
+    "mission": "Misión",
+    "subsystems": "Subsistemas",
+    "vehicles": "Vehículos",
+    "support": "Apoyo",
+    "sponsor": "Patrocínanos",
+    "join": "Únete al equipo",
+    "rights": "Todos los derechos reservados.",
+    "made": "Desarrollado por el equipo de software de Hyperloop UPV."
+  },
+  "subsystems": {
+    "title": "Subsistemas",
+    "description": "Estas son las personas que ayudan a impulsar este proyecto. Haz clic en un subsistema para saber más."
+  }
+}

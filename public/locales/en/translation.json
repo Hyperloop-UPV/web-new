@@ -1,0 +1,54 @@
+{
+  "site": {
+    "title": "Hyperloop UPV",
+    "description": "Hyperloop UPV designs and validates high-speed transportation systems through real engineering and testing."
+  },
+  "nav": {
+    "about": "About",
+    "team": "Team",
+    "trajectory": "Trajectory",
+    "investigation": "Investigation",
+    "partners": "Partners",
+    "contact": "Contact"
+  },
+  "mission": {
+    "title": "Our mission",
+    "description": "We design and develop Hyperloop systems combining engineering, innovation and real tests to push the boundaries of high-speed transport."
+  },
+  "hero": {
+    "discover": "Discover More",
+    "team": "Meet the Team"
+  },
+  "team": {
+    "title": "Faces behind the pod",
+    "subtitle": "A growing crew of engineers, designers, and makers pushing the pod forward. Scroll to glimpse more of the people building the future.",
+    "roleFallback": "Team member",
+    "cta": "Join the team"
+  },
+  "vehicles": {
+    "title": "Vehicle Timeline",
+    "subtitle": "Our latest creations, the pods that take flight"
+  },
+  "partners": {
+    "title": "Powered by your support",
+    "body": "We are powered by our sponsors and partners. If you want to help make this project a reality, consider supporting us!",
+    "cta": "Support Us"
+  },
+  "footer": {
+    "title": "Shaping the Future.",
+    "contact": "Contact",
+    "navigate": "Navigate",
+    "mission": "Mission",
+    "subsystems": "Subsystems",
+    "vehicles": "Vehicles",
+    "support": "Support",
+    "sponsor": "Sponsor Us",
+    "join": "Join the team",
+    "rights": "All rights reserved.",
+    "made": "Made by the Hyperloop UPV Software team."
+  },
+  "subsystems": {
+    "title": "Subsystems",
+    "description": "These are the people who help bring this project forward. Click on a subsystem to learn more."
+  }
+}

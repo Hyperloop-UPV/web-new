@@ -1,18 +1,18 @@
 ---
 import i18next, { changeLanguage } from "i18next";
 import { changeLanguage, t } from "i18next";
-import Layout from "../layouts/Layout.astro";
-import Header from "../components/Header.astro";
-import Hero from "../components/Hero.astro";
-import MissionImageScatter from "../components/MissionImageScatter.astro";
-import SubsystemsAccordion from "../components/SubsystemsAccordion.astro";
-import VehicleTimeline from "../components/VehicleTimeline.astro";
-import PoweredBySupportSection from "../components/PoweredBySupportSection.astro";
-import MeetTeamSection from "../components/MeetTeamSection.astro";
-import SiteFooter from "../components/SiteFooter.astro";
-import { contentRepository } from "../lib/contentful/repository";
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Hero from "../../components/Hero.astro";
+import MissionImageScatter from "../../components/MissionImageScatter.astro";
+import SubsystemsAccordion from "../../components/SubsystemsAccordion.astro";
+import VehicleTimeline from "../../components/VehicleTimeline.astro";
+import PoweredBySupportSection from "../../components/PoweredBySupportSection.astro";
+import MeetTeamSection from "../../components/MeetTeamSection.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import { contentRepository } from "../../lib/contentful/repository";
 
-changeLanguage("en");
+changeLanguage("es");
 
 let contentfulLocale = "en-US";
 switch (i18next.language) {

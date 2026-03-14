@@ -31,14 +31,28 @@ const getAssetUrl = (assetLike: unknown): string | undefined => {
   return rawUrl.startsWith("http") ? rawUrl : `https:${rawUrl}`;
 };
 
+const getAssetUrls = (assetLike: unknown): string[] => {
+  if (Array.isArray(assetLike)) {
+    return assetLike
+      .map((asset) => getAssetUrl(asset))
+      .filter((value): value is string => Boolean(value));
+  }
+
+  const single = getAssetUrl(assetLike);
+  return single ? [single] : [];
+};
+
 const getEntries = async (
   query: Record<string, unknown>,
 ): Promise<CtfEntry[]> => {
-    console.log("Fetching entries with query:", query);
+  console.log("Fetching entries with query:", query);
   const response = (await contentfulClient.getEntries(query)) as unknown as {
     items?: CtfEntry[];
   };
-  console.log("Received response with items count:", response.items?.length ?? 0);
+  console.log(
+    "Received response with items count:",
+    response.items?.length ?? 0,
+  );
   return response.items ?? [];
 };
 
@@ -48,30 +62,52 @@ const toHtml = (document?: Document): string => {
 };
 
 export const contentRepository = {
-  async getHomePageContent(): Promise<HomePageContent> {
-    const [galleryEntries, subsystemEntries, vehicleEntries, partnerEntries] =
-      await Promise.all([
-        getEntries({
-          content_type: "galery",
-          include: 1,
-          order: ["sys.createdAt"],
-        }),
-        getEntries({
-          content_type: "subsystem",
-          include: 2,
-          order: ["fields.name"],
-        }),
-        getEntries({
-          content_type: "vehicles",
-          include: 1,
-          order: ["-fields.date"],
-        }),
-        getEntries({
-          content_type: "partners",
-          include: 2,
-          order: ["fields.name"],
-        }),
-      ]);
+  async getHomePageContent(locale = "en-US"): Promise<HomePageContent> {
+    const [
+      heroEntries,
+      galleryEntries,
+      subsystemEntries,
+      vehicleEntries,
+      partnerEntries,
+    ] = await Promise.all([
+      getEntries({
+        content_type: "hero",
+        include: 1,
+        order: ["sys.createdAt"],
+        limit: 1,
+        locale,
+      }),
+      getEntries({
+        content_type: "galery",
+        include: 1,
+        order: ["sys.createdAt"],
+        locale,
+      }),
+      getEntries({
+        content_type: "subsystem",
+        include: 2,
+        order: ["fields.name"],
+        locale,
+      }),
+      getEntries({
+        content_type: "vehicles",
+        include: 1,
+        order: ["-fields.date"],
+        locale,
+      }),
+      getEntries({
+        content_type: "partners",
+        include: 2,
+        order: ["fields.name"],
+        locale,
+      }),
+    ]);
+
+    const heroEntry = heroEntries[0];
+    const heroBackgroundImages = getAssetUrls(heroEntry?.fields?.bg);
+    const heroDescription = heroEntry?.fields?.description
+      ? String(heroEntry.fields.description)
+      : undefined;
 
     const missionImages = galleryEntries
       .map((entry) => getAssetUrl(entry.fields?.image))
@@ -104,6 +140,10 @@ export const contentRepository = {
       .filter((value): value is string => Boolean(value));
 
     return {
+      hero: {
+        bg: heroBackgroundImages,
+        description: heroDescription,
+      },
       missionImages,
       subsystemItems,
       vehicleTimeline,
@@ -113,12 +153,14 @@ export const contentRepository = {
 
   async getNetworkingEventsBySlug(
     slug: string,
+    locale = "en-US",
   ): Promise<(NetworkingFields & { descriptionHtml: string }) | null> {
     const entries = await getEntries({
       content_type: "networking",
       "fields.slug": slug,
       limit: 1,
       include: 2,
+      locale,
     });
 
     const event = entries[0];
@@ -168,12 +210,14 @@ export const contentRepository = {
 
   async getJobOpeningBySlug(
     slug: string,
+    locale = "en-US",
   ): Promise<(JobOpeningFields & { fullDescriptionHtml: string }) | null> {
     const entries = await getEntries({
       content_type: "jobOpening",
       "fields.slug": slug,
       limit: 1,
       include: 2,
+      locale,
     });
 
     const opening = entries[0];
@@ -214,11 +258,12 @@ export const contentRepository = {
     };
   },
 
-  async getMembers(): Promise<MemberFields[]> {
+  async getMembers(locale = "en-US"): Promise<MemberFields[]> {
     const entries = await getEntries({
       content_type: "member",
       include: 1,
       order: ["fields.name"],
+      locale,
     });
     return entries.map((entry) => ({
       name: String(entry.fields?.name ?? ""),
@@ -229,11 +274,12 @@ export const contentRepository = {
     }));
   },
 
-  async getInvestigations(): Promise<InvestigationFields[]> {
+  async getInvestigations(locale = "en-US"): Promise<InvestigationFields[]> {
     const entries = await getEntries({
       content_type: "investigation",
       include: 1,
       order: ["fields.title"],
+      locale,
     });
     return entries.map((entry) => ({
       title: String(entry.fields?.title ?? ""),

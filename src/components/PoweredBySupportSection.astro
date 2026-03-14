@@ -1,6 +1,7 @@
 ---
 import Title from "./Title.astro";
 import Button from "./Button.astro";
+import { t } from "i18next";
 
 interface Props {
   logos?: string[];
@@ -106,16 +107,16 @@ const logosPerTrack = Array.from({ length: 18 });
     class="relative z-20 flex max-w-[min(92vw,780px)] flex-col gap-[18px] text-left items-start"
   >
     <Title
-      text="Powered by your support"
+      text={t("partners.title")}
       class="m-0 text-[clamp(2rem,6.2vw,4rem)] leading-[0.95] font-black tracking-[-0.03em] text-balance"
     />
     <Title
       tag="p"
-      text="We are powered by our sponsors and partners, if you want to help make this project a reality, consider supporting us!"
+      text={t("partners.body")}
       class="text-base leading-relaxed text-white/72 md:text-lg"
     />
     <div class="flex justify-center">
-      <Button variant="primary">Support Us</Button>
+      <Button variant="primary">{t("partners.cta")}</Button>
     </div>
   </div>
 </section>

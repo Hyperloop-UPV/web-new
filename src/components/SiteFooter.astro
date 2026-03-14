@@ -2,6 +2,13 @@
 import Button from "./Button.astro";
 import Title from "./Title.astro";
 import { Mail, Linkedin, Instagram, MapPin } from "lucide-astro";
+import { t } from "i18next";
+
+interface Props {
+  description?: string;
+}
+
+const { description } = Astro.props as Props;
 
 const year = new Date().getFullYear();
 ---
@@ -30,12 +37,11 @@ const year = new Date().getFullYear();
         Hyperloop UPV
       </p>
       <Title
-        text="Shaping the future"
+        text={t("footer.title")}
         class="max-w-3xl text-[clamp(1.9rem,4.5vw,3.25rem)] font-black leading-[1.04] tracking-[-0.02em]"
       />
       <p class="max-w-2xl text-base text-white/68 md:text-lg">
-        Un equipo de estudiantes multidisciplinar que <br />
-        desarrolla tecnología Hyperloop en la Universidad Politécnica de Valencia
+        {description}
       </p>
     </div>
 
@@ -46,7 +52,7 @@ const year = new Date().getFullYear();
         <h3
           class="text-sm font-semibold uppercase tracking-[0.18em] text-white/70"
         >
-          Contact
+          {t("footer.contact")}
         </h3>
         <ul class="mt-4 space-y-2 text-sm text-white/72 md:text-base">
           <li>
@@ -94,18 +100,23 @@ const year = new Date().getFullYear();
         <h3
           class="text-sm font-semibold uppercase tracking-[0.18em] text-white/70"
         >
-          Navigate
+          {t("footer.navigate")}
         </h3>
         <ul class="mt-4 space-y-2 text-sm text-white/72 md:text-base">
           <li>
-            <a href="#" class="transition-colors hover:text-white">Mission</a>
+            <a href="#" class="transition-colors hover:text-white"
+              >{t("footer.mission")}</a
+            >
           </li>
           <li>
             <a href="#" class="transition-colors hover:text-white"
-              >Subsystems</a>
+              >{t("footer.subsystems")}</a
+            >
           </li>
           <li>
-            <a href="#" class="transition-colors hover:text-white">Vehicles</a>
+            <a href="#" class="transition-colors hover:text-white"
+              >{t("footer.vehicles")}</a
+            >
           </li>
         </ul>
       </section>
@@ -114,12 +125,14 @@ const year = new Date().getFullYear();
         <h3
           class="text-sm font-semibold uppercase tracking-[0.18em] text-white/70"
         >
-          Support
+          {t("footer.support")}
         </h3>
         <div class="mt-5 flex flex-col items-start gap-3">
-          <Button href="#" variant="primary" class="w-full">Sponsor Us</Button>
+          <Button href="#" variant="primary" class="w-full"
+            >{t("footer.sponsor")}</Button
+          >
           <Button href="#" variant="outline" class="w-full"
-            >Join the team</Button
+            >{t("footer.join")}</Button
           >
         </div>
       </section>
@@ -128,8 +141,8 @@ const year = new Date().getFullYear();
     <div
       class="mt-12 flex flex-col gap-3 pt-6 text-xs text-white/52 md:mt-14 md:flex-row md:items-center md:justify-between md:text-sm"
     >
-      <p>© {year} Hyperloop Team. All rights reserved.</p>
-      <p>Made by the Hyperloop UPV Software team.</p>
+      <p>© {year} Hyperloop Team. {t("footer.rights")}</p>
+      <p>{t("footer.made")}</p>
     </div>
   </div>
 </footer>

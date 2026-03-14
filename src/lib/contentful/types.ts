@@ -76,6 +76,10 @@ export interface VehicleFields {
 }
 
 export interface HomePageContent {
+  hero: {
+    bg?: string[];
+    description?: string;
+  };
   missionImages: string[];
   subsystemItems: {
     label: string;

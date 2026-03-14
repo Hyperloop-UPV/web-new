@@ -1,5 +1,6 @@
 ---
 import Title from "./Title.astro";
+import { t } from "i18next";
 
 interface SubsystemItem {
   label: string;
@@ -11,12 +12,11 @@ interface SubsystemItem {
 }
 
 interface Props {
-  title?: string;
   items: SubsystemItem[];
   class?: string;
 }
 
-const { title = "Subsystems", items = [], class: className = "" } = Astro.props;
+const { items = [], class: className = "" } = Astro.props;
 ---
 
 <section
@@ -30,7 +30,7 @@ const { title = "Subsystems", items = [], class: className = "" } = Astro.props;
   ></span>
   <Title
     tag="h1"
-    text={title}
+    text={t("subsystems.title")}
     class="mb-8 text-[clamp(2rem,6vw,4.5rem)] font-black tracking-tight"
   />
   <div class="subsystems-accordion w-full h-[420px]" data-subsystems-accordion>
@@ -69,7 +69,7 @@ const { title = "Subsystems", items = [], class: className = "" } = Astro.props;
   </div>
   <Title
     tag="h2"
-    text="These are the people who help bring this project forward, click on a subsystem to learn more!"
+    text={t("subsystems.description")}
     class="mt-12 text-[clamp(1rem,2vw,1.25rem)] leading-relaxed text-white/86"
   />
 </section>

@@ -2,13 +2,27 @@
 import BlobReveal from "./BlobReveal.astro";
 import Button from "./Button.astro";
 import Title from "./Title.astro";
+import { t } from "i18next";
+
+interface Props {
+  bg?: string[];
+  description?: string;
+}
+
+const {
+  bg = ["/img/pod_full.jpeg", "/img/pod_sketch.jpg"],
+  description = "Un equipo de estudiantes multidisciplinar que desarrolla tecnología Hyperloop en la Universidad Politécnica de Valencia",
+} = Astro.props as Props;
+
+const primaryImage = bg[0] ?? "/img/pod_full.jpeg";
+const secondaryImage = bg[1] ?? bg[0] ?? "/img/pod_sketch.jpg";
 ---
 
 <section class="bg-[#050505] relative h-screen overflow-hidden">
   <div class="absolute inset-0 z-0">
     <BlobReveal
-      primaryImage="/img/pod_full.jpeg"
-      secondaryImage="/img/pod_sketch.jpg"
+      primaryImage={primaryImage}
+      secondaryImage={secondaryImage}
       class="w-full h-full"
     />
   </div>
@@ -38,22 +52,21 @@ import Title from "./Title.astro";
     </p>
     <h1 class="hero-title m-0 leading-[0.95]">
       <Title
-        text="Hyperloop UPV"
+        text={t("site.title")}
         class="line-1 block text-[clamp(3rem,10vw,8rem)] font-bold -tracking-wider"
       />
     </h1>
     <p
-      class="hero-description mt-12 text-[clamp(1rem,2vw,1.2rem)] leading-relaxed text-white/55"
+      class="hero-description mt-12 text-[clamp(1rem,2vw,1.2rem)] max-w-[700px] leading-relaxed text-white/55"
     >
-      Un equipo de estudiantes multidisciplinar que <br />
-      desarrolla tecnología Hyperloop en la Universidad Politécnica de Valencia
+      {description}
     </p>
     <div class="hero-cta mt-10 flex gap-4 flex-wrap">
       <Button href="#about" variant="primary" pullStrength={12}>
-        Descubrir Más
+        {t("hero.discover")}
       </Button>
       <Button href="#team" variant="outline" pullStrength={10}>
-        Conocer al Equipo
+        {t("hero.team")}
       </Button>
     </div>
   </div>

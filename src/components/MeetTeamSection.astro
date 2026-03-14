@@ -1,6 +1,7 @@
 ---
 import Button from "./Button.astro";
 import Title from "./Title.astro";
+import { t } from "i18next";
 
 interface TeamMemberCard {
   image: string;
@@ -24,15 +25,15 @@ const { teamMembers = [] } = Astro.props as Props;
     <div class="team-pin-column md:self-start">
       <div class="team-pin-text flex flex-col gap-4 md:pt-28">
         <Title
-          text="Faces behind the pod"
+          text={t("team.title")}
           class="m-0 text-[clamp(2.25rem,5vw,3.6rem)] font-black leading-[1.05]"
         />
         <Title
-          text="A growing crew of engineers, designers, and makers pushing the pod forward. Scroll to glimpse more of the people building the future."
+          text={t("team.subtitle")}
           class="text-lg text-white/70 leading-relaxed"
         />
         <div class="pt-2">
-          <Button variant="outline" href="#">Join the team</Button>
+          <Button variant="outline" href="#">{t("team.cta")}</Button>
         </div>
       </div>
     </div>
@@ -54,7 +55,7 @@ const { teamMembers = [] } = Astro.props as Props;
               <figcaption class="team-face-bubble" aria-hidden="true">
                 <span class="team-face-name">{member.name}</span>
                 <span class="team-face-role">
-                  {member.role ?? "Team member"}
+                  {member.role ?? t("team.roleFallback")}
                 </span>
               </figcaption>
             </figure>
