@@ -1,0 +1,135 @@
+---
+import Button from "./Button.astro";
+import Title from "./Title.astro";
+import { Mail, Linkedin, Instagram, MapPin } from "lucide-astro";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="relative overflow-hidden bg-[#0a0a0a] text-white">
+  <div
+    class="absolute inset-0 pointer-events-none opacity-50"
+    aria-hidden="true"
+  >
+    <div
+      class="absolute -top-24 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-white/8 blur-3xl"
+    >
+    </div>
+    <div
+      class="absolute bottom-0 right-8 h-40 w-40 rounded-full bg-[#ff7f24]/20 blur-3xl"
+    >
+    </div>
+  </div>
+
+  <div class="relative mx-auto max-w-6xl px-6 py-16 md:px-10 md:py-20">
+    <div
+      class="fade-up flex flex-col gap-4 border-b border-white/10 pb-10 md:pb-12"
+    >
+      <img src="/img/check.png" alt="Shaping the Future" class="w-20 mb-3" />
+      <p class="text-xs uppercase tracking-[0.28em] text-white/55">
+        Hyperloop UPV
+      </p>
+      <Title
+        text="Shaping the future"
+        class="max-w-3xl text-[clamp(1.9rem,4.5vw,3.25rem)] font-black leading-[1.04] tracking-[-0.02em]"
+      />
+      <p class="max-w-2xl text-base text-white/68 md:text-lg">
+        Un equipo de estudiantes multidisciplinar que <br />
+        desarrolla tecnología Hyperloop en la Universidad Politécnica de Valencia
+      </p>
+    </div>
+
+    <div
+      class="mt-10 flex flex-col gap-12 justify-between md:mt-14 md:flex-row md:gap-x-8"
+    >
+      <section class="fade-up md:col-span-5">
+        <h3
+          class="text-sm font-semibold uppercase tracking-[0.18em] text-white/70"
+        >
+          Contact
+        </h3>
+        <ul class="mt-4 space-y-2 text-sm text-white/72 md:text-base">
+          <li>
+            <a
+              href="mailto:partners@hyperloopupv.com"
+              class="inline-flex items-center gap-2 transition-colors hover:text-white"
+            >
+              <Mail class="h-4 w-4" aria-hidden="true" />
+              <span>partners@hyperloopupv.com</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://www.linkedin.com"
+              class="inline-flex items-center gap-2 transition-colors hover:text-white"
+            >
+              <Linkedin class="h-4 w-4" aria-hidden="true" />
+              <span>LinkedIn</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://www.instagram.com"
+              class="inline-flex items-center gap-2 transition-colors hover:text-white"
+            >
+              <Instagram class="h-4 w-4" aria-hidden="true" />
+              <span>Instagram</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=Cami%20de%20Vera%20S%2FN%20Edificio%208N%2C%20UPV"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 transition-colors hover:text-white"
+            >
+              <MapPin class="h-4 w-4" aria-hidden="true" />
+              <span>Cami de Vera S/N Edificio 8N, UPV</span>
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="fade-up md:col-span-3">
+        <h3
+          class="text-sm font-semibold uppercase tracking-[0.18em] text-white/70"
+        >
+          Navigate
+        </h3>
+        <ul class="mt-4 space-y-2 text-sm text-white/72 md:text-base">
+          <li>
+            <a href="#" class="transition-colors hover:text-white">Mission</a>
+          </li>
+          <li>
+            <a href="#" class="transition-colors hover:text-white"
+              >Subsystems</a>
+          </li>
+          <li>
+            <a href="#" class="transition-colors hover:text-white">Vehicles</a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="fade-up md:col-span-4">
+        <h3
+          class="text-sm font-semibold uppercase tracking-[0.18em] text-white/70"
+        >
+          Support
+        </h3>
+        <div class="mt-5 flex flex-col items-start gap-3">
+          <Button href="#" variant="primary" class="w-full">Sponsor Us</Button>
+          <Button href="#" variant="outline" class="w-full"
+            >Join the team</Button
+          >
+        </div>
+      </section>
+    </div>
+
+    <div
+      class="mt-12 flex flex-col gap-3 pt-6 text-xs text-white/52 md:mt-14 md:flex-row md:items-center md:justify-between md:text-sm"
+    >
+      <p>© {year} Hyperloop Team. All rights reserved.</p>
+      <p>Made by the Hyperloop UPV Software team.</p>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,101 @@
+---
+interface Props {
+  href?: string;
+  variant?: "primary" | "outline";
+  pullStrength?: number;
+  class?: string;
+}
+
+const {
+  href,
+  variant = "primary",
+  pullStrength = 10,
+  class: className = "",
+} = Astro.props as Props;
+
+const variantClasses = {
+  primary: "bg-white text-[#050505] hover:bg-gray-100",
+  outline:
+    "bg-transparent text-white border border-white/20 hover:border-white/50 hover:bg-white/5",
+};
+
+const baseClasses =
+  "js-magnetic-button magnetic-button inline-flex items-center justify-center py-3.5 px-8 text-[0.95rem] font-semibold rounded-lg no-underline transition-[background-color,color,border-color,box-shadow,transform] duration-300 cursor-pointer pointer-events-auto";
+const classes = `${baseClasses} ${variantClasses[variant]} ${className}`.trim();
+---
+
+{
+  href ? (
+    <a href={href} class={classes} data-pull-strength={pullStrength}>
+      <slot />
+    </a>
+  ) : (
+    <button type="button" class={classes} data-pull-strength={pullStrength}>
+      <slot />
+    </button>
+  )
+}
+
+<style>
+  .magnetic-button {
+    --magnetic-x: 0px;
+    --magnetic-y: 0px;
+    transform: translate3d(var(--magnetic-x), var(--magnetic-y), 0);
+    will-change: transform;
+  }
+</style>
+
+<script>
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  if (!reduceMotion) {
+    const magneticButtons = document.querySelectorAll<HTMLElement>(
+      ".js-magnetic-button",
+    );
+
+    for (const button of magneticButtons) {
+      if (button.dataset.magneticReady === "true") continue;
+      button.dataset.magneticReady = "true";
+      const transitionBeforeHover = button.style.transition;
+
+      const reset = () => {
+        button.style.setProperty("--magnetic-x", "0px");
+        button.style.setProperty("--magnetic-y", "0px");
+      };
+
+      const disableTransition = () => {
+        button.style.transition = "none";
+      };
+
+      const enableTransition = () => {
+        button.style.transition = transitionBeforeHover;
+      };
+
+      button.addEventListener("pointermove", (event: PointerEvent) => {
+        const rect = button.getBoundingClientRect();
+        const strength = Number(button.dataset.pullStrength ?? 10);
+        const offsetX = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
+        const offsetY = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+
+        button.style.setProperty("--magnetic-x", `${offsetX * strength}px`);
+        button.style.setProperty("--magnetic-y", `${offsetY * strength}px`);
+      });
+
+      button.addEventListener("mouseover", () =>
+        setTimeout(disableTransition, 500),
+      );
+      button.addEventListener("mouseout", () => {
+        enableTransition();
+        reset();
+      });
+
+      button.addEventListener("pointerleave", () => {
+        enableTransition();
+        reset();
+      });
+      button.addEventListener("pointerup", reset);
+    }
+  }
+</script>

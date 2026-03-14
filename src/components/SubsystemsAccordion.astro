@@ -1,339 +1,521 @@
 ---
-import Title from './Title.astro';
+import Title from "./Title.astro";
 
 interface SubsystemItem {
-	label: string;
-	href: string;
-	description?: string;
-	image?: string;
-	funImage?: string;
+  label: string;
+  href: string;
+  icon?: string;
+  description?: string;
+  image?: string;
+  funImage?: string;
 }
 
 interface Props {
-	title?: string;
-	items: SubsystemItem[];
-	class?: string;
+  title?: string;
+  items: SubsystemItem[];
+  class?: string;
 }
 
-const { title = 'Subsystems', items = [], class: className = '' } = Astro.props;
+const { title = "Subsystems", items = [], class: className = "" } = Astro.props;
 ---
 
-<section class:list={['subsystems-section min-h-screen  max-w-[1500px] left-1/2 -translate-x-1/2 flex flex-col items-start justify-center py-16 px-8 bg-[#0f0f0f] text-white relative', className]} data-subsystems-section>
-	<span class="subsystems-fun-bg" data-subsystems-fun-bg aria-hidden="true"></span>
-	<Title tag="h1" text={title} class="mb-8 text-[clamp(2rem,6vw,4.5rem)] font-black tracking-tight" />
-	<div class="subsystems-accordion w-full h-[420px]" data-subsystems-accordion>
-		{items.map((item, index) => (
-			<a href={item.href} class="subsystem-panel" aria-label={item.label} data-fun-image={item.funImage ?? item.image ?? ''} style={`--panel-index:${index};`}>
-				<div class="subsystem-media-wrap" aria-hidden="true">
-					{item.image && <img class="subsystem-media" src={item.image} alt="" loading="lazy" decoding="async" />}
-				</div>
-				<div class="subsystem-content h-full flex flex-col justify-between">
-                    <img src={item.icon} class="w-12 mb-3" />
-                    <span>
-					<span class="subsystem-label">{item.label}</span>
-					{item.description && <p class="subsystem-description">{item.description}</p>}
-                    </span>
-				</div>
-			</a>
-		))}
-	</div>
-    <Title tag="h2" text="These are the people who help bring this project forward, click on a subsystem to learn more!" class="mt-12 text-[clamp(1rem,2vw,1.25rem)] leading-relaxed text-white/86" />
+<section
+  class:list={[
+    "subsystems-section min-h-screen  max-w-[1500px] left-1/2 -translate-x-1/2 flex flex-col items-start justify-center py-16 px-8 bg-[#0f0f0f] text-white relative",
+    className,
+  ]}
+  data-subsystems-section
+>
+  <span class="subsystems-fun-bg" data-subsystems-fun-bg aria-hidden="true"
+  ></span>
+  <Title
+    tag="h1"
+    text={title}
+    class="mb-8 text-[clamp(2rem,6vw,4.5rem)] font-black tracking-tight"
+  />
+  <div class="subsystems-accordion w-full h-[420px]" data-subsystems-accordion>
+    {
+      items.map((item, index) => (
+        <a
+          href={item.href}
+          class="subsystem-panel"
+          aria-label={item.label}
+          data-fun-image={item.funImage ?? item.image ?? ""}
+          style={`--panel-index:${index};`}
+        >
+          <div class="subsystem-media-wrap" aria-hidden="true">
+            {item.image && (
+              <img
+                class="subsystem-media"
+                src={item.image}
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
+            )}
+          </div>
+          <div class="subsystem-content h-full flex flex-col justify-between">
+            <img src={item.icon} class="subsystem-icon w-12 mb-3" />
+            <span>
+              <span class="subsystem-label">{item.label}</span>
+              {item.description && (
+                <p class="subsystem-description">{item.description}</p>
+              )}
+            </span>
+          </div>
+        </a>
+      ))
+    }
+  </div>
+  <Title
+    tag="h2"
+    text="These are the people who help bring this project forward, click on a subsystem to learn more!"
+    class="mt-12 text-[clamp(1rem,2vw,1.25rem)] leading-relaxed text-white/86"
+  />
 </section>
 
 <script>
-	const initSubsystemsAnimation = () => {
-		const sections = document.querySelectorAll<HTMLElement>('[data-subsystems-section]');
-		if (!sections.length) return;
+  const initSubsystemsAnimation = () => {
+    const sections = document.querySelectorAll<HTMLElement>(
+      "[data-subsystems-section]",
+    );
+    if (!sections.length) return;
 
-		sections.forEach((section) => {
-			if (section.dataset.bgInit === 'true') return;
-			section.dataset.bgInit = 'true';
+    sections.forEach((section) => {
+      if (section.dataset.bgInit === "true") return;
+      section.dataset.bgInit = "true";
 
-			const bg = section.querySelector<HTMLElement>('[data-subsystems-fun-bg]');
-			const panels = section.querySelectorAll<HTMLElement>('.subsystem-panel');
-			if (!bg || !panels.length) return;
+      const bg = section.querySelector<HTMLElement>("[data-subsystems-fun-bg]");
+      const panels = section.querySelectorAll<HTMLElement>(".subsystem-panel");
+      if (!bg || !panels.length) return;
 
-			const CLEAR_DELAY_MS = 140;
-			let clearTimer: number | null = null;
+      const HOVER_SWITCH_DELAY_MS = 200;
+      const FADE_OUT_MS = 220;
+      let decisionTimer: number | null = null;
+      let fadeTimer: number | null = null;
+      let pendingImageUrl = "";
+      let activeImageUrl = "";
 
-			const cancelClear = () => {
-				if (clearTimer !== null) {
-					window.clearTimeout(clearTimer);
-					clearTimer = null;
-				}
-			};
+      const clearTimers = () => {
+        if (decisionTimer !== null) {
+          window.clearTimeout(decisionTimer);
+          decisionTimer = null;
+        }
+        if (fadeTimer !== null) {
+          window.clearTimeout(fadeTimer);
+          fadeTimer = null;
+        }
+      };
 
-			const setFunBackground = (imageUrl: string) => {
-				if (!imageUrl) return;
-				cancelClear();
-				bg.style.backgroundImage = `url("${imageUrl}")`;
-				bg.classList.add('is-active');
-			};
+      const finalizeBackgroundSwap = (nextImageUrl: string) => {
+        activeImageUrl = nextImageUrl;
+        if (nextImageUrl) {
+          bg.style.backgroundImage = `url("${nextImageUrl}")`;
+          bg.classList.add("is-active");
+        } else {
+          bg.classList.remove("is-active");
+          bg.style.backgroundImage = "";
+        }
+      };
 
-			const scheduleClearFunBackground = () => {
-				cancelClear();
-				clearTimer = window.setTimeout(() => {
-					bg.classList.remove('is-active');
-					clearTimer = null;
-				}, CLEAR_DELAY_MS);
-			};
+      const swapBackgroundWithFade = (nextImageUrl: string) => {
+        if (activeImageUrl === nextImageUrl) return;
 
-			panels.forEach((panel) => {
-				const imageUrl = panel.dataset.funImage || '';
-				panel.addEventListener('mouseenter', () => setFunBackground(imageUrl));
-				panel.addEventListener('focus', () => setFunBackground(imageUrl));
-				panel.addEventListener('mouseleave', () => scheduleClearFunBackground());
-				panel.addEventListener('blur', () => scheduleClearFunBackground());
-			});
+        if (!activeImageUrl) {
+          finalizeBackgroundSwap(nextImageUrl);
+          return;
+        }
 
-			section.addEventListener('mouseenter', cancelClear);
-			section.addEventListener('mouseleave', scheduleClearFunBackground);
-		});
+        bg.classList.remove("is-active");
+        if (fadeTimer !== null) {
+          window.clearTimeout(fadeTimer);
+        }
 
-		const accordions = document.querySelectorAll<HTMLElement>('[data-subsystems-accordion]');
-		if (!accordions.length) return;
+        fadeTimer = window.setTimeout(() => {
+          finalizeBackgroundSwap(nextImageUrl);
+          fadeTimer = null;
+        }, FADE_OUT_MS);
+      };
 
-		accordions.forEach((accordion) => {
-			if (accordion.dataset.animInit === 'true') return;
-			accordion.dataset.animInit = 'true';
+      const scheduleFunBackground = (nextImageUrl: string) => {
+        pendingImageUrl = nextImageUrl;
+        if (decisionTimer !== null) {
+          window.clearTimeout(decisionTimer);
+        }
+        decisionTimer = window.setTimeout(() => {
+          swapBackgroundWithFade(pendingImageUrl);
+          decisionTimer = null;
+        }, HOVER_SWITCH_DELAY_MS);
+      };
 
-			const observer = new IntersectionObserver(
-				(entries) => {
-					entries.forEach((entry) => {
-						if (!entry.isIntersecting) return;
-						accordion.classList.add('is-visible');
-						observer.unobserve(accordion);
-					});
-				},
-				{ threshold: 0.2, rootMargin: '0px 0px -12% 0px' }
-			);
+      panels.forEach((panel) => {
+        const imageUrl = panel.dataset.funImage || "";
+        panel.addEventListener("mouseenter", () =>
+          scheduleFunBackground(imageUrl),
+        );
+        panel.addEventListener("focus", () => scheduleFunBackground(imageUrl));
+        panel.addEventListener("mouseleave", () => scheduleFunBackground(""));
+        panel.addEventListener("blur", () => scheduleFunBackground(""));
+      });
 
-			observer.observe(accordion);
-		});
-	};
+      section.addEventListener("mouseleave", () => scheduleFunBackground(""));
+      section.addEventListener("mouseenter", () => {
+        if (decisionTimer !== null) {
+          window.clearTimeout(decisionTimer);
+          decisionTimer = null;
+        }
+      });
 
-	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', initSubsystemsAnimation, { once: true });
-	} else {
-		initSubsystemsAnimation();
-	}
+      section.addEventListener("astro:unmount", clearTimers);
+    });
 
-	document.addEventListener('astro:page-load', initSubsystemsAnimation);
+    const accordions = document.querySelectorAll<HTMLElement>(
+      "[data-subsystems-accordion]",
+    );
+    if (!accordions.length) return;
+
+    accordions.forEach((accordion) => {
+      if (accordion.dataset.animInit === "true") return;
+      accordion.dataset.animInit = "true";
+
+      const HOVER_SWITCH_DELAY_MS = 200;
+      const panels =
+        accordion.querySelectorAll<HTMLElement>(".subsystem-panel");
+      let activePanel: HTMLElement | null = null;
+      let pendingPanel: HTMLElement | null = null;
+      let hoverTimer: number | null = null;
+
+      const clearHoverTimer = () => {
+        if (hoverTimer !== null) {
+          window.clearTimeout(hoverTimer);
+          hoverTimer = null;
+        }
+      };
+
+      const applyActivePanel = (nextPanel: HTMLElement | null) => {
+        if (activePanel === nextPanel) return;
+        if (activePanel) activePanel.classList.remove("is-hovered");
+        activePanel = nextPanel;
+        if (activePanel) {
+          activePanel.classList.add("is-hovered");
+          accordion.classList.add("is-hovering");
+        } else {
+          accordion.classList.remove("is-hovering");
+        }
+      };
+
+      const scheduleActivePanel = (nextPanel: HTMLElement | null) => {
+        pendingPanel = nextPanel;
+        clearHoverTimer();
+        hoverTimer = window.setTimeout(() => {
+          applyActivePanel(pendingPanel);
+          hoverTimer = null;
+        }, HOVER_SWITCH_DELAY_MS);
+      };
+
+      panels.forEach((panel) => {
+        panel.addEventListener("mouseenter", () => scheduleActivePanel(panel));
+        panel.addEventListener("mouseleave", () => scheduleActivePanel(null));
+        panel.addEventListener("focus", () => {
+          clearHoverTimer();
+          applyActivePanel(panel);
+        });
+        panel.addEventListener("blur", () => scheduleActivePanel(null));
+      });
+
+      accordion.addEventListener("mouseleave", () => scheduleActivePanel(null));
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            accordion.classList.add("is-visible");
+            observer.unobserve(accordion);
+          });
+        },
+        { threshold: 0.2, rootMargin: "0px 0px -12% 0px" },
+      );
+
+      observer.observe(accordion);
+    });
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initSubsystemsAnimation, {
+      once: true,
+    });
+  } else {
+    initSubsystemsAnimation();
+  }
+
+  document.addEventListener("astro:page-load", initSubsystemsAnimation);
 </script>
 
 <style>
-	.subsystems-accordion {
-		display: flex;
-		gap: 8px;
-		position: relative;
-		z-index: 2;
-	}
+  .subsystems-accordion {
+    display: flex;
+    position: relative;
+    z-index: 2;
+  }
 
-	.subsystems-fun-bg {
-		position: absolute;
-		left: 50%;
-		top: 50%;
-		width: 100vw;
-		height: 100vh;
-		z-index: 0;
-		background-position: center;
-		background-size: cover;
-		background-repeat: no-repeat;
-		opacity: 0;
-        filter: grayscale(0.2) brightness(1.1) blur(4px);
-		transform: translate(-50%, -50%) scale(1.03);
-		transition: opacity 320ms ease, transform 480ms ease;
-		pointer-events: none;
-		object-fit: cover;
-	}
+  .subsystems-fun-bg {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    opacity: 0;
+    filter: grayscale(0.2) brightness(1.1) blur(4px);
+    transform: translate(-50%, -50%) scale(1.03);
+    transition:
+      opacity 320ms ease,
+      transform 480ms ease;
+    pointer-events: none;
+    object-fit: cover;
+  }
 
-	.subsystems-fun-bg::after {
-		content: '';
-		position: absolute;
-		inset: 0;
-		background: linear-gradient(180deg, rgba(8, 10, 12, 0.68) 0%, rgba(8, 10, 12, 0.7) 50%, rgba(8, 10, 12, 0.82) 100%);
-	}
+  .subsystems-fun-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(8, 10, 12, 0.68) 0%,
+      rgba(8, 10, 12, 0.7) 50%,
+      rgba(8, 10, 12, 0.82) 100%
+    );
+  }
 
-	.subsystems-fun-bg.is-active {
-		opacity: 0.75;
-		transform: translate(-50%, -50%) scale(1);
-	}
+  .subsystems-fun-bg.is-active {
+    opacity: 0.75;
+    transform: translate(-50%, -50%) scale(1);
+  }
 
-	.subsystem-panel {
-		flex: 1 1 0;
-		min-width: 0;
-		position: relative;
-		display: flex;
-		align-items: flex-end;
-		justify-content: flex-start;
-		padding: 1.5rem;
-		isolation: isolate;
-        backdrop-filter: blur(12px) saturate(0.9);
-		border-radius: 0.9rem;
-		border: 1px solid rgba(255, 255, 255, 0.12);
-		background: linear-gradient(160deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03));
-		text-decoration: none;
-		color: #ffffff;
-		opacity: 0;
-		transform: translateY(26px) scale(0.97);
-		filter: blur(5px);
-		transition: 0.5s ease;
-        transition-delay: 0.2s;
-		will-change: transform, opacity, filter;
-	}
+  .subsystem-panel {
+    flex: 1 1 0;
+    min-width: 0;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding: 1.5rem;
+    isolation: isolate;
+    backdrop-filter: blur(12px) saturate(0.9);
+    border-radius: 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: linear-gradient(
+      160deg,
+      rgba(255, 255, 255, 0.12),
+      rgba(255, 255, 255, 0.03)
+    );
+    text-decoration: none;
+    color: #ffffff;
+    margin-right: 8px;
+    opacity: 0;
+    transform: translateY(26px) scale(0.97);
+    filter: blur(5px);
+    transition: 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition-delay: 0.2s;
+    will-change: transform, opacity, filter;
+  }
 
-	.subsystem-panel::after {
-		content: '';
-		position: absolute;
-		inset: 0;
-		z-index: 1;
-        border-radius: 0.9rem;
-		background: linear-gradient(180deg, rgba(8, 10, 12, 0.05) 8%, rgba(8, 10, 12, 0.65) 72%, rgba(8, 10, 12, 0.9) 100%);
-		pointer-events: none;
-	}
+  .subsystem-panel::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: 0.9rem;
+    background: linear-gradient(
+      180deg,
+      rgba(8, 10, 12, 0.05) 8%,
+      rgba(8, 10, 12, 0.65) 72%,
+      rgba(8, 10, 12, 0.9) 100%
+    );
+    pointer-events: none;
+  }
 
-	.subsystem-content {
-		position: relative;
-		z-index: 2;
-		display: flex;
-		flex-direction: column;
-		gap: 0;
-		max-width: min(72%, 520px);
-		interpolate-size: allow-keywords;
-	}
+  .subsystem-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-width: min(72%, 520px);
+    interpolate-size: allow-keywords;
+  }
 
-	.subsystem-media-wrap {
-		position: absolute;
-		right: 0%;
-		bottom: 0%;
-		height: 150%;
-		z-index: 0;
-		opacity: 0;
-		transition: transform 420ms cubic-bezier(0.2, 0.7, 0.2, 1), opacity 320ms ease, filter 320ms ease;
-		pointer-events: none;
-	}
+  .subsystem-media-wrap {
+    position: absolute;
+    right: 0%;
+    bottom: 0%;
+    height: 150%;
+    z-index: 0;
+    opacity: 0;
+    transition:
+      transform 420ms cubic-bezier(0.2, 0.7, 0.2, 1),
+      opacity 320ms ease,
+      filter 320ms ease;
+    pointer-events: none;
+  }
 
-	.subsystem-media {
-		width: 100%;
-		height: 100%;
-        border-radius: 0.9rem;
-		object-fit: cover;
-		object-position: center bottom;
-	}
+  .subsystem-media {
+    width: 100%;
+    height: 100%;
+    border-radius: 0.9rem;
+    object-fit: cover;
+    object-position: center bottom;
+  }
 
-	.subsystems-accordion.is-visible .subsystem-panel {
-		animation: subsystem-panel-in 720ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
-		animation-delay: calc(var(--panel-index, 0) * 90ms);
-	}
+  .subsystems-accordion.is-visible .subsystem-panel {
+    animation: subsystem-panel-in 720ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+    animation-delay: calc(var(--panel-index, 0) * 90ms);
+  }
 
-	.subsystem-panel:nth-child(2n) {
-		background: linear-gradient(160deg, rgba(100, 180, 255, 0.18), rgba(255, 255, 255, 0.04));
-	}
+  .subsystem-panel:nth-child(2n) {
+    background: linear-gradient(
+      160deg,
+      rgba(100, 180, 255, 0.18),
+      rgba(255, 255, 255, 0.04)
+    );
+  }
 
-	.subsystem-panel:nth-child(3n) {
-		background: linear-gradient(160deg, rgba(120, 255, 198, 0.16), rgba(255, 255, 255, 0.04));
-	}
+  .subsystem-panel:nth-child(3n) {
+    background: linear-gradient(
+      160deg,
+      rgba(120, 255, 198, 0.16),
+      rgba(255, 255, 255, 0.04)
+    );
+  }
 
-	.subsystem-label {
-		font-size: clamp(1rem, 1.6vw, 1.3rem);
-		font-weight: 700;
-		line-height: 1;
-		white-space: nowrap;
-		transition: 0.2s ease;
-	}
+  .subsystem-label {
+    margin-bottom: 8px;
+    font-size: clamp(1rem, 1.6vw, 1.3rem);
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+    transition: 0.2s ease;
+  }
 
-	.subsystem-description {
-		margin: 0;
-		max-width: 45ch;
-		font-size: clamp(0.82rem, 1.05vw, 1rem);
-		line-height: 1.45;
-		color: rgba(255, 255, 255, 0.9);
-		height: 0;
-		overflow: clip;
-		opacity: 0;
-		transform: translateY(18px);
-        width: 300px;
-		transition: height 220ms ease, opacity 220ms ease, transform 220ms ease;
-		interpolate-size: allow-keywords;
-	}
+  .subsystem-description {
+    margin: 0;
+    max-width: 45ch;
+    font-size: clamp(0.82rem, 1.05vw, 1rem);
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.9);
+    height: 0;
+    overflow: clip;
+    opacity: 0;
+    transform: translateY(18px);
+    width: 0px;
+    transition:
+      height 220ms ease,
+      opacity 220ms ease,
+      transform 220ms ease;
+    interpolate-size: allow-keywords;
+  }
 
-	.subsystems-accordion:has(.subsystem-panel:hover) .subsystem-panel {
-		flex: 0 0 3rem;
-	}
+  .subsystems-accordion.is-hovering .subsystem-panel {
+    flex: 0 0 3rem;
+    transition: 0.2s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
 
-	.subsystems-accordion:has(.subsystem-panel:hover) .subsystem-panel:not(:hover) .subsystem-label {
-		opacity: 0;
-		transform: translateY(12px);
-		pointer-events: none;
-	}
+  .subsystems-accordion.is-hovering
+    .subsystem-panel:not(.is-hovered)
+    .subsystem-label {
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+  }
 
-	.subsystems-accordion:has(.subsystem-panel:hover) .subsystem-panel:not(:hover) .subsystem-description {
-		height: 0;
-		opacity: 0;
-		transform: translateY(18px);
-		transition-delay: 0ms;
-	}
+  .subsystems-accordion.is-hovering
+    .subsystem-panel:not(.is-hovered)
+    .subsystem-icon {
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+  }
 
-	.subsystems-accordion:has(.subsystem-panel:hover) .subsystem-panel:hover {
-		flex: 1 1 auto;
-		transform: translateY(-4px) scale(1.01);
-		filter: blur(0);
-	}
+  .subsystems-accordion.is-hovering
+    .subsystem-panel:not(.is-hovered)
+    .subsystem-description {
+    height: 0;
+    opacity: 0;
+    transform: translateY(18px);
+    transition-delay: 0ms;
+  }
 
-	.subsystems-accordion:has(.subsystem-panel:hover) .subsystem-panel:hover .subsystem-label {
-		margin-bottom: 0.65rem;
-		opacity: 1;
-		transform: translateY(0);
-	}
+  .subsystems-accordion.is-hovering .subsystem-panel.is-hovered {
+    flex: 1 1 auto;
+    transform: translateY(-4px) scale(1.01);
+    filter: blur(0);
+    transition: 0.2s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
 
-	.subsystems-accordion:has(.subsystem-panel:hover) .subsystem-panel:hover .subsystem-description {
-        height: auto;
-		opacity: 1;
-		transform: translateY(0);
-		transition-delay: 0.2s;
-	}
+  .subsystems-accordion.is-hovering
+    .subsystem-panel.is-hovered
+    .subsystem-label {
+    margin-bottom: 0.65rem;
+    opacity: 1;
+    transform: translateY(0);
+  }
 
-	.subsystems-accordion:has(.subsystem-panel:hover) .subsystem-panel:hover .subsystem-media-wrap {
-		opacity: 1;
-		filter: saturate(1) blur(0);
-		transition-delay: 0.2s;
-	}
+  .subsystems-accordion.is-hovering
+    .subsystem-panel.is-hovered
+    .subsystem-description {
+    height: auto;
+    width: 300px;
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.2s;
+  }
 
-	@media (max-width: 900px) {
-		.subsystems-accordion {
-			height: 340px;
-			gap: 0.5rem;
-		}
+  .subsystems-accordion.is-hovering
+    .subsystem-panel.is-hovered
+    .subsystem-media-wrap {
+    opacity: 1;
+    filter: saturate(1) blur(0);
+    transition-delay: 0.2s;
+  }
 
-		.subsystem-panel {
-			padding: 1rem;
-		}
+  @media (max-width: 900px) {
+    .subsystems-accordion {
+      height: 340px;
+      gap: 0.5rem;
+    }
 
-		.subsystem-content {
-			max-width: 84%;
-		}
+    .subsystem-panel {
+      padding: 1rem;
+    }
 
-		.subsystem-media-wrap {
-			right: -10%;
-			height: 110%;
-		}
+    .subsystem-content {
+      max-width: 84%;
+    }
 
-		.subsystem-description {
-			font-size: 0.82rem;
-		}
-	}
+    .subsystem-media-wrap {
+      right: -10%;
+      height: 110%;
+    }
 
-	@keyframes subsystem-panel-in {
-		0% {
-			opacity: 0;
-			transform: translateY(26px) scale(0.97);
-			filter: blur(5px);
-		}
+    .subsystem-description {
+      font-size: 0.82rem;
+    }
+  }
 
-		100% {
-			opacity: 1;
-			transform: translateY(0) scale(1);
-			filter: blur(0);
-		}
-	}
+  @keyframes subsystem-panel-in {
+    0% {
+      opacity: 0;
+      transform: translateY(26px) scale(0.97);
+      filter: blur(5px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+  }
 </style>
