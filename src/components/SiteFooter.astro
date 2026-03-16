@@ -4,30 +4,38 @@ import Title from "./Title.astro";
 import { Mail, Linkedin, Instagram, MapPin } from "lucide-astro";
 import { t } from "i18next";
 
-interface Props {
-  description?: string;
-}
+import { contentRepository } from "../lib/contentful/repository";
+import i18next from "i18next";
 
-const { description } = Astro.props as Props;
+const navItems = [
+  { label: t("nav.about"), href: "#about" },
+  { label: t("nav.team"), href: "#team" },
+  { label: t("nav.trajectory"), href: "#trajectory" },
+  { label: t("nav.investigation"), href: "#investigation" },
+  { label: t("nav.partners"), href: "#partners" },
+  { label: t("nav.contact"), href: "#contact" },
+];
 
 const year = new Date().getFullYear();
+
+let contentfulLocale = "en-US";
+switch (i18next.language) {
+  case "es":
+    contentfulLocale = "es";
+    break;
+  case "en":
+    contentfulLocale = "en-US";
+    break;
+  default:
+    contentfulLocale = "en-US";
+}
+const homePageContent =
+  await contentRepository.getHomePageContent(contentfulLocale);
+const heroDescription =
+  homePageContent.hero?.description ?? t("site.description");
 ---
 
 <footer class="relative overflow-hidden bg-[#0a0a0a] text-white">
-  <div
-    class="absolute inset-0 pointer-events-none opacity-50"
-    aria-hidden="true"
-  >
-    <div
-      class="absolute -top-24 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-white/8 blur-3xl"
-    >
-    </div>
-    <div
-      class="absolute bottom-0 right-8 h-40 w-40 rounded-full bg-[#ff7f24]/20 blur-3xl"
-    >
-    </div>
-  </div>
-
   <div class="relative mx-auto max-w-6xl px-6 py-16 md:px-10 md:py-20">
     <div
       class="fade-up flex flex-col gap-4 border-b border-white/10 pb-10 md:pb-12"
@@ -41,7 +49,7 @@ const year = new Date().getFullYear();
         class="max-w-3xl text-[clamp(1.9rem,4.5vw,3.25rem)] font-black leading-[1.04] tracking-[-0.02em]"
       />
       <p class="max-w-2xl text-base text-white/68 md:text-lg">
-        {description}
+        {heroDescription}
       </p>
     </div>
 
@@ -70,7 +78,7 @@ const year = new Date().getFullYear();
               class="inline-flex items-center gap-2 transition-colors hover:text-white"
             >
               <Linkedin class="h-4 w-4" aria-hidden="true" />
-              <span>LinkedIn</span>
+              <span>{t("footer.linkedin")}</span>
             </a>
           </li>
           <li>
@@ -79,7 +87,7 @@ const year = new Date().getFullYear();
               class="inline-flex items-center gap-2 transition-colors hover:text-white"
             >
               <Instagram class="h-4 w-4" aria-hidden="true" />
-              <span>Instagram</span>
+              <span>{t("footer.instagram")}</span>
             </a>
           </li>
           <li>
@@ -90,7 +98,7 @@ const year = new Date().getFullYear();
               class="inline-flex items-center gap-2 transition-colors hover:text-white"
             >
               <MapPin class="h-4 w-4" aria-hidden="true" />
-              <span>Cami de Vera S/N Edificio 8N, UPV</span>
+              <span>{t("footer.address")}</span>
             </a>
           </li>
         </ul>
@@ -102,22 +110,18 @@ const year = new Date().getFullYear();
         >
           {t("footer.navigate")}
         </h3>
-        <ul class="mt-4 space-y-2 text-sm text-white/72 md:text-base">
-          <li>
-            <a href="#" class="transition-colors hover:text-white"
-              >{t("footer.mission")}</a
-            >
-          </li>
-          <li>
-            <a href="#" class="transition-colors hover:text-white"
-              >{t("footer.subsystems")}</a
-            >
-          </li>
-          <li>
-            <a href="#" class="transition-colors hover:text-white"
-              >{t("footer.vehicles")}</a
-            >
-          </li>
+        <ul
+          class="mt-4 grid grid-cols-2 gap-x-6 gap-y-2 text-sm text-white/72 md:text-base"
+        >
+          {
+            navItems.map((item) => (
+              <li>
+                <a href={item.href} class="transition-colors hover:text-white">
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
         </ul>
       </section>
 

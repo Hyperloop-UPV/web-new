@@ -16,32 +16,40 @@ changeLanguage("en");
 
 let contentfulLocale = "en-US";
 switch (i18next.language) {
-    case "es":
-        contentfulLocale = "es";
-        break;
-    case "en":
-        contentfulLocale = "en-US";
-        break;
-    default:
-        contentfulLocale = "en-US";
+  case "es":
+    contentfulLocale = "es";
+    break;
+  case "en":
+    contentfulLocale = "en-US";
+    break;
+  default:
+    contentfulLocale = "en-US";
 }
 const [homePageContent, members] = await Promise.all([
-    contentRepository.getHomePageContent(contentfulLocale),
-    contentRepository.getMembers(contentfulLocale),
+  contentRepository.getHomePageContent(contentfulLocale),
+  contentRepository.getMembers(contentfulLocale),
 ]);
-const { hero, missionImages, subsystemItems, vehicleTimeline, partnerLogos } = homePageContent;
+const { hero, missionImages, subsystemItems, vehicleTimeline, partnerLogos } =
+  homePageContent;
 const memberFaces = members
-    .filter((member): member is typeof member & {
-    image: string;
-} => Boolean(member.image))
-    .map((member) => ({
+  .filter(
+    (
+      member,
+    ): member is typeof member & {
+      image: string;
+    } => Boolean(member.image),
+  )
+  .map((member) => ({
     image: member.image,
     name: member.name,
     role: member.role,
-}));
+  }));
 const faceGallery = memberFaces.length
-    ? Array.from({ length: Math.max(30, memberFaces.length * 3) }, (_, i) => memberFaces[i % memberFaces.length])
-    : [];
+  ? Array.from(
+      { length: Math.max(30, memberFaces.length * 3) },
+      (_, i) => memberFaces[i % memberFaces.length],
+    )
+  : [];
 console.log("Current language:", i18next.language);
 ---
 
@@ -69,7 +77,7 @@ console.log("Current language:", i18next.language);
 
   <MeetTeamSection teamMembers={faceGallery} />
 
-  <SiteFooter description={hero.description} />
+  <SiteFooter />
 </Layout>
 
 <script>

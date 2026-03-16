@@ -1,0 +1,118 @@
+---
+import { changeLanguage, t } from "i18next";
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import PageHero from "../components/PageHero.astro";
+import JobOpeningCard from "../components/JobOpeningCard.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import { contentRepository } from "../lib/contentful/repository";
+
+changeLanguage("en");
+
+const pageTitle = String(t("nav.join"));
+const pageDescription = String(t("join.description"));
+const jobOpenings: any[] = await contentRepository.getJobOpenings("en-US");
+// Build subgroup list and grouped openings
+const grouped = jobOpenings.reduce((acc: Record<string, any>, job: any) => {
+    const subgroupName = job.subgroup?.name ?? t("join.uncategorized");
+    if (!acc[subgroupName])
+        acc[subgroupName] = { subgroup: job.subgroup, jobs: [] };
+    acc[subgroupName].jobs.push(job);
+    return acc;
+}, {} as Record<string, {
+    subgroup: any;
+    jobs: any[];
+}>);
+const subgroups = ["all", ...Object.keys(grouped)];
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <Header slot="header" />
+  <PageHero
+    title={pageTitle}
+    description={pageDescription}
+    colors={["#0f1829", "#24426d", "#4f86c6"]}
+  />
+
+  <section class="py-16 px-6 md:px-10 bg-[#0c0f16] text-white">
+    <div class="mx-auto max-w-6xl">
+      <div class="mb-10 flex flex-col gap-4">
+        <p class="text-lg text-white/70">{t("join.intro")}</p>
+        <div class="flex flex-wrap gap-3">
+          {
+            subgroups.map((name) => (
+              <button
+                type="button"
+                data-filter={name}
+                class="filter-button rounded-full border border-white/20 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+              >
+                {name === "all" ? t("join.all") : name}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="space-y-10" id="job-openings">
+        {
+          Object.entries(grouped).map(([subgroupName, group]) => (
+            <section class="group-section" data-subgroup={subgroupName}>
+              <div class="mb-6">
+                <h2 class="text-3xl font-bold">{subgroupName}</h2>
+                {group.subgroup?.description && (
+                  <p class="mt-2 text-white/70">{group.subgroup.description}</p>
+                )}
+              </div>
+
+              <div class="grid gap-6 lg:grid-cols-2">
+                {group.jobs.map((job) => (
+                  <JobOpeningCard jobOpening={job} />
+                ))}
+              </div>
+            </section>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <SiteFooter />
+
+  <script type="module">
+    const buttons = Array.from(document.querySelectorAll("[data-filter]"));
+    const sections = Array.from(document.querySelectorAll("[data-subgroup]"));
+
+    const setActive = (selected) => {
+      buttons.forEach((btn) => {
+        btn.classList.toggle("bg-white/20", btn.dataset.filter === selected);
+      });
+
+      sections.forEach((section) => {
+        const subgroup = section.getAttribute("data-subgroup");
+        section.classList.toggle(
+          "hidden",
+          selected !== "all" && subgroup !== selected,
+        );
+      });
+    };
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        setActive(button.dataset.filter);
+      });
+    });
+
+    setActive("all");
+  </script>
+
+  <style>
+    .filter-button:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(100, 177, 255, 0.6);
+    }
+
+    .group-section {
+      transition: opacity 0.2s ease;
+    }
+  </style>
+</Layout>

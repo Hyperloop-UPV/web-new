@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import i18next from "i18next";
 import { HeadHrefLangs } from "astro-i18next/components";
+import { ClientRouter } from "astro:transitions";
 
 interface Props {
   title?: string;
@@ -40,24 +41,78 @@ const socialImageUrl = socialImage.startsWith("http")
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={socialImageUrl} />
     <HeadHrefLangs />
+    <ClientRouter />
   </head>
   <body class="m-0 w-full h-full font-sans bg-[#0f0f0f] text-white">
+    <div
+      id="page-transition-overlay"
+      class="page-transition-overlay"
+      aria-hidden="true"
+    >
+      <img
+        src="/img/isotype_white.svg"
+        alt=""
+        class="page-transition-logo"
+        draggable="false"
+      />
+    </div>
+
     <div id="app-cursor" aria-hidden="true" class="app-cursor hidden">
       <div class="app-cursor-dot"></div>
       <div class="app-cursor-ring"></div>
     </div>
 
     <slot name="header" />
-    <div
-      id="smooth-wrapper"
-      class="overflow-hidden fixed inset-0 w-full h-full"
-    >
+    <div id="smooth-wrapper" class="relative overflow-auto w-full h-full">
       <div id="smooth-content">
         <slot />
       </div>
     </div>
 
     <script>
+      (() => {
+        const root = document.documentElement;
+        let transitionCleanup: number | undefined;
+
+        const clearTransitionClasses = () => {
+          root.classList.remove(
+            "is-page-transitioning",
+            "is-page-transition-leaving",
+          );
+        };
+
+        const startPageTransition = () => {
+          if (transitionCleanup) {
+            window.clearTimeout(transitionCleanup);
+          }
+          root.classList.remove("is-page-transition-leaving");
+          root.classList.add("is-page-transitioning");
+        };
+
+        const endPageTransition = () => {
+          root.classList.add("is-page-transition-leaving");
+          transitionCleanup = window.setTimeout(() => {
+            clearTransitionClasses();
+          }, 650);
+        };
+
+        document.addEventListener("astro:before-preparation", () => {
+          startPageTransition();
+        });
+
+        document.addEventListener("astro:after-swap", () => {
+          endPageTransition();
+        });
+
+        document.addEventListener("astro:page-load", () => {
+          if (root.classList.contains("is-page-transitioning")) {
+            endPageTransition();
+          } else {
+            clearTransitionClasses();
+          }
+        });
+      })();
+
       const cursor = document.getElementById("app-cursor");
       if (!cursor || !window.matchMedia("(pointer: fine)").matches) {
         if (cursor) cursor.remove();

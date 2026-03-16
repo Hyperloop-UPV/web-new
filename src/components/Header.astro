@@ -3,12 +3,12 @@ import i18next, { t } from "i18next";
 import { localizePath } from "astro-i18next";
 
 const navItems = [
-  { label: t("nav.about"), href: "#about" },
-  { label: t("nav.team"), href: "#team" },
-  { label: t("nav.trajectory"), href: "#trajectory" },
-  { label: t("nav.investigation"), href: "#investigation" },
-  { label: t("nav.partners"), href: "#partners" },
-  { label: t("nav.contact"), href: "#contact" },
+  { label: t("nav.about"), href: localizePath("/about") },
+  { label: t("nav.team"), href: localizePath("/team") },
+  { label: t("nav.trajectory"), href: localizePath("/trajectory") },
+  { label: t("nav.investigation"), href: localizePath("/investigation") },
+  { label: t("nav.partners"), href: localizePath("/partners") },
+  { label: t("nav.contact"), href: localizePath("/contact") },
 ];
 
 const langSwitchLabel = i18next.language === "es" ? "EN" : "ES";
@@ -33,7 +33,7 @@ const homeHref = localizePath("/");
     /><img src="/img/isotype_text.svg" alt="Logo" class="logo-bold block h-4" />
   </a>
 
-  <nav class="hidden md:flex gap-8">
+  <nav class="hidden md:flex items-center gap-8">
     {
       navItems.map((item) => (
         <a
@@ -44,15 +44,23 @@ const homeHref = localizePath("/");
         </a>
       ))
     }
-  </nav>
 
-  <a
-    href={langSwitchHref}
-    class="hidden md:inline-flex text-xs font-semibold uppercase tracking-widest text-white/60 hover:text-white transition-colors duration-200 no-underline border border-white/20 rounded-full px-3 py-1"
-    aria-label="Switch language"
-  >
-    {langSwitchLabel}
-  </a>
+    <a
+      href={langSwitchHref}
+      class="hidden md:inline-flex text-xs font-semibold uppercase tracking-widest translate-x-3 text-white/60 hover:text-white transition-colors duration-200 no-underline border border-white/20 rounded-full px-3 py-1"
+      aria-label="Switch language"
+    >
+      {langSwitchLabel}
+    </a>
+
+    <a
+      href="/join"
+      class="hidden md:inline-flex text-xs font-semibold uppercase tracking-widest translate-x-3 text-black bg-white hover:bg-white/90 transition-colors duration-200 no-underline border border-white/20 rounded-full px-6 py-3"
+      aria-label="Switch language"
+    >
+      {t("header.join_us")}
+    </a>
+  </nav>
 
   <button
     id="menu-toggle"
@@ -87,6 +95,12 @@ const homeHref = localizePath("/");
         </a>
       ))
     }
+    <a
+      href="/join"
+      class="mobile-nav-link text-2xl font-semibold bg-white px-4 py-2 rounded-full text-black hover:bg-white/90 no-underline uppercase tracking-widest transition-colors duration-200"
+    >
+      {t("header.join_us")}
+    </a>
   </nav>
 </div>
 

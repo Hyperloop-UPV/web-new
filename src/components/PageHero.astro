@@ -1,0 +1,685 @@
+---
+import Button from "./Button.astro";
+import Title from "./Title.astro";
+
+interface HeroButton {
+  label: string;
+  href?: string;
+  variant?: "primary" | "outline";
+}
+
+interface Props {
+  title: string;
+  description?: string;
+  buttons?: HeroButton[];
+  colors?: string[];
+  class?: string;
+}
+
+const {
+  title,
+  description = "",
+  buttons = [],
+  colors = ["#0A1124", "#1A3D7C", "#2F79C9", "#6AA9E9"],
+  class: className = "",
+} = Astro.props as Props;
+
+const safeColors =
+  colors.length >= 2 ? colors.slice(0, 5) : ["#0A1124", "#6AA9E9"];
+---
+
+<section
+  class:list={[
+    "page-hero relative isolate min-h-[70vh] md:min-h-[78vh] overflow-hidden border-b border-white/10",
+    className,
+  ]}
+  data-page-hero
+  data-page-hero-colors={JSON.stringify(safeColors)}
+>
+  <canvas class="page-hero-canvas" data-page-hero-canvas aria-hidden="true"
+  ></canvas>
+  <div class="page-hero-vignette" aria-hidden="true"></div>
+
+  <div
+    class="relative z-10 mx-auto flex flex-col items-start justify-between min-h-[70vh] md:min-h-[78vh] w-full max-w-6xl px-6 py-12 md:px-10 md:py-16"
+  >
+  <span></span>
+    <div class="max-w-3xl">
+      <Title
+        text={title}
+        class="text-[clamp(2.4rem,7vw,5.4rem)] leading-[0.95] font-black tracking-tight text-white"
+      />
+
+      {
+        description && (
+          <Title
+            text={description}
+            class="mt-6 max-w-2xl text-[clamp(1rem,2vw,1.2rem)] leading-relaxed text-white/82"
+          />
+        )
+      }
+
+      {
+        buttons.length > 0 && (
+          <div class="mt-9 flex flex-wrap gap-3">
+            {buttons.map((button) => (
+              <Button href={button.href} variant={button.variant ?? "primary"}>
+                {button.label}
+              </Button>
+            ))}
+          </div>
+        )
+      }
+    </div>
+          <div class="scroll-indicator" aria-hidden="true">
+        <div class="scroll-mouse">
+          <div class="scroll-wheel"></div>
+        </div>
+        <span class="scroll-indicator-label">Scroll for more information</span>
+      </div>
+  </div>
+</section>
+
+<style>
+  .page-hero-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .page-hero-vignette {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(
+        1200px 500px at 12% 8%,
+        rgba(255, 255, 255, 0.14),
+        transparent 60%
+      ),
+      linear-gradient(to top, rgba(4, 7, 14, 0.58), rgba(4, 7, 14, 0.08));
+    pointer-events: none;
+  }
+
+  .scroll-indicator {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    color: rgba(255, 255, 255, 0.55);
+    animation: scroll-appear 1s ease 1.2s both;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .scroll-indicator-label {
+    font-size: 1rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .scroll-mouse {
+    width: 20px;
+    height: 30px;
+    border: 1.5px solid currentColor;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    padding-top: 5px;
+  }
+
+  .scroll-wheel {
+    width: 3px;
+    height: 5px;
+    background: currentColor;
+    border-radius: 2px;
+    animation: scroll-wheel-move 1.8s ease-in-out infinite;
+  }
+
+  @keyframes scroll-wheel-move {
+    0% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    60% {
+      transform: translateY(9px);
+      opacity: 0;
+    }
+    61% {
+      transform: translateY(0);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes scroll-appear {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+<script>
+  type HeroRuntime = {
+    section: HTMLElement;
+    canvas: HTMLCanvasElement;
+    gl: WebGLRenderingContext;
+    renderProgram: WebGLProgram;
+    simProgram: WebGLProgram;
+    quadBuffer: WebGLBuffer;
+    renderUniforms: {
+      resolution: WebGLUniformLocation | null;
+      time: WebGLUniformLocation | null;
+      dispTex: WebGLUniformLocation | null;
+      colors: WebGLUniformLocation | null;
+      colorCount: WebGLUniformLocation | null;
+    };
+    simUniforms: {
+      prevTex: WebGLUniformLocation | null;
+      resolution: WebGLUniformLocation | null;
+      mouse: WebGLUniformLocation | null;
+      velocity: WebGLUniformLocation | null;
+      decay: WebGLUniformLocation | null;
+    };
+    mouseTarget: { x: number; y: number };
+    mouseCurrent: { x: number; y: number };
+    velocityTarget: { x: number; y: number };
+    velocityCurrent: { x: number; y: number };
+    simSize: number;
+    readTex: WebGLTexture;
+    writeTex: WebGLTexture;
+    readFbo: WebGLFramebuffer;
+    writeFbo: WebGLFramebuffer;
+  };
+
+  const VERTEX_SHADER = `
+		attribute vec2 a_position;
+		varying vec2 v_uv;
+		void main() {
+			v_uv = a_position * 0.5 + 0.5;
+			gl_Position = vec4(a_position, 0.0, 1.0);
+		}
+	`;
+
+  const SIM_FRAGMENT_SHADER = `
+		precision mediump float;
+		varying vec2 v_uv;
+
+		uniform sampler2D u_prevTex;
+		uniform vec2 u_resolution;
+		uniform vec2 u_mouse;
+		uniform vec2 u_velocity;
+		uniform float u_decay;
+
+		vec2 decode(vec4 texel) {
+			return texel.xy * 2.0 - 1.0;
+		}
+
+		vec4 encode(vec2 v) {
+			return vec4(v * 0.5 + 0.5, 0.0, 1.0);
+		}
+
+		void main() {
+			vec2 px = 1.0 / u_resolution;
+
+			vec2 c = decode(texture2D(u_prevTex, v_uv));
+			vec2 l = decode(texture2D(u_prevTex, v_uv - vec2(px.x, 0.0)));
+			vec2 r = decode(texture2D(u_prevTex, v_uv + vec2(px.x, 0.0)));
+			vec2 t = decode(texture2D(u_prevTex, v_uv + vec2(0.0, px.y)));
+			vec2 b = decode(texture2D(u_prevTex, v_uv - vec2(0.0, px.y)));
+
+			vec2 smoothField = (c * 0.5 + (l + r + t + b) * 0.125) * u_decay;
+
+			float d = distance(v_uv, u_mouse);
+			float brush = exp(-d * 26.0);
+			float speed = clamp(length(u_velocity), 0.0, 0.08);
+			vec2 dir = speed > 0.0001 ? normalize(u_velocity) : vec2(0.0);
+
+			// Push the field in the movement direction and carve a slight trough behind.
+			smoothField += dir * brush * speed * 32.0;
+			smoothField -= dir * exp(-distance(v_uv + dir * 0.05, u_mouse) * 22.0) * speed * 9.0;
+
+			smoothField = clamp(smoothField, vec2(-1.0), vec2(1.0));
+			gl_FragColor = encode(smoothField);
+		}
+	`;
+
+  const RENDER_FRAGMENT_SHADER = `
+		precision mediump float;
+		varying vec2 v_uv;
+
+		uniform vec2 u_resolution;
+		uniform float u_time;
+		uniform sampler2D u_dispTex;
+		uniform vec3 u_colors[5];
+		uniform int u_colorCount;
+
+		float hash(vec2 p) {
+			return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+		}
+
+		float noise(vec2 p) {
+			vec2 i = floor(p);
+			vec2 f = fract(p);
+			vec2 u = f * f * (3.0 - 2.0 * f);
+			return mix(
+				mix(hash(i + vec2(0.0, 0.0)), hash(i + vec2(1.0, 0.0)), u.x),
+				mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x),
+				u.y
+			);
+		}
+
+		vec3 pickColor(float t) {
+			vec3 c0 = u_colors[0];
+			vec3 c1 = u_colors[1];
+			vec3 c2 = u_colors[2];
+			vec3 c3 = u_colors[3];
+			vec3 c4 = u_colors[4];
+
+			if (u_colorCount <= 2) return mix(c0, c1, t);
+			if (u_colorCount == 3) {
+				if (t < 0.5) return mix(c0, c1, t * 2.0);
+				return mix(c1, c2, (t - 0.5) * 2.0);
+			}
+			if (u_colorCount == 4) {
+				if (t < 0.3333) return mix(c0, c1, t / 0.3333);
+				if (t < 0.6666) return mix(c1, c2, (t - 0.3333) / 0.3333);
+				return mix(c2, c3, (t - 0.6666) / 0.3334);
+			}
+
+			if (t < 0.25) return mix(c0, c1, t / 0.25);
+			if (t < 0.5) return mix(c1, c2, (t - 0.25) / 0.25);
+			if (t < 0.75) return mix(c2, c3, (t - 0.5) / 0.25);
+			return mix(c3, c4, (t - 0.75) / 0.25);
+		}
+
+		vec2 decode(vec4 texel) {
+			return texel.xy * 2.0 - 1.0;
+		}
+
+		void main() {
+			vec2 disp = decode(texture2D(u_dispTex, v_uv));
+
+			vec2 uv = v_uv + disp * 0.22;
+			vec2 p = uv * 4.0;
+
+			float n1 = noise(p + vec2(0.0, u_time * 0.07));
+			float n2 = noise(p * 2.0 - vec2(u_time * 0.1, 0.0));
+			float grains = n1 * 0.64 + n2 * 0.36;
+
+			float t = clamp(uv.x + (grains - 0.5) * 0.34, 0.0, 1.0);
+			vec3 color = pickColor(t);
+
+			float ridge = smoothstep(0.2, 0.95, length(disp)) * 0.12;
+			color += ridge;
+
+			float film = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233)) + u_time) * 43758.5453);
+			color += (film - 0.5) * 0.03;
+
+			gl_FragColor = vec4(color, 1.0);
+		}
+	`;
+
+  const toRgb = (hex: string): [number, number, number] => {
+    const clean = hex.replace("#", "").trim();
+    const full =
+      clean.length === 3
+        ? clean
+            .split("")
+            .map((c) => c + c)
+            .join("")
+        : clean;
+    const parsed = Number.parseInt(full, 16);
+
+    if (Number.isNaN(parsed) || full.length !== 6) {
+      return [0.04, 0.07, 0.14];
+    }
+
+    return [
+      ((parsed >> 16) & 255) / 255,
+      ((parsed >> 8) & 255) / 255,
+      (parsed & 255) / 255,
+    ];
+  };
+
+  const compileShader = (
+    gl: WebGLRenderingContext,
+    type: number,
+    source: string,
+  ): WebGLShader | null => {
+    const shader = gl.createShader(type);
+    if (!shader) return null;
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      console.error(gl.getShaderInfoLog(shader));
+      gl.deleteShader(shader);
+      return null;
+    }
+    return shader;
+  };
+
+  const createProgram = (
+    gl: WebGLRenderingContext,
+    fragmentSource: string,
+  ): WebGLProgram | null => {
+    const vertex = compileShader(gl, gl.VERTEX_SHADER, VERTEX_SHADER);
+    const fragment = compileShader(gl, gl.FRAGMENT_SHADER, fragmentSource);
+    if (!vertex || !fragment) return null;
+
+    const program = gl.createProgram();
+    if (!program) return null;
+
+    gl.attachShader(program, vertex);
+    gl.attachShader(program, fragment);
+    gl.linkProgram(program);
+
+    gl.deleteShader(vertex);
+    gl.deleteShader(fragment);
+
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      console.error(gl.getProgramInfoLog(program));
+      gl.deleteProgram(program);
+      return null;
+    }
+
+    return program;
+  };
+
+  const createTexture = (
+    gl: WebGLRenderingContext,
+    size: number,
+  ): WebGLTexture | null => {
+    const tex = gl.createTexture();
+    if (!tex) return null;
+
+    const initialData = new Uint8Array(size * size * 4);
+    for (let i = 0; i < size * size; i += 1) {
+      const offset = i * 4;
+      initialData[offset] = 128;
+      initialData[offset + 1] = 128;
+      initialData[offset + 2] = 0;
+      initialData[offset + 3] = 255;
+    }
+
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.RGBA,
+      size,
+      size,
+      0,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      initialData,
+    );
+    return tex;
+  };
+
+  const createFramebuffer = (
+    gl: WebGLRenderingContext,
+    texture: WebGLTexture,
+  ): WebGLFramebuffer | null => {
+    const fbo = gl.createFramebuffer();
+    if (!fbo) return null;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    gl.framebufferTexture2D(
+      gl.FRAMEBUFFER,
+      gl.COLOR_ATTACHMENT0,
+      gl.TEXTURE_2D,
+      texture,
+      0,
+    );
+    return fbo;
+  };
+
+  const setupHero = (section: HTMLElement): HeroRuntime | null => {
+    if (section.dataset.pageHeroReady === "true") return null;
+    section.dataset.pageHeroReady = "true";
+
+    const canvas = section.querySelector<HTMLCanvasElement>(
+      "[data-page-hero-canvas]",
+    );
+    if (!canvas) return null;
+
+    const gl = canvas.getContext("webgl", {
+      antialias: true,
+      alpha: false,
+      premultipliedAlpha: false,
+    });
+
+    if (!gl) return null;
+
+    const renderProgram = createProgram(gl, RENDER_FRAGMENT_SHADER);
+    if (!renderProgram) return null;
+    const simProgram = createProgram(gl, SIM_FRAGMENT_SHADER);
+    if (!simProgram) return null;
+
+    const quadBuffer = gl.createBuffer();
+    if (!quadBuffer) return null;
+    gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
+      gl.STATIC_DRAW,
+    );
+
+    const renderUniforms = {
+      resolution: gl.getUniformLocation(renderProgram, "u_resolution"),
+      time: gl.getUniformLocation(renderProgram, "u_time"),
+      dispTex: gl.getUniformLocation(renderProgram, "u_dispTex"),
+      colors: gl.getUniformLocation(renderProgram, "u_colors"),
+      colorCount: gl.getUniformLocation(renderProgram, "u_colorCount"),
+    };
+
+    const simUniforms = {
+      prevTex: gl.getUniformLocation(simProgram, "u_prevTex"),
+      resolution: gl.getUniformLocation(simProgram, "u_resolution"),
+      mouse: gl.getUniformLocation(simProgram, "u_mouse"),
+      velocity: gl.getUniformLocation(simProgram, "u_velocity"),
+      decay: gl.getUniformLocation(simProgram, "u_decay"),
+    };
+
+    const simSize = 320;
+    const readTex = createTexture(gl, simSize);
+    const writeTex = createTexture(gl, simSize);
+    if (!readTex || !writeTex) return null;
+    const readFbo = createFramebuffer(gl, readTex);
+    const writeFbo = createFramebuffer(gl, writeTex);
+    if (!readFbo || !writeFbo) return null;
+
+    return {
+      section,
+      canvas,
+      gl,
+      renderProgram,
+      simProgram,
+      quadBuffer,
+      renderUniforms,
+      simUniforms,
+      mouseTarget: { x: 0.5, y: 0.5 },
+      mouseCurrent: { x: 0.5, y: 0.5 },
+      velocityTarget: { x: 0, y: 0 },
+      velocityCurrent: { x: 0, y: 0 },
+      simSize,
+      readTex,
+      writeTex,
+      readFbo,
+      writeFbo,
+    };
+  };
+
+  const initPageHero = () => {
+    const sections = document.querySelectorAll<HTMLElement>("[data-page-hero]");
+    sections.forEach((section) => {
+      const runtime = setupHero(section);
+      if (!runtime) return;
+
+      const { canvas, gl, renderUniforms, simUniforms } = runtime;
+
+      const bindQuadForProgram = (program: WebGLProgram) => {
+        gl.useProgram(program);
+        gl.bindBuffer(gl.ARRAY_BUFFER, runtime.quadBuffer);
+        const pos = gl.getAttribLocation(program, "a_position");
+        if (pos >= 0) {
+          gl.enableVertexAttribArray(pos);
+          gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+        }
+      };
+
+      const rectToMouse = (clientX: number, clientY: number) => {
+        const rect = canvas.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        const nextX = Math.min(
+          1,
+          Math.max(0, (clientX - rect.left) / rect.width),
+        );
+        const nextY = Math.min(
+          1,
+          Math.max(0, 1 - (clientY - rect.top) / rect.height),
+        );
+
+        runtime.velocityTarget.x = Math.max(
+          -0.06,
+          Math.min(0.06, nextX - runtime.mouseTarget.x),
+        );
+        runtime.velocityTarget.y = Math.max(
+          -0.06,
+          Math.min(0.06, nextY - runtime.mouseTarget.y),
+        );
+        runtime.mouseTarget.x = nextX;
+        runtime.mouseTarget.y = nextY;
+      };
+
+      const colorsRaw = (() => {
+        try {
+          return JSON.parse(section.dataset.pageHeroColors ?? "[]");
+        } catch {
+          return [];
+        }
+      })();
+
+      const colorList = Array.isArray(colorsRaw)
+        ? colorsRaw.filter(
+            (value): value is string => typeof value === "string",
+          )
+        : [];
+      const safe = (
+        colorList.length >= 2 ? colorList : ["#0A1124", "#6AA9E9"]
+      ).slice(0, 5);
+      const packed = new Float32Array(15);
+      safe.forEach((hex, index) => {
+        const [r, g, b] = toRgb(hex);
+        packed[index * 3] = r;
+        packed[index * 3 + 1] = g;
+        packed[index * 3 + 2] = b;
+      });
+
+      const resize = () => {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const w = Math.max(1, Math.floor(canvas.clientWidth * dpr));
+        const h = Math.max(1, Math.floor(canvas.clientHeight * dpr));
+        if (canvas.width !== w || canvas.height !== h) {
+          canvas.width = w;
+          canvas.height = h;
+          gl.viewport(0, 0, w, h);
+        }
+      };
+
+      const onPointerMove = (event: PointerEvent) =>
+        rectToMouse(event.clientX, event.clientY);
+      const onPointerLeave = () => {
+        runtime.mouseTarget.x = 0.5;
+        runtime.mouseTarget.y = 0.5;
+        runtime.velocityTarget.x = 0;
+        runtime.velocityTarget.y = 0;
+      };
+
+      section.addEventListener("pointermove", onPointerMove);
+      section.addEventListener("pointerleave", onPointerLeave);
+      window.addEventListener("resize", resize);
+      resize();
+
+      const start = performance.now();
+      const frame = () => {
+        resize();
+
+        runtime.mouseCurrent.x = runtime.mouseTarget.x;
+        runtime.mouseCurrent.y = runtime.mouseTarget.y;
+        runtime.velocityCurrent.x = runtime.velocityTarget.x;
+        runtime.velocityCurrent.y = runtime.velocityTarget.y;
+
+        runtime.velocityTarget.x *= 0.86;
+        runtime.velocityTarget.y *= 0.86;
+
+        // Simulation pass (persistent sand deformation)
+        bindQuadForProgram(runtime.simProgram);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, runtime.writeFbo);
+        gl.viewport(0, 0, runtime.simSize, runtime.simSize);
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, runtime.readTex);
+        gl.uniform1i(simUniforms.prevTex, 0);
+        gl.uniform2f(simUniforms.resolution, runtime.simSize, runtime.simSize);
+        gl.uniform2f(
+          simUniforms.mouse,
+          runtime.mouseCurrent.x,
+          runtime.mouseCurrent.y,
+        );
+        gl.uniform2f(
+          simUniforms.velocity,
+          runtime.velocityCurrent.x,
+          runtime.velocityCurrent.y,
+        );
+        gl.uniform1f(simUniforms.decay, 0.992);
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+        // Swap sim buffers
+        const tmpTex = runtime.readTex;
+        runtime.readTex = runtime.writeTex;
+        runtime.writeTex = tmpTex;
+        const tmpFbo = runtime.readFbo;
+        runtime.readFbo = runtime.writeFbo;
+        runtime.writeFbo = tmpFbo;
+
+        // Render pass
+        bindQuadForProgram(runtime.renderProgram);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        gl.viewport(0, 0, canvas.width, canvas.height);
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, runtime.readTex);
+        gl.uniform1i(renderUniforms.dispTex, 0);
+        gl.uniform2f(renderUniforms.resolution, canvas.width, canvas.height);
+        gl.uniform1f(renderUniforms.time, (performance.now() - start) * 0.001);
+        gl.uniform3fv(renderUniforms.colors, packed);
+        gl.uniform1i(renderUniforms.colorCount, safe.length);
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        requestAnimationFrame(frame);
+      };
+
+      requestAnimationFrame(frame);
+    });
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initPageHero, { once: true });
+  } else {
+    initPageHero();
+  }
+
+  document.addEventListener("astro:page-load", initPageHero);
+</script>

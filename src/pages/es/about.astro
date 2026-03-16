@@ -1,0 +1,23 @@
+---
+import { changeLanguage, t } from "i18next";
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import PageHero from "../../components/PageHero.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+
+changeLanguage("es");
+
+const pageTitle = String(t("nav.about"));
+const pageDescription = String(t("about.description"));
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <Header slot="header" />
+  <PageHero
+    title={pageTitle}
+    description={pageDescription}
+    colors={["#ff7f24", "#20274c", "#20274c"]}
+  />
+
+  <SiteFooter />
+</Layout>

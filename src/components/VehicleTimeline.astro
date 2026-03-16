@@ -19,8 +19,8 @@ interface Props {
 }
 
 const {
-  title = t("vehicles.title"),
-  subtitle = t("vehicles.subtitle"),
+  title = String(t("vehicles.title")),
+  subtitle = String(t("vehicles.subtitle")),
   items = [],
   class: className = "",
 } = Astro.props;
@@ -36,12 +36,15 @@ const {
     class="timeline-heade max-w-[1500px] left-1/2 -translate-x-1/2 pt-28 relative"
   >
     <Title
-      text={title}
-      class="fade-up text-[clamp(1.8rem,3vw,3rem)] font-black tracking-tight"
+      text={String(title)}
+      class="text-[clamp(1.8rem,3vw,3rem)] font-black tracking-tight"
     />
-    <Title text={subtitle} class="text-white/70 mt-2 text-sm md:text-base" />
+    <Title
+      text={String(subtitle)}
+      class="text-white/70 mt-2 text-sm md:text-base"
+    />
   </div>
-  <div class="horizontal-track timeline-track flex w-fit mt-10 items-center">
+  <div class="horizontal-track timeline-track flex w-fit mt-20 items-center">
     {
       items.map((vehicle, index) => (
         <article
@@ -54,29 +57,42 @@ const {
           ]}
           aria-label={`${vehicle.code} timeline entry`}
         >
-          <div class="timeline-line" aria-hidden="true">
+          <div
+            class:list={[
+              "timeline-line",
+              index === 0 && "timeline-line-first",
+              index === items.length - 1 && "timeline-line-last",
+            ]}
+            aria-hidden="true"
+          >
             <span class="timeline-node" />
           </div>
-          <div class="timeline-card mt-30" data-tilt-card>
-            <div class="timeline-card-inner">
-              <div class="timeline-content">
-                <p class="timeline-meta">{vehicle.years}</p>
-                <h3 class="timeline-code">{vehicle.code}</h3>
-                <p class="timeline-name">{vehicle.vehicleName}</p>
-                <p class="timeline-description">{vehicle.description}</p>
-                <ul class="timeline-accolades">
-                  {vehicle.accolades.map((accolade) => (
-                    <li>{accolade}</li>
-                  ))}
-                </ul>
-              </div>
-              <div class="timeline-image-slot">
+		                <div class="timeline-image-slot">
                 <img
                   src={vehicle.image}
                   alt={`${vehicle.code} vehicle`}
                   loading="lazy"
                   decoding="async"
                 />
+              </div>
+          <div class="timeline-card mt-30" data-tilt-card>
+            <div class:list={["timeline-card-inner"]}>
+              <div class="timeline-content">
+				<span class="flex flex-row justify-between items-center gap-3">
+                <h3 class="timeline-code">{vehicle.vehicleName}</h3>
+				<span class="flex flex-col items-end">
+				                <p class="timeline-meta">{vehicle.years}</p>
+                <p class="timeline-name">{vehicle.code}</p>
+				</span>
+				</span>
+				<span class="flex flex-row justify-between gap-3">
+                <p class="timeline-description">{vehicle.description}</p>
+                <ul class="timeline-accolades">
+                  {vehicle.accolades.map((accolade) => (
+                    <li>{accolade}</li>
+                  ))}
+                </ul>
+				</span>
               </div>
             </div>
           </div>
@@ -96,8 +112,6 @@ const {
       card.dataset.tiltInit = "true";
 
       const setDefault = () => {
-        card.style.setProperty("--mx", "50%");
-        card.style.setProperty("--my", "50%");
         card.style.setProperty("--rx", "0deg");
         card.style.setProperty("--ry", "0deg");
       };
@@ -109,11 +123,9 @@ const {
         const nx = Math.max(0, Math.min(1, x / rect.width));
         const ny = Math.max(0, Math.min(1, y / rect.height));
 
-        const rotateY = (nx - 0.5) * 12;
-        const rotateX = (0.5 - ny) * 10;
+        const rotateY = (nx - 0.5) * 2;
+        const rotateX = (0.5 - ny) * 5;
 
-        card.style.setProperty("--mx", `${(nx * 100).toFixed(2)}%`);
-        card.style.setProperty("--my", `${(ny * 100).toFixed(2)}%`);
         card.style.setProperty("--rx", `${rotateX.toFixed(2)}deg`);
         card.style.setProperty("--ry", `${rotateY.toFixed(2)}deg`);
       };
@@ -159,6 +171,22 @@ const {
     background: white;
   }
 
+  .timeline-line-first {
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 1) 5%
+    );
+  }
+
+  .timeline-line-last {
+    background: linear-gradient(
+      to left,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 1) 5%
+    );
+  }
+
   .timeline-node {
     position: absolute;
     left: 3.6rem;
@@ -172,19 +200,18 @@ const {
   }
 
   .timeline-card {
+	margin-top:500px;
     width: 100%;
     height: 100%;
     perspective: 1200px;
-    --mx: 50%;
-    --my: 50%;
     --rx: 0deg;
     --ry: 0deg;
+	z-index: 0;
   }
 
   .timeline-card-inner {
     position: relative;
     width: 100%;
-    height: 100%;
     display: flex;
     flex-direction: column;
     grid-template-columns: minmax(260px, 34%) 1fr;
@@ -200,23 +227,12 @@ const {
     overflow: hidden;
   }
 
-  .timeline-card-inner::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(
-      ellipse 280px 170px at var(--mx) var(--my),
-      rgba(118, 220, 232, 0.26),
-      rgba(118, 220, 232, 0.08) 35%,
-      transparent 72%
-    );
-    pointer-events: none;
-    mix-blend-mode: screen;
-  }
-
   .timeline-image-slot {
-    height: 100%;
+	top:0;
+    height: 200px;
     min-height: 280px;
+	z-index: 1;
+	position:absolute;
   }
 
   .timeline-image-slot img {

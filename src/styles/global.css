@@ -10,6 +10,93 @@
   }
 }
 
+@view-transition {
+  navigation: auto;
+}
+
+.page-transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100001;
+  display: grid;
+  place-items: center;
+  background: #000;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.42s ease,
+    visibility 0s linear 0.42s;
+}
+
+.page-transition-logo {
+  width: clamp(62px, 8vw, 104px);
+  height: auto;
+  opacity: 0;
+  transform: scale(0.86);
+  filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.34));
+}
+
+html.is-page-transitioning .page-transition-overlay {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.32s ease,
+    visibility 0s;
+}
+
+html.is-page-transitioning:not(.is-page-transition-leaving)
+  .page-transition-logo {
+  animation: page-transition-logo-in 0.44s cubic-bezier(0.19, 1, 0.22, 1)
+    forwards;
+}
+
+html.is-page-transitioning.is-page-transition-leaving .page-transition-overlay {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.42s ease 0.22s,
+    visibility 0s linear 0.64s;
+}
+
+html.is-page-transitioning.is-page-transition-leaving .page-transition-logo {
+  animation: page-transition-logo-out 0.36s cubic-bezier(0.55, 0.06, 0.68, 0.19)
+    forwards;
+}
+
+@keyframes page-transition-logo-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.86);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes page-transition-logo-out {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.14);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-transition-overlay,
+  .page-transition-logo,
+  html.is-page-transitioning .page-transition-overlay,
+  html.is-page-transitioning.is-page-transition-leaving
+    .page-transition-overlay {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
 .app-cursor {
   position: fixed;
   left: 0;

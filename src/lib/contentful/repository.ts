@@ -62,6 +62,37 @@ const toHtml = (document?: Document): string => {
 };
 
 export const contentRepository = {
+  async getSubsystemsWithMembers(locale = "en-US") {
+    const subsystemEntries = await getEntries({
+      content_type: "subsystem",
+      include: 2,
+      order: ["fields.name"],
+      locale,
+    });
+    return subsystemEntries.map((entry) => {
+      const membersRaw = Array.isArray(entry.fields?.members)
+        ? (entry.fields?.members as CtfEntry[])
+        : [];
+      const members = membersRaw.map((member) => ({
+        name: String(member.fields?.name ?? ""),
+        role: member.fields?.role ? String(member.fields.role) : undefined,
+        image: getAssetUrl(member.fields?.image),
+        socials:
+          (member.fields?.socials as Record<string, unknown> | undefined) ?? {},
+      }));
+      return {
+        name: String(entry.fields?.name ?? ""),
+        description: entry.fields?.description
+          ? String(entry.fields.description)
+          : undefined,
+        groupImage: getAssetUrl(entry.fields?.groupImage),
+        groupFunImage: getAssetUrl(entry.fields?.groupFunImage),
+        color: entry.fields?.color ? String(entry.fields.color) : undefined,
+        icon: getAssetUrl(entry.fields?.icon),
+        members,
+      };
+    });
+  },
   async getHomePageContent(locale = "en-US"): Promise<HomePageContent> {
     const [
       heroEntries,
@@ -151,6 +182,38 @@ export const contentRepository = {
     };
   },
 
+  async getPartners(locale = "en-US"): Promise<PartnerFields[]> {
+    const partnerEntries = await getEntries({
+      content_type: "partners",
+      include: 2,
+      order: ["fields.name"],
+      locale,
+    });
+
+    return partnerEntries.map((entry) => {
+      const statusEntry = entry.fields?.status as CtfEntry | undefined;
+      const status: TierFields | undefined = statusEntry
+        ? {
+            name: String(statusEntry.fields?.name ?? ""),
+            colorHex: statusEntry.fields?.colorHex
+              ? String(statusEntry.fields.colorHex)
+              : undefined,
+            priority:
+              typeof statusEntry.fields?.priority === "number"
+                ? statusEntry.fields.priority
+                : undefined,
+          }
+        : undefined;
+
+      return {
+        name: String(entry.fields?.name ?? ""),
+        url: entry.fields?.url ? String(entry.fields.url) : undefined,
+        image: getAssetUrl(entry.fields?.image),
+        status,
+      };
+    });
+  },
+
   async getNetworkingEventsBySlug(
     slug: string,
     locale = "en-US",
@@ -208,6 +271,48 @@ export const contentRepository = {
     };
   },
 
+  async getJobOpenings(locale = "en-US"): Promise<JobOpeningFields[]> {
+    const entries = await getEntries({
+      content_type: "jobOpening",
+      include: 2,
+      order: ["fields.title"],
+      locale,
+    });
+    return entries.map((opening) => {
+      const subgroup = opening.fields?.subgroup as CtfEntry | undefined;
+      const imagesRaw = Array.isArray(opening.fields?.imagesCarousel)
+        ? (opening.fields?.imagesCarousel as unknown[])
+        : [];
+      const imagesCarousel = imagesRaw
+        .map((asset) => getAssetUrl(asset))
+        .filter((value): value is string => Boolean(value));
+
+      return {
+        title: String(opening.fields?.title ?? ""),
+        slug: String(opening.fields?.slug ?? ""),
+        shortDescription: opening.fields?.shortDescription
+          ? String(opening.fields.shortDescription)
+          : undefined,
+        fullDescription: opening.fields?.fullDescription as
+          | Document
+          | undefined,
+        icon: getAssetUrl(opening.fields?.icon),
+        imagesCarousel,
+        formLink: opening.fields?.formLink
+          ? String(opening.fields.formLink)
+          : undefined,
+        subgroup: subgroup
+          ? {
+              name: String(subgroup.fields?.name ?? ""),
+              description: subgroup.fields?.description
+                ? String(subgroup.fields.description)
+                : undefined,
+            }
+          : undefined,
+      };
+    });
+  },
+
   async getJobOpeningBySlug(
     slug: string,
     locale = "en-US",
@@ -256,6 +361,25 @@ export const contentRepository = {
           }
         : undefined,
     };
+  },
+
+  async getAllTiers(locale = "en-US") {
+    const tierEntries = await getEntries({
+      content_type: "tier",
+      include: 1,
+      order: ["fields.priority", "fields.name"],
+      locale,
+    });
+    return tierEntries.map((entry) => ({
+      name: String(entry.fields?.name ?? ""),
+      colorHex: entry.fields?.colorHex
+        ? String(entry.fields.colorHex)
+        : undefined,
+      priority:
+        typeof entry.fields?.priority === "number"
+          ? entry.fields.priority
+          : undefined,
+    }));
   },
 
   async getMembers(locale = "en-US"): Promise<MemberFields[]> {

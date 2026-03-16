@@ -1,0 +1,72 @@
+---
+import { changeLanguage, t } from "i18next";
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import PageHero from "../../components/PageHero.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import { contentRepository } from "../../lib/contentful/repository";
+
+changeLanguage("es");
+
+const pageTitle = String(t("nav.team"));
+const pageDescription = String(t("team.subtitle"));
+const subsystems = await contentRepository.getSubsystemsWithMembers("en-US");
+const homePageContent = await contentRepository.getHomePageContent("en-US");
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <Header slot="header" />
+  <PageHero
+    title={pageTitle}
+    description={pageDescription}
+    colors={["#0f1829", "#24426d", "#4f86c6"]}
+  />
+
+  <section
+    class="left-1/2 -translate-x-1/2 max-w-[1200px] py-20 px-6 md:px-10 bg-[#0f0f0f] text-white relative"
+  >
+    <div class="space-y-16">
+      {
+        subsystems.map((subsystem) => (
+          <div>
+            <h3 class="text-2xl font-bold mb-4 flex items-center gap-3">
+              {subsystem.icon && (
+                <img src={subsystem.icon} alt="" class="inline w-8 h-8" />
+              )}
+              {subsystem.name}
+            </h3>
+            {subsystem.description && (
+              <p class="mb-2 text-white/70">{subsystem.description}</p>
+            )}
+            <div class="grid auto-rows-[150px] sm:auto-rows-[190px] grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+              {subsystem.members && subsystem.members.length > 0 ? (
+                subsystem.members
+                  .filter((m) => m.image)
+                  .map((member) => (
+                    <figure class="team-card group relative overflow-hidden rounded-2xl">
+                      <img
+                        src={member.image}
+                        alt={`${member.name} portrait`}
+                        loading="lazy"
+                        decoding="async"
+                        class="team-face-image h-full w-full object-contain transition-transform duration-700 ease-out group-hover:scale-110"
+                      />
+                      <figcaption class="team-face-bubble" aria-hidden="true">
+                        <span class="team-face-name">{member.name}</span>
+                        <span class="team-face-role">
+                          {member.role ?? "Member"}
+                        </span>
+                      </figcaption>
+                    </figure>
+                  ))
+              ) : (
+                <span class="text-white/40 italic">No members listed.</span>
+              )}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+  <SiteFooter />
+</Layout>

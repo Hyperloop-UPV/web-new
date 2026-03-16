@@ -1,0 +1,63 @@
+---
+import { changeLanguage, t } from "i18next";
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import PageHero from "../components/PageHero.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import { contentRepository } from "../lib/contentful/repository";
+
+changeLanguage("en");
+
+const pageTitle = String(t("nav.investigation"));
+const pageDescription = String(t("investigation.description"));
+const investigations = await contentRepository.getInvestigations("en-US");
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <Header slot="header" />
+  <PageHero
+    title={pageTitle}
+    description={pageDescription}
+    colors={["#171321", "#45306d", "#8f67d3"]}
+  />
+
+  <section class="bg-[#0f0f0f] px-6 py-16 md:px-10 md:py-20">
+    <div class="mx-auto grid max-w-6xl gap-6 md:grid-cols-2 xl:grid-cols-3">
+      {
+        investigations.map((item) => (
+          <article class="rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden">
+            {item.cover && (
+              <img
+                src={item.cover}
+                alt={item.title}
+                loading="lazy"
+                decoding="async"
+                class="h-52 w-full object-cover"
+              />
+            )}
+            <div class="p-5">
+              <h2 class="text-xl font-semibold text-white">{item.title}</h2>
+              {item.description && (
+                <p class="mt-3 text-sm leading-relaxed text-white/70">
+                  {item.description}
+                </p>
+              )}
+              {item.document && (
+                <a
+                  href={item.document}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="mt-4 inline-flex text-sm font-semibold uppercase tracking-widest text-white/80 hover:text-white"
+                >
+                  Open document
+                </a>
+              )}
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <SiteFooter />
+</Layout>

@@ -29,10 +29,6 @@ const secondaryImage = bg[1] ?? bg[0] ?? "/img/pod_sketch.jpg";
 
   <div class="absolute inset-0 z-[1] pointer-events-none">
     <div class="hero-grid-bg absolute -inset-[20%]"></div>
-    <div
-      class="hero-glow-bg absolute top-[30%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] blur-[40px]"
-    >
-    </div>
   </div>
 
   <div
@@ -50,17 +46,15 @@ const secondaryImage = bg[1] ?? bg[0] ?? "/img/pod_sketch.jpg";
     >
       Universitat Politècnica de València · H11 · EHW
     </p>
-    <h1 class="hero-title m-0 leading-[0.95]">
-      <Title
-        text={t("site.title")}
-        class="line-1 block text-[clamp(3rem,10vw,8rem)] font-bold -tracking-wider"
-      />
-    </h1>
-    <p
-      class="hero-description mt-12 text-[clamp(1rem,2vw,1.2rem)] max-w-[700px] leading-relaxed text-white/55"
+    <h1
+      class="hero-title m-0 leading-[0.95] line-1 block text-[clamp(3rem,10vw,8rem)] font-bold -tracking-wider"
     >
-      {description}
-    </p>
+      {t("site.title")}
+    </h1>
+    <Title
+	  text={description}
+      class="hero-description mt-12 text-[clamp(1rem,2vw,1.2rem)] max-w-[700px] leading-relaxed text-white/55"
+    />
     <div class="hero-cta mt-10 flex gap-4 flex-wrap">
       <Button href="#about" variant="primary" pullStrength={12}>
         {t("hero.discover")}
