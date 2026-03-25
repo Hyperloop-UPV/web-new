@@ -1,0 +1,32 @@
+---
+interface Props {
+  items: Array<{ label: string; href?: string } | string>;
+  current?: string;
+}
+
+const { items, current } = Astro.props as Props;
+---
+
+<nav class="flex items-center text-white/60 text-sm mb-6 gap-2">
+  {
+    items.map((item, idx) => {
+      const label = typeof item === "string" ? item : item.label;
+      const href = typeof item === "string" ? undefined : item.href;
+      const isLast = idx === items.length - 1;
+      return (
+        <>
+          {href && !isLast ? (
+            <a href={href} class="hover:underline">
+              {label}
+            </a>
+          ) : (
+            <span class={isLast ? "font-semibold text-white" : ""}>
+              {label}
+            </span>
+          )}
+          {!isLast && <span class="mx-1">›</span>}
+        </>
+      );
+    })
+  }
+</nav>

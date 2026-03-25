@@ -1,0 +1,90 @@
+---
+import { t, changeLanguage } from "i18next";
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import ImagesCarousel from "../../components/ImagesCarousel.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import Button from "../../components/Button.astro";
+import { contentRepository } from "../../lib/contentful/repository";
+
+changeLanguage("en");
+
+const { slug } = Astro.params;
+const job = await contentRepository.getJobOpeningBySlug(slug);
+const pageTitle = job?.title || t("join.detail_title");
+const pageDescription = job?.fullDescriptionHtml || t("join.detail_description");
+export async function getStaticPaths() {
+    const jobs = await import("../../lib/contentful/repository").then((m) => m.contentRepository.getJobOpenings());
+    return jobs.map((job) => ({ params: { slug: job.slug } }));
+}
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <Header slot="header" />
+  <main class="mt-32 max-w-[1200px] mx-auto p-6">
+    <Breadcrumbs
+      items={[
+        { label: "Openings", href: "/join" },
+        ...(job?.subgroup?.name ? [{ label: job.subgroup.name }] : []),
+        { label: job?.title || "" },
+      ]}
+    />
+
+    <span class="flex flex-row gap-20">
+      <span>
+        <header class="flex items-center gap-4 mb-6">
+          {
+            job?.icon && (
+              <img
+                src={job.icon}
+                alt="Job Icon"
+                class="w-18 h-18 rounded bg-white/10 p-4"
+              />
+            )
+          }
+          <div>
+            <h1 class="text-3xl font-bold text-white mb-1">{job?.title}</h1>
+            {
+              job?.subgroup?.name && (
+                <div class="inline-block bg-white/10 text-white/80 text-xs px-3 py-1 rounded-full">
+                  {job.subgroup.name}
+                </div>
+              )
+            }
+          </div>
+        </header>
+
+        {
+          job?.shortDescription && (
+            <p class="text-white/70 mb-6 text-lg">{job.shortDescription}</p>
+          )
+        }
+
+        <section class="mb-8">
+          <div
+            class="text-white/80 prose prose-invert max-w-none"
+            set:html={job?.fullDescriptionHtml}
+          />
+        </section>
+
+        <div class="flex gap-4 mb-10">
+          <Button href={job?.formLink || "#"}>
+            {t("join.apply_now")}
+          </Button>
+          <Button href="/join" variant="outline">
+            {t("join.back_to_openings")}
+          </Button>
+        </div>
+      </span>
+      {
+        job?.imagesCarousel && job.imagesCarousel.length > 0 && (
+          <div class="w-full">
+            <ImagesCarousel images={job.imagesCarousel} layout="col" />
+          </div>
+        )
+      }
+    </span>
+  </main>
+  <SiteFooter />
+</Layout>

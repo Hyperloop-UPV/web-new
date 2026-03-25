@@ -45,14 +45,9 @@ const getAssetUrls = (assetLike: unknown): string[] => {
 const getEntries = async (
   query: Record<string, unknown>,
 ): Promise<CtfEntry[]> => {
-  console.log("Fetching entries with query:", query);
   const response = (await contentfulClient.getEntries(query)) as unknown as {
     items?: CtfEntry[];
   };
-  console.log(
-    "Received response with items count:",
-    response.items?.length ?? 0,
-  );
   return response.items ?? [];
 };
 
@@ -202,6 +197,11 @@ export const contentRepository = {
               typeof statusEntry.fields?.priority === "number"
                 ? statusEntry.fields.priority
                 : undefined,
+            perks: Array.isArray(statusEntry.fields?.perks)
+              ? (statusEntry.fields?.perks as unknown[]).map((item) =>
+                  String(item),
+                )
+              : undefined,
           }
         : undefined;
 
@@ -360,6 +360,21 @@ export const contentRepository = {
               : undefined,
           }
         : undefined,
+    };
+  },
+
+  async getLatestDossier(locale = "en-US") {
+    const entries = await getEntries({
+      content_type: "dossier",
+      order: ["-sys.createdAt"],
+      limit: 1,
+      locale,
+    });
+    const dossier = entries[0];
+    if (!dossier) return null;
+
+    return {
+      file: getAssetUrl(dossier.fields?.file),
     };
   },
 

@@ -32,7 +32,10 @@
     "title": "Impulsado por tu apoyo",
     "body": "Somos impulsados por nuestros patrocinadores y socios. Si quieres ayudar a hacer realidad este proyecto, ¡considera apoyarnos!",
     "cta": "Apóyanos",
-    "by_tier": "Socios por nivel"
+    "by_tier": "Socios por nivel",
+    "tiers": "Esto es lo que ofrecemos:",
+    "dossier": "Ver dossier",
+    "latest_dossier": "Abrir último dossier"
   },
   "footer": {
     "title": "Shaping the Future.",

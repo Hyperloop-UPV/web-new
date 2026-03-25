@@ -33,7 +33,10 @@
     "title": "Powered by your support",
     "body": "We are powered by our sponsors and partners. If you want to help make this project a reality, consider supporting us!",
     "cta": "Support Us",
-    "by_tier": "Partners by Tier"
+    "by_tier": "Partners by Tier",
+    "tiers": "Here's what we offer:",
+    "dossier": "View dossier",
+    "latest_dossier": "Open latest dossier"
   },
   "footer": {
     "title": "Shaping the Future.",

@@ -4,13 +4,19 @@ export interface TierFields {
   name: string;
   colorHex?: string;
   priority?: number;
+  perks?: string[];
 }
 
 export interface PartnerFields {
   name: string;
   url?: string;
   image?: string;
+  file?: string;
   status?: TierFields;
+}
+
+export interface DossierFields {
+  file?: string;
 }
 
 export interface NetworkingFields {

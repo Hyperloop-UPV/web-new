@@ -1,11 +1,12 @@
 ---
 import { changeLanguage, t } from "i18next";
-import Layout from "../layouts/Layout.astro";
-import Header from "../components/Header.astro";
-import PageHero from "../components/PageHero.astro";
-import JobOpeningCard from "../components/JobOpeningCard.astro";
-import SiteFooter from "../components/SiteFooter.astro";
-import { contentRepository } from "../lib/contentful/repository";
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import PageHero from "../../components/PageHero.astro";
+import FilterBar from "../../components/FilterBar.astro";
+import JobOpeningCard from "../../components/JobOpeningCard.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import { contentRepository } from "../../lib/contentful/repository";
 
 changeLanguage("en");
 
@@ -36,22 +37,7 @@ const subgroups = ["all", ...Object.keys(grouped)];
 
   <section class="py-16 px-6 md:px-10 bg-[#0c0f16] text-white">
     <div class="mx-auto max-w-6xl">
-      <div class="mb-10 flex flex-col gap-4">
-        <p class="text-lg text-white/70">{t("join.intro")}</p>
-        <div class="flex flex-wrap gap-3">
-          {
-            subgroups.map((name) => (
-              <button
-                type="button"
-                data-filter={name}
-                class="filter-button rounded-full border border-white/20 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
-              >
-                {name === "all" ? t("join.all") : name}
-              </button>
-            ))
-          }
-        </div>
-      </div>
+      <FilterBar items={subgroups} />
 
       <div class="space-y-10" id="job-openings">
         {

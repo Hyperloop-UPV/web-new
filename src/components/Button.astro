@@ -4,6 +4,8 @@ interface Props {
   variant?: "primary" | "outline";
   pullStrength?: number;
   class?: string;
+  target?: string;
+  rel?: string;
 }
 
 const {
@@ -11,6 +13,8 @@ const {
   variant = "primary",
   pullStrength = 10,
   class: className = "",
+  target,
+  rel,
 } = Astro.props as Props;
 
 const variantClasses = {
@@ -26,7 +30,13 @@ const classes = `${baseClasses} ${variantClasses[variant]} ${className}`.trim();
 
 {
   href ? (
-    <a href={href} class={classes} data-pull-strength={pullStrength}>
+    <a
+      href={href}
+      class={classes}
+      data-pull-strength={pullStrength}
+      target={target}
+      rel={rel}
+    >
       <slot />
     </a>
   ) : (

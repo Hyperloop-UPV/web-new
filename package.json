@@ -18,7 +18,7 @@
     "@tailwindcss/vite": "^4.2.1",
     "astro": "^6.0.3",
     "astro-i18next": "^1.0.0-beta.21",
-    "contentful": "^11.10.6",
+    "contentful": "^11.12.0",
     "contentful-management": "^11.74.0",
     "gsap": "^3.14.2",
     "lucide-astro": "^0.556.0",

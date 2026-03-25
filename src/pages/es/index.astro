@@ -42,7 +42,6 @@ const memberFaces = members
 const faceGallery = memberFaces.length
     ? Array.from({ length: Math.max(30, memberFaces.length * 3) }, (_, i) => memberFaces[i % memberFaces.length])
     : [];
-console.log("Current language:", i18next.language);
 ---
 
 <Layout

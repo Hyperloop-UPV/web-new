@@ -1,0 +1,118 @@
+---
+interface Props {
+  images: string[];
+  layout?: "grid" | "row" | "col";
+}
+
+const { images, layout = "grid" } = Astro.props as Props;
+
+const imageList = images ?? [];
+const rootClass =
+  layout === "row"
+    ? "flex gap-4 overflow-x-auto"
+    : layout === "col"
+    ? "flex flex-col gap-4"
+    : "grid grid-cols-2 md:grid-cols-3 gap-4";
+---
+
+<section class="images-carousel" data-astro-carousel data-images={JSON.stringify(imageList)} data-layout={layout}>
+  <div class={rootClass}>
+    {imageList.map((img, idx) => (
+      <img
+        src={img}
+        alt={`Job Image ${idx + 1}`}
+        class="rounded-lg w-full h-48 object-cover cursor-pointer js-ic-thumb"
+        data-index={idx}
+      />
+    ))}
+  </div>
+
+  <div class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 js-ic-modal" aria-hidden="true">
+    <button class="absolute top-4 right-4 text-white text-3xl js-ic-close">&times;</button>
+    <div class="relative flex items-center justify-center w-full max-w-3xl">
+      <button class="absolute left-0 text-white text-4xl px-4 py-2 js-ic-prev">&lt;</button>
+      <img src={imageList[0] ?? ""} alt="Maximized" class="max-h-[80vh] max-w-full rounded-lg js-ic-main" />
+      <button class="absolute right-0 text-white text-4xl px-4 py-2 js-ic-next">&gt;</button>
+    </div>
+    <div class="flex gap-2 mt-6 js-ic-thumbs"></div>
+  </div>
+</section>
+
+<script type="module">
+  const root = document.querySelector('[data-astro-carousel]');
+  if (!root) return;
+
+  const images = JSON.parse(root.getAttribute('data-images') || '[]');
+  const modal = root.querySelector('.js-ic-modal');
+  const mainImg = root.querySelector('.js-ic-main');
+  const closeBtn = root.querySelector('.js-ic-close');
+  const prevBtn = root.querySelector('.js-ic-prev');
+  const nextBtn = root.querySelector('.js-ic-next');
+  const thumbsContainer = root.querySelector('.js-ic-thumbs');
+  const thumbs = Array.from(root.querySelectorAll('.js-ic-thumb'));
+
+  let activeIdx = 0;
+
+  function updateModal() {
+    if (!mainImg || !thumbsContainer) return;
+    mainImg.src = images[activeIdx];
+
+    const thumbEls = Array.from(thumbsContainer.querySelectorAll('img'));
+    thumbEls.forEach((thumb, idx) => {
+      thumb.classList.toggle('border-blue-400', idx === activeIdx);
+      thumb.classList.toggle('border-transparent', idx !== activeIdx);
+    });
+  }
+
+  function openModal(idx) {
+    if (!modal) return;
+    activeIdx = idx;
+    updateModal();
+    modal.classList.remove('hidden');
+    modal.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeModal() {
+    if (!modal) return;
+    modal.classList.add('hidden');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+
+  function nextImage() {
+    activeIdx = (activeIdx + 1) % images.length;
+    updateModal();
+  }
+
+  function prevImage() {
+    activeIdx = (activeIdx - 1 + images.length) % images.length;
+    updateModal();
+  }
+
+  thumbs.forEach((thumb) => {
+    const idx = Number(thumb.getAttribute('data-index'));
+    thumb.addEventListener('click', () => openModal(idx));
+  });
+
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+  if (nextBtn) nextBtn.addEventListener('click', nextImage);
+  if (prevBtn) prevBtn.addEventListener('click', prevImage);
+
+  if (thumbsContainer) {
+    thumbsContainer.innerHTML = '';
+
+    images.forEach((img, idx) => {
+      const thumb = document.createElement('img');
+      thumb.src = img;
+      thumb.alt = `Thumbnail ${idx + 1}`;
+      thumb.className = 'w-16 h-16 object-cover rounded cursor-pointer border-2';
+      thumb.classList.add(idx === activeIdx ? 'border-blue-400' : 'border-transparent');
+
+      thumb.addEventListener('click', () => {
+        activeIdx = idx;
+        updateModal();
+      });
+
+      thumbsContainer.appendChild(thumb);
+    });
+  }
+</script>
