@@ -8,12 +8,12 @@ import { contentRepository } from "../lib/contentful/repository";
 import i18next from "i18next";
 
 const navItems = [
-  { label: t("nav.about"), href: "#about" },
-  { label: t("nav.team"), href: "#team" },
-  { label: t("nav.trajectory"), href: "#trajectory" },
-  { label: t("nav.investigation"), href: "#investigation" },
-  { label: t("nav.partners"), href: "#partners" },
-  { label: t("nav.contact"), href: "#contact" },
+  { label: t("nav.about"), href: "about" },
+  { label: t("nav.team"), href: "team" },
+  { label: t("nav.trajectory"), href: "trajectory" },
+  { label: t("nav.investigation"), href: "investigation" },
+  { label: t("nav.partners"), href: "partners" },
+  { label: t("nav.contact"), href: "contact" },
 ];
 
 const year = new Date().getFullYear();
@@ -116,7 +116,7 @@ const heroDescription =
           {
             navItems.map((item) => (
               <li>
-                <a href={item.href} class="transition-colors hover:text-white">
+                <a href={`/` + item.href} class="transition-colors hover:text-white">
                   {item.label}
                 </a>
               </li>

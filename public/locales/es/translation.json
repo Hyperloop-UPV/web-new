@@ -30,7 +30,7 @@
   },
   "partners": {
     "title": "Impulsado por tu apoyo",
-    "body": "Somos impulsados por nuestros patrocinadores y socios. Si quieres ayudar a hacer realidad este proyecto, ¡considera apoyarnos!",
+    "body": "Este año, en Hyperloop UPV apostamos por una visión completamente escalable, un nuevo vehículo prototipo y su infraestructura. La manera de conseguirlo es rodeándonos de empresas dispuestas a pertenecer a este equipo, pues solo unidos lograremos dejar huella en la sociedad. Apostar por Hyperloop UPV no solo significa construir juntos el transporte del futuro, también presenta una serie de ventajas para el presente de nuestros patrocinadores.",
     "cta": "Apóyanos",
     "by_tier": "Socios por nivel",
     "tiers": "Esto es lo que ofrecemos:",
@@ -56,22 +56,146 @@
   "join": {
     "uncategorized": "Sin categoría",
     "all": "Todos",
-    "apply": "Aplica"
+    "apply": "Aplica",
+    "team": {
+      "label": "El equipo",
+      "title": "¿Cómo nos organizamos?"
+    },
+    "areas": {
+      "direction": {
+        "title": "Dirección",
+        "description": "Liderazgo estratégico y toma de decisiones para la visión y objetivos de la organización."
+      },
+      "operations": {
+        "title": "Operaciones",
+        "description": "Gestión eficiente y coordinación de todos los procesos y recursos organizacionales."
+      },
+      "engineering": {
+        "title": "Ingeniería",
+        "description": "Innovación técnica e implementación de soluciones de vanguardia."
+      }
+    },
+    "subsystems": {
+      "label": "Los subsistemas",
+      "title": "¿De qué se encarga cada área?"
+    }
   },
   "subsystems": {
     "title": "Subsistemas",
     "description": "Estas son las personas que ayudan a impulsar este proyecto. Haz clic en un subsistema para saber más."
   },
   "about": {
-    "description": "Explora nuestra historia, identidad y valores."
+    "description": "Explora nuestra historia, identidad y valores.",
+    "who": {
+      "title": "¿Quiénes somos?",
+      "description": "Hyperloop UPV somos un equipo de 50 estudiantes de múltiples disciplinas distintos de la Universidad Politécnica de Valencia unidos con el objetivo de diseñar, implementar y perfeccionar la recepción hyperloop.",
+      "discover": "Descubre más",
+      "stats": {
+        "years": "10+",
+        "yearLabel": "años",
+        "partners": "80+",
+        "partnersLabel": "socios",
+        "members": "50",
+        "membersLabel": "miembros"
+      }
+    },
+    "mission": {
+      "title": "Misión",
+      "description": "Motivar a jóvenes talentos a formarse e innovar en un ambiente multidisciplinario a través del desarrollo de la tecnología hyperloop que transforma la movilidad de manera sostenible y responsable."
+    },
+    "vision": {
+      "title": "Visión",
+      "description": "Ser un equipo universitario referente internacional, reconocido por liderar la innovación en transporte del futuro y generar soluciones a escala global."
+    },
+    "values": {
+      "title": "Nuestros valores",
+      "commitment": {
+        "title": "Compromiso",
+        "description": "Lealtad, responsabilidad y conciencia con equipo, universidad y partners"
+      },
+      "innovation": {
+        "title": "Innovación",
+        "description": "Creatividad y espíritu pionero para superar límites tecnológicos y explorar nuevas ideas"
+      },
+      "learning": {
+        "title": "Aprendizaje",
+        "description": "Desarrollo continuo del talento joven y crecimiento multidisciplinar."
+      },
+      "sustainability": {
+        "title": "Sostenibilidad",
+        "description": "Impacto positivo y responsable con el desarrollo de la tecnología hyperloop"
+      }
+    },
+    "ehw": {
+      "shaping": "Shaping the future.",
+      "title": "European Hyperloop Week",
+      "description": "En 2019, decidimos embarcarnos en un informe desafío junto a 3 de las mejores universidades europeas (University of Edinburgh, Delft University of Technology, ETH Zurich) evento de tecnología hyperloop donde pudieran compartir la mejor de nuestras ideas y forjar una comunidad alimentada por la visión de hacer realidad el hyperloop.",
+      "conclusion": "Así nació la European Hyperloop Week (EHW), es un evento que ya más allá de una mera competencia, que se impulsa por la insaciable curiosidad de estudiantes jóvenes y el deseo de aprender.",
+      "discover": "Descubre más"
+    },
+    "competition": {
+      "title": "Hyperloop Pod Competition",
+      "description": "En 2015 un equipo de 5 estudiantes de la Universidad Politécnica de Valencia decidieron apuntarse al desafío presentado por SpaceX y cambiar el mundo de la competición mundial en hyperloop. Este primer año, se presentó una propuesta conceptual y equipo universitario se viajó hasta California para vivir la experiencia de competición y acabalbar ganando múltiples premios.",
+      "conclusion": "A partir del éxito rotundo de lo que hoy conocemos como 'HI - THE FUTURE CONCEPT' cada año se fue realizando la experiencia de desarrollar un modelo de hyperloop para poder presentarlo en las competiciones internacionales y seguir trabajando en desarrollar el transporte del futuro."
+    }
   },
   "trajectory": {
     "description": "Descubre los hitos que definen nuestra trayectoria."
   },
   "investigation": {
-    "description": "Conoce nuestro trabajo de investigacion y desarrollo tecnico."
+    "description": "Cada año en Hyperloop UPV realizamos investigaciones técnicas y socioeconómicas que nos ayudan a poder desarrollar el transporte del futuro.",
+    "why": {
+      "title": "¿Por qué hyperloop?",
+      "description": "Hyperloop se presenta como una alternativa frente a otros medios de transporte porque combina alta velocidad, eficiencia energética y menor impacto ambiental. A diferencia de otros medios convencionales, reduce tiempos de viaje sin depender de combustibles fósiles.",
+      "sustainability": "Sostenibilidad",
+      "speed": "Velocidad",
+      "comfort": "Comodidad"
+    },
+    "how": {
+      "title": "¿Cómo funciona?",
+      "description": "El hyperloop es un sistema de transporte de alta velocidad que combina levitación magnética, propulsión eléctrica y entornos de baja presión. Su funcionamiento se basa en tres elementos:",
+      "vacuum": {
+        "title": "Tubo al vacío",
+        "description": "Al reducir la cantidad de aire, se minimiza la resistencia aerodinámica, que es el principal límite de velocidad en los sistemas de transporte convencionales."
+      },
+      "capsule": {
+        "title": "Cápsula o 'pod'",
+        "description": "Los pasajeros o la carga viajan dentro de cápsulas presurizadas. Estas cápsulas están diseñadas para ser ligeras, aerodinámicas y seguras."
+      },
+      "levitation": {
+        "title": "Levitación y propulsión",
+        "description": "La cápsula se desplaza sobre la vía gracias a sistemas de levitación magnética, eliminando la fricción. La aceleración se consigue mediante motores lineales eléctricos distribuidos a lo largo del recorrido."
+      }
+    }
   },
   "contact": {
-    "description": "Ponte en contacto con nosotros para colaboraciones y consultas."
+    "description": "Ponte en contacto con nosotros para colaboraciones y consultas.",
+    "tagline": "Selecciona tu perfil:",
+    "headline": "¿Quieres contactar con nosotros?",
+    "subtitle": "Elige tu perfil para obtener una respuesta rápida y personalizada.",
+    "profiles": {
+      "business": "Soy empresa y me interesa el proyecto",
+      "student": "Soy estudiante y quiero conocer el equipo",
+      "other": "Otro"
+    },
+    "profileLabel": {
+      "business": "Empresa",
+      "student": "Estudiante",
+      "other": "Otro"
+    },
+    "info": {
+      "title": "Contacto directo",
+      "name": "Hyperloop UPV",
+      "addressLabel": "Dirección",
+      "address": "Edificio 8N, Valencia, España",
+      "phoneLabel": "Teléfono",
+      "phone": "+34 668 555 000",
+      "emailLabel": "Email",
+      "email": "contact@hyperloopupv.com",
+      "quickHelp": "¿Necesitas ayuda?",
+      "ask": "Escribe tu mensaje directamente al equipo.",
+      "description": "Respondemos rápido a empresas, estudiantes y otras consultas. Elige el perfil que mejor se ajuste a tu pregunta.",
+      "sendEmail": "Enviar correo"
+    }
   }
 }

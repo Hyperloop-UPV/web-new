@@ -60,22 +60,146 @@
   "join": {
     "uncategorized": "Uncategorized",
     "all": "All",
-    "apply": "Apply"
+    "apply": "Apply",
+    "team": {
+      "label": "The team",
+      "title": "How we organize"
+    },
+    "areas": {
+      "direction": {
+        "title": "Direction",
+        "description": "Strategic leadership and decision-making for the organization's vision and goals."
+      },
+      "operations": {
+        "title": "Operations",
+        "description": "Efficient management and coordination of all organizational processes and resources."
+      },
+      "engineering": {
+        "title": "Engineering",
+        "description": "Technical innovation and implementation of cutting-edge solutions."
+      }
+    },
+    "subsystems": {
+      "label": "The subsystems",
+      "title": "What does each area do?"
+    }
   },
   "subsystems": {
     "title": "Subsystems",
     "description": "These are the people who help bring this project forward. Click on a subsystem to learn more."
   },
   "about": {
-    "description": "Explore our history, identity and values."
+    "description": "Explore our history, identity and values.",
+    "who": {
+      "title": "Who are we?",
+      "description": "Hyperloop UPV is a team of 50 students from multiple disciplines from the Universitat Politècnica de València united with the objective of designing, implementing and perfecting the hyperloop reception.",
+      "discover": "Discover more",
+      "stats": {
+        "years": "10+",
+        "yearLabel": "years",
+        "partners": "80+",
+        "partnersLabel": "partners",
+        "members": "50",
+        "membersLabel": "members"
+      }
+    },
+    "mission": {
+      "title": "Mission",
+      "description": "Motivate young talents to train and innovate in a multidisciplinary environment through the development of hyperloop technology that transforms mobility in a sustainable and responsible way."
+    },
+    "vision": {
+      "title": "Vision",
+      "description": "To be a leading international university team, recognized for leading innovation in future transport and generating solutions on a global scale."
+    },
+    "values": {
+      "title": "Our values",
+      "commitment": {
+        "title": "Commitment",
+        "description": "Loyalty, responsibility and awareness with team, university and partners"
+      },
+      "innovation": {
+        "title": "Innovation",
+        "description": "Creativity and pioneering spirit to overcome technological limits and explore new ideas"
+      },
+      "learning": {
+        "title": "Learning",
+        "description": "Continuous development of young talent and multidisciplinary growth."
+      },
+      "sustainability": {
+        "title": "Sustainability",
+        "description": "Positive and responsible impact with the development of hyperloop technology"
+      }
+    },
+    "ehw": {
+      "shaping": "Shaping the future.",
+      "title": "European Hyperloop Week",
+      "description": "In 2019, we decided to embark on a challenging report alongside 3 of the best European universities (University of Edinburgh, Delft University of Technology, ETH Zurich) hyperloop technology event where they could share the best of our ideas and forge a community fueled by the vision of making hyperloop reality.",
+      "conclusion": "Thus was born the European Hyperloop Week (EHW), an event that goes far beyond a mere competition, driven by the insatiable curiosity of young students and the desire to learn.",
+      "discover": "Discover more"
+    },
+    "competition": {
+      "title": "Hyperloop Pod Competition",
+      "description": "In 2015 a team of 5 students from the Universitat Politècnica de València decided to take on the challenge presented by SpaceX and change the world of global hyperloop competition. This first year, a conceptual proposal was presented and the university team traveled to California to experience the competition and ended up winning multiple awards.",
+      "conclusion": "From the resounding success of what we now know as 'HI - THE FUTURE CONCEPT' each year the experience of developing a hyperloop model has been carried out to present it at international competitions and continue working to develop the transportation of the future."
+    }
   },
   "trajectory": {
     "description": "Discover the milestones that define our journey."
   },
   "investigation": {
-    "description": "Learn about our research and technical development work."
+    "description": "Discover the milestones that define our journey.",
+    "why": {
+      "title": "Why hyperloop?",
+      "description": "Hyperloop presents itself as an alternative to other means of transport because it combines high speed, energy efficiency and less environmental impact. Unlike other conventional means, it reduces travel times without depending on fossil fuels.",
+      "sustainability": "Sustainability",
+      "speed": "Speed",
+      "comfort": "Comfort"
+    },
+    "how": {
+      "title": "How does it work?",
+      "description": "Hyperloop is a high-speed transport system that combines magnetic levitation, electric propulsion and low-pressure environments. Its operation is based on three elements:",
+      "vacuum": {
+        "title": "Vacuum tube",
+        "description": "By reducing the amount of air, aerodynamic resistance is minimized, which is the main speed limit in conventional transport systems."
+      },
+      "capsule": {
+        "title": "Pod or capsule",
+        "description": "Passengers or cargo travel inside pressurized pods. These pods are designed to be light, aerodynamic and safe."
+      },
+      "levitation": {
+        "title": "Levitation and propulsion",
+        "description": "The pod moves along the track thanks to magnetic levitation systems, eliminating friction. Acceleration is achieved through electric linear motors distributed along the track."
+      }
+    }
   },
   "contact": {
-    "description": "Get in touch with us for collaborations and inquiries."
+    "description": "Get in touch with us for collaborations and inquiries.",
+    "tagline": "Choose your profile:",
+    "headline": "Want to contact us?",
+    "subtitle": "Pick your profile to get a fast, tailored response.",
+    "profiles": {
+      "business": "I’m a company and I’m interested in the project",
+      "student": "I’m a student and I want to meet the team",
+      "other": "Other"
+    },
+    "profileLabel": {
+      "business": "Business",
+      "student": "Student",
+      "other": "Other"
+    },
+    "info": {
+      "title": "Direct contact",
+      "name": "Hyperloop UPV",
+      "addressLabel": "Address",
+      "address": "Edificio 8N, Valencia, Spain",
+      "phoneLabel": "Phone",
+      "phone": "+34 668 555 000",
+      "emailLabel": "Email",
+      "email": "contact@hyperloopupv.com",
+      "quickHelp": "Need help?",
+      "ask": "Send your message directly to the team.",
+      "description": "We respond quickly to companies, students and other requests. Choose the profile that best fits your inquiry.",
+      "sendEmail": "Send email"
+    }
   }
 }

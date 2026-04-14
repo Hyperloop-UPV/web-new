@@ -4,11 +4,32 @@ import Layout from "../../layouts/Layout.astro";
 import Header from "../../components/Header.astro";
 import PageHero from "../../components/PageHero.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
+import { Handshake, BookOpen, Users, MapPin, Phone, Mail } from "lucide-astro";
 
 changeLanguage("es");
 
 const pageTitle = String(t("nav.contact"));
 const pageDescription = String(t("contact.description"));
+const profiles = [
+    {
+        id: "business",
+        label: t("contact.profiles.business"),
+        icon: Handshake,
+        image: "/img/business.png",
+    },
+    {
+        id: "student",
+        label: t("contact.profiles.student"),
+        icon: BookOpen,
+        image: "/img/student.png",
+    },
+    {
+        id: "other",
+        label: t("contact.profiles.other"),
+        icon: Users,
+        image: "/img/pod_full.jpeg",
+    },
+];
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
@@ -16,8 +37,148 @@ const pageDescription = String(t("contact.description"));
   <PageHero
     title={pageTitle}
     description={pageDescription}
-    colors={["#121827", "#1f4b77", "#2f91cf"]}
+    colors={["#040812", "#0b1730", "#142c54"]}
   />
+
+  <section class="bg-[#060912] text-white">
+    <div class="mx-auto max-w-7xl py-20 px-6 md:px-10">
+      <div class="max-w-3xl">
+        <h1 class="mt-4 text-5xl font-black tracking-tight text-white">
+          {t("contact.headline")}
+        </h1>
+        <p class="mt-4 max-w-2xl text-lg leading-8 text-slate-300">
+          {t("contact.subtitle")}
+        </p>
+      </div>
+
+      <div class="mt-16 grid gap-6 lg:grid-cols-3">
+        {
+          profiles.map((profile) => {
+            const Icon = profile.icon;
+            return (
+              <article class="group rounded-4xl border border-white/10 bg-white/5 shadow-2xl shadow-slate-950/40 transition duration-300 hover:-translate-y-1 p-6 flex flex-col">
+                {profile.image && (
+                  <div class="mb-4 h-32 overflow-hidden rounded-2xl">
+                    <img
+                      src={profile.image}
+                      alt={profile.label}
+                      class="h-full w-full object-cover"
+                    />
+                  </div>
+                )}
+                <div class="flex items-center justify-between gap-4">
+                  <div>
+                    <p class="text-sm uppercase tracking-[0.35em] text-sky-300/70">
+                      {profile.id === "business" &&
+                        t("contact.profileLabel.business")}
+                      {profile.id === "student" &&
+                        t("contact.profileLabel.student")}
+                      {profile.id === "other" &&
+                        t("contact.profileLabel.other")}
+                    </p>
+                    <p class="mt-4 text-xl font-semibold text-white">
+                      {profile.label}
+                    </p>
+                  </div>
+                  <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl bg-sky-400/10 text-sky-300">
+                    <Icon size={28} stroke-width={1.5} />
+                  </div>
+                </div>
+              </article>
+            );
+          })
+        }}
+      </div>
+
+      <div
+        class="mt-16 grid gap-8 lg:grid-cols-[minmax(360px,1fr)_minmax(320px,420px)] items-start"
+      >
+        <div
+          class="rounded-4xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-slate-950/50 flex flex-col"
+        >
+          <div class="overflow-hidden rounded-3xl mb-6 flex-1">
+            <iframe
+              src="https://www.openstreetmap.org/export/embed.html?bbox=-0.3506,39.4635,-0.3406,39.4735&layer=mapnik&marker=39.4685,-0.3456"
+              class="h-80 w-full border-0"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+          <div class="space-y-4 text-slate-300">
+            <div>
+              <p class="text-sm uppercase tracking-[0.35em] text-sky-300/80">
+                {t("contact.info.title")}
+              </p>
+              <h2 class="mt-3 text-3xl font-bold text-white">
+                {t("contact.info.name")}
+              </h2>
+            </div>
+            <div
+              class="space-y-3 rounded-3xl border border-white/10 bg-slate-950/70 p-5"
+            >
+              <div class="flex items-start gap-3">
+                <MapPin size={18} class="shrink-0 mt-0.5 text-sky-300" />
+                <div>
+                  <p class="text-xs uppercase tracking-[0.35em] text-slate-500">
+                    {t("contact.info.addressLabel")}
+                  </p>
+                  <p class="mt-1 text-base text-slate-200">
+                    {t("contact.info.address")}
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <Phone size={18} class="shrink-0 mt-0.5 text-sky-300" />
+                <div>
+                  <p class="text-xs uppercase tracking-[0.35em] text-slate-500">
+                    {t("contact.info.phoneLabel")}
+                  </p>
+                  <a
+                    href="tel:+34668555000"
+                    class="mt-1 block text-base text-sky-300 hover:text-white transition"
+                    >{t("contact.info.phone")}</a
+                  >
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <Mail size={18} class="shrink-0 mt-0.5 text-sky-300" />
+                <div>
+                  <p class="text-xs uppercase tracking-[0.35em] text-slate-500">
+                    {t("contact.info.emailLabel")}
+                  </p>
+                  <a
+                    href="mailto:contact@hyperloopupv.com"
+                    class="mt-1 block text-base text-sky-300 hover:text-white transition"
+                    >{t("contact.info.email")}</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="rounded-4xl border border-white/10 bg-white/5 p-10 shadow-2xl shadow-slate-950/50"
+        >
+          <p class="text-sm uppercase tracking-[0.35em] text-sky-300/80">
+            {t("contact.info.quickHelp")}
+          </p>
+          <h2 class="mt-4 text-4xl font-black text-white">
+            {t("contact.info.ask")}
+          </h2>
+          <p class="mt-5 text-base leading-8 text-slate-300">
+            {t("contact.info.description")}
+          </p>
+          <a
+            href="mailto:contact@hyperloopupv.com"
+            class="mt-10 inline-flex rounded-2xl border border-sky-300/20 bg-sky-400/10 px-6 py-3 text-sm font-semibold uppercase tracking-[0.3em] text-sky-200 transition hover:border-sky-300 hover:bg-sky-400/15"
+          >
+            {t("contact.info.sendEmail")}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <SiteFooter />
 </Layout>

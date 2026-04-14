@@ -97,26 +97,26 @@ for (const partner of partners) {
       }
     </div>
 
-  {
-    latestDossier?.file && (
-      <div class="mb-14">
-        <Button
-          href={latestDossier.file}
-          variant="primary"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {t("partners.latest_dossier")}
-        </Button>
-      </div>
-    )
-  }
+    {
+      latestDossier?.file && (
+        <div class="mb-14">
+          <Button
+            href={latestDossier.file}
+            variant="primary"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t("partners.latest_dossier")}
+          </Button>
+        </div>
+      )
+    }
 
     <div class="mt-24 space-y-16">
       {
         Object.entries(partnersByTier)
           .reverse()
-          .map(([tier, tierPartners]) => (
+          .map(([tier, tierPartners], tierIndex) => (
             <div>
               <h3
                 class="text-5xl font-bold mb-4 flex items-center gap-3"
@@ -124,7 +124,7 @@ for (const partner of partners) {
               >
                 <span>{tier}</span>
               </h3>
-              <div class="flex flex-wrap items-center gap-8">
+              <div class="flex flex-wrap items-center justify-center gap-8">
                 {tierPartners.map((partner) => (
                   <a
                     href={partner.url || "#"}
@@ -136,7 +136,11 @@ for (const partner of partners) {
                       <img
                         src={partner.image}
                         alt={partner.name}
-                        class="h-32 max-w-32 object-contain"
+                        class={
+                          tierIndex === 0
+                            ? "h-64 max-w-64 object-contain"
+                            : "h-32 max-w-32 object-contain"
+                        }
                       />
                     )}
                   </a>
