@@ -33,7 +33,10 @@ const { items = [], class: className = "" } = Astro.props;
     text={t("subsystems.title")}
     class="mb-8 text-[clamp(1.8rem,3vw,3rem)] font-black tracking-tight"
   />
-  <div class="subsystems-accordion w-full flex flex-col md:flex-row h-auto md:h-[420px]" data-subsystems-accordion>
+  <div
+    class="subsystems-accordion w-full flex flex-col md:flex-row h-auto md:h-[420px]"
+    data-subsystems-accordion
+  >
     {
       items.map((item, index) => (
         <a
@@ -158,7 +161,9 @@ const { items = [], class: className = "" } = Astro.props;
           panel.addEventListener("mouseenter", () =>
             scheduleFunBackground(imageUrl),
           );
-          panel.addEventListener("focus", () => scheduleFunBackground(imageUrl));
+          panel.addEventListener("focus", () =>
+            scheduleFunBackground(imageUrl),
+          );
           panel.addEventListener("mouseleave", () => scheduleFunBackground(""));
           panel.addEventListener("blur", () => scheduleFunBackground(""));
         });
@@ -222,7 +227,9 @@ const { items = [], class: className = "" } = Astro.props;
       // Only add hover event listeners on desktop (non-mobile)
       if (!isMobile) {
         panels.forEach((panel) => {
-          panel.addEventListener("mouseenter", () => scheduleActivePanel(panel));
+          panel.addEventListener("mouseenter", () =>
+            scheduleActivePanel(panel),
+          );
           panel.addEventListener("mouseleave", () => scheduleActivePanel(null));
           panel.addEventListener("focus", () => {
             clearHoverTimer();
@@ -231,7 +238,9 @@ const { items = [], class: className = "" } = Astro.props;
           panel.addEventListener("blur", () => scheduleActivePanel(null));
         });
 
-        accordion.addEventListener("mouseleave", () => scheduleActivePanel(null));
+        accordion.addEventListener("mouseleave", () =>
+          scheduleActivePanel(null),
+        );
       }
 
       const observer = new IntersectionObserver(

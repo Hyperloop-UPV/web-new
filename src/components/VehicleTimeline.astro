@@ -44,9 +44,11 @@ const {
       class="text-white/70 mt-2 text-sm md:text-base"
     />
   </div>
-  <div class="horizontal-track timeline-track flex flex-col md:flex-row md:w-fit w-full mt-20 items-center md:items-center">
+  <div
+    class="horizontal-track timeline-track flex flex-col md:flex-row md:w-fit w-full mt-20 items-center md:items-center"
+  >
     {
-      items.slice(0,3).map((vehicle, index) => (
+      items.slice(0, 3).map((vehicle, index) => (
         <article
           class:list={[
             "panel",
@@ -67,32 +69,32 @@ const {
           >
             <span class="timeline-node" />
           </div>
-		                <div class="timeline-image-slot">
-                <img
-                  src={vehicle.image}
-                  alt={`${vehicle.code} vehicle`}
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
+          <div class="timeline-image-slot">
+            <img
+              src={vehicle.image}
+              alt={`${vehicle.code} vehicle`}
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
           <div class="timeline-card mt-30" data-tilt-card>
             <div class:list={["timeline-card-inner"]}>
               <div class="timeline-content">
-				<span class="flex flex-row justify-between items-center gap-3">
-                <h3 class="timeline-code">{vehicle.vehicleName}</h3>
-				<span class="flex flex-col items-end">
-				                <p class="timeline-meta">{vehicle.years}</p>
-                <p class="timeline-name">{vehicle.code}</p>
-				</span>
-				</span>
-				<span class="flex flex-row justify-between gap-3">
-                <p class="timeline-description">{vehicle.description}</p>
-                <ul class="timeline-accolades">
-                  {vehicle.accolades.map((accolade) => (
-                    <li>{accolade}</li>
-                  ))}
-                </ul>
-				</span>
+                <span class="flex flex-row justify-between items-center gap-3">
+                  <h3 class="timeline-code">{vehicle.vehicleName}</h3>
+                  <span class="flex flex-col items-end">
+                    <p class="timeline-meta">{vehicle.years}</p>
+                    <p class="timeline-name">{vehicle.code}</p>
+                  </span>
+                </span>
+                <span class="flex flex-row justify-between gap-3">
+                  <p class="timeline-description">{vehicle.description}</p>
+                  <ul class="timeline-accolades">
+                    {vehicle.accolades.map((accolade) => (
+                      <li>{accolade}</li>
+                    ))}
+                  </ul>
+                </span>
               </div>
             </div>
           </div>
