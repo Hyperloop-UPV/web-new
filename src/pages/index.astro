@@ -57,6 +57,7 @@ const faceGallery = memberFaces.length
     description={t("mission.description")}
     images={missionImages}
     imageHeight={300}
+    mobileImageHeight={150}
     class="bg-[#0f0f0f]"
   />
 
@@ -79,149 +80,194 @@ const faceGallery = memberFaces.length
 
   gsap.registerPlugin(ScrollTrigger, ScrollSmoother, Observer);
 
-  const smoother = ScrollSmoother.create({
-    wrapper: "#smooth-wrapper",
-    content: "#smooth-content",
-    smooth: 1.5,
-    effects: true,
-    smoothTouch: 0.1,
-  });
+  // Detect if device prefers reduced motion
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
 
-  let heroLocked = true;
-  smoother.paused(true);
+  // Detect mobile (< 768px)
+  const isMobile = window.innerWidth < 768;
+  const isTablet = window.innerWidth < 1024;
+
+  // Only apply ScrollSmoother on desktop without reduced motion
+  let smoother;
+  if (!isMobile && !prefersReducedMotion) {
+    smoother = ScrollSmoother.create({
+      wrapper: "#smooth-wrapper",
+      content: "#smooth-content",
+      smooth: 1.5,
+      effects: true,
+      smoothTouch: 0.1,
+    });
+  }
+
+  let heroLocked = !isMobile; // Only lock hero on desktop
+  if (smoother) {
+    smoother.paused(true);
+  }
 
   const heroHeight =
     document.querySelector(".hero-section")?.getBoundingClientRect().height ||
     window.innerHeight;
 
-  const heroObserver = Observer.create({
-    target: window,
-    type: "wheel,touch",
-    onDown: () => {
-      if (!heroLocked) return;
-      heroLocked = false;
-      heroObserver.disable();
-      smoother.paused(false);
-      smoother.scrollTo(heroHeight, true, "top top");
-    },
-    tolerance: 50,
-    preventDefault: true,
-  });
-
-  ScrollTrigger.create({
-    start: 1,
-    end: 2,
-    onLeaveBack: () => {
-      heroLocked = true;
-      smoother.paused(true);
-      heroObserver.enable();
-    },
-  });
-
-  gsap.utils.toArray<HTMLElement>(".fade-up").forEach((el) => {
-    gsap.from(el, {
-      y: 60,
-      opacity: 0,
-      duration: 1,
-      ease: "power3.out",
-      scrollTrigger: {
-        trigger: el,
-        start: "top 85%",
-        toggleActions: "play none none reverse",
+  // Only create hero observer on desktop
+  let heroObserver;
+  if (!isMobile && smoother) {
+    heroObserver = Observer.create({
+      target: window,
+      type: "wheel,touch",
+      onDown: () => {
+        if (!heroLocked) return;
+        heroLocked = false;
+        heroObserver.disable();
+        smoother.paused(false);
+        smoother.scrollTo(heroHeight, true, "top top");
       },
+      tolerance: 50,
+      preventDefault: true,
     });
-  });
 
-  const track = document.querySelector<HTMLElement>(".horizontal-track");
-  const panels = gsap.utils.toArray<HTMLElement>(".panel");
-  if (track && panels.length) {
-    gsap.to(track, {
-      x: () => -(track.scrollWidth - window.innerWidth),
-      ease: "none",
-      scrollTrigger: {
-        trigger: ".horizontal-scroll-wrapper",
-        pin: true,
-        scrub: 1,
-        end: () => `+=${track.scrollWidth - window.innerWidth}`,
-        invalidateOnRefresh: true,
+    ScrollTrigger.create({
+      start: 1,
+      end: 2,
+      onLeaveBack: () => {
+        heroLocked = true;
+        smoother.paused(true);
+        heroObserver.enable();
       },
     });
   }
 
-  const parallaxSection = document.querySelector(".parallax-section");
-  const parallaxLayers = gsap.utils.toArray<HTMLElement>(".js-parallax-layer");
-  if (parallaxSection && parallaxLayers.length) {
-    parallaxLayers.forEach((layer) => {
-      const depth = Number(layer.dataset.depth ?? 20);
+  // Fade-up animations (light enough for mobile)
+  if (!prefersReducedMotion) {
+    gsap.utils.toArray<HTMLElement>(".fade-up").forEach((el) => {
+      gsap.from(el, {
+        y: 60,
+        opacity: 0,
+        duration: 1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 85%",
+          toggleActions: "play none none reverse",
+        },
+      });
+    });
+  }
+
+  // Horizontal scroll animation (desktop only)
+  if (!isMobile && !prefersReducedMotion) {
+    const track = document.querySelector<HTMLElement>(".horizontal-track");
+    const panels = gsap.utils.toArray<HTMLElement>(".panel");
+    if (track && panels.length) {
+      gsap.to(track, {
+        x: () => -(track.scrollWidth - window.innerWidth),
+        ease: "none",
+        scrollTrigger: {
+          trigger: ".horizontal-scroll-wrapper",
+          pin: true,
+          scrub: 1,
+          end: () => `+=${track.scrollWidth - window.innerWidth}`,
+          invalidateOnRefresh: true,
+        },
+      });
+    }
+  }
+
+  // Parallax effect (desktop only)
+  if (!isMobile && !prefersReducedMotion) {
+    const parallaxSection = document.querySelector(".parallax-section");
+    const parallaxLayers =
+      gsap.utils.toArray<HTMLElement>(".js-parallax-layer");
+    if (parallaxSection && parallaxLayers.length) {
+      parallaxLayers.forEach((layer) => {
+        const depth = Number(layer.dataset.depth ?? 20);
+        gsap.fromTo(
+          layer,
+          { yPercent: -depth * 0.55 },
+          {
+            yPercent: depth,
+            ease: "none",
+            scrollTrigger: {
+              trigger: parallaxSection,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: true,
+              invalidateOnRefresh: true,
+            },
+          },
+        );
+      });
+    }
+  }
+
+  // Team pin text animation
+  if (!prefersReducedMotion) {
+    const teamCopy = document.querySelector(".team-pin-text");
+    if (teamCopy) {
       gsap.fromTo(
-        layer,
-        { yPercent: -depth * 0.55 },
+        teamCopy,
+        { y: 24, opacity: 0.4 },
         {
-          yPercent: depth,
-          ease: "none",
+          y: 0,
+          opacity: 1,
+          ease: "power2.out",
           scrollTrigger: {
-            trigger: parallaxSection,
-            start: "top bottom",
-            end: "bottom top",
+            trigger: ".pin-section",
+            start: "top 75%",
+            end: "top 40%",
             scrub: true,
-            invalidateOnRefresh: true,
           },
         },
       );
-    });
-  }
-  const teamCopy = document.querySelector(".team-pin-text");
-  const teamPinColumn = document.querySelector(".team-pin-column");
-  const pinSection = document.querySelector(".pin-section");
-  if (teamCopy) {
-    gsap.fromTo(
-      teamCopy,
-      { y: 24, opacity: 0.4 },
-      {
-        y: 0,
-        opacity: 1,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: ".pin-section",
-          start: "top 75%",
-          end: "top 40%",
-          scrub: true,
-        },
-      },
-    );
+    }
   }
 
-  if (
-    teamPinColumn &&
-    pinSection &&
-    window.matchMedia("(min-width: 768px)").matches
-  ) {
-    ScrollTrigger.create({
-      trigger: pinSection,
-      start: "top top",
-      end: "bottom bottom",
-      pin: teamPinColumn,
-      pinSpacing: false,
-      anticipatePin: 1,
-      invalidateOnRefresh: true,
-    });
+  // Team pin column (desktop only)
+  if (!isMobile && !prefersReducedMotion) {
+    const teamPinColumn = document.querySelector(".team-pin-column");
+    const pinSection = document.querySelector(".pin-section");
+    if (teamPinColumn && pinSection) {
+      ScrollTrigger.create({
+        trigger: pinSection,
+        start: "top top",
+        end: "bottom bottom",
+        pin: teamPinColumn,
+        pinSpacing: false,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+      });
+    }
   }
 
-  const teamGrid = document.querySelector(".team-grid");
-  if (teamGrid) {
-    gsap.fromTo(
-      teamGrid,
-      { y: 60 },
-      {
-        y: -140,
-        ease: "none",
-        scrollTrigger: {
-          trigger: ".pin-section",
-          start: "top top",
-          end: "bottom bottom",
-          scrub: true,
+  // Team grid animation (reduced on mobile)
+  if (!prefersReducedMotion) {
+    const teamGrid = document.querySelector(".team-grid");
+    if (teamGrid) {
+      const yValue = isMobile ? -60 : -140; // Less movement on mobile
+      gsap.fromTo(
+        teamGrid,
+        { y: 60 },
+        {
+          y: yValue,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".pin-section",
+            start: "top top",
+            end: "bottom bottom",
+            scrub: true,
+          },
         },
-      },
-    );
+      );
+    }
   }
+
+  // Reload ScrollTrigger on window resize to adapt to orientation changes
+  let resizeTimer;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 250);
+  });
 </script>

@@ -1,0 +1,240 @@
+---
+import { changeLanguage, t } from "i18next";
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import PageHero from "../../components/PageHero.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import Button from "../../components/Button.astro";
+
+changeLanguage("va");
+
+const pageTitle = String(t("nav.about"));
+const pageDescription = String(t("about.description"));
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <Header slot="header" />
+  <PageHero
+    title={pageTitle}
+    description={pageDescription}
+    colors={["#ff7f24", "#20274c", "#20274c"]}
+  />
+
+  <section class="bg-[#0f0f0f] px-6 py-16 md:px-10 md:py-20">
+    <div
+      class="h-200 flex flex-col justify-end p-8 bg-[url('/img/team.jpg')] bg-cover bg-center rounded-2xl mb-16 relative overflow-hidden"
+    >
+      <div
+        class="absolute inset-0 rounded-2xl z-10"
+        style="background: linear-gradient(to top, black, transparent);"
+      >
+      </div>
+      <div
+        class="flex items-center justify-between mx-auto w-full max-w-6xl gap-20"
+      >
+        <div>
+          <div class="text-5xl font-black text-gray-800">
+            {t("about.who.stats.years")}
+          </div>
+          <div class="mt-2 text-md text-gray-600 text-center">
+            {t("about.who.stats.yearLabel")}
+          </div>
+        </div>
+        <div>
+          <div class="text-5xl font-black text-gray-800">
+            {t("about.who.stats.partners")}
+          </div>
+          <div class="mt-2 text-md text-gray-600 text-center">
+            {t("about.who.stats.partnersLabel")}
+          </div>
+        </div>
+        <div>
+          <div class="text-5xl font-black text-gray-800">
+            {t("about.who.stats.members")}
+          </div>
+          <div class="mt-2 text-md text-gray-600 text-center">
+            {t("about.who.stats.membersLabel")}
+          </div>
+        </div>
+      </div>
+      <div class="m-auto mb-0 max-w-6xl relative z-10">
+        <h2 class="text-5xl font-black text-white">{t("about.who.title")}</h2>
+        <p class="mt-6 text-lg leading-8 text-slate-300">
+          {t("about.who.description")}
+        </p>
+        <div class="mt-8">
+          <Button
+            variant="outline"
+            class="text-sky-300 border-sky-300/50 hover:border-sky-300 hover:bg-sky-500/10"
+          >
+            {t("about.who.discover")}
+          </Button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mx-auto max-w-6xl mt-20 grid gap-8 lg:grid-cols-2">
+      <div
+        class="rounded-2xl h-120 relative overflow-hidden bg-[url('/img/mission.jpg')] bg-cover bg-center"
+      >
+        <div
+          class="absolute inset-0 rounded-2xl"
+          style="background: linear-gradient(to top, black, transparent);"
+        >
+        </div>
+        <div
+          class="absolute inset-0 flex flex-col justify-end p-8 z-10"
+        >
+          <h3 class="text-2xl font-bold text-white">
+            {t("about.mission.title")}
+          </h3>
+          <p class="mt-4 text-slate-300 leading-relaxed">
+            {t("about.mission.description")}
+          </p>
+        </div>
+      </div>
+      <div
+        class="rounded-2xl h-120 relative overflow-hidden bg-[url('/img/vision.jpg')] bg-cover bg-center"
+      >
+        <div
+          class="absolute inset-0 rounded-2xl"
+          style="background: linear-gradient(to top, black, transparent);"
+        >
+        </div>
+        <div
+          class="absolute inset-0 flex flex-col justify-end p-8 z-10"
+        >
+          <h3 class="text-2xl font-bold text-white">
+            {t("about.vision.title")}
+          </h3>
+          <p class="mt-4 text-slate-300 leading-relaxed">
+            {t("about.vision.description")}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<section class="bg-[#0a0a0a] px-6 py-16 md:px-10 md:py-20">
+  <div class="mx-auto max-w-6xl">
+    <h2 class="text-5xl font-black text-white text-center mb-4">
+      {t("about.values.title")}
+    </h2>
+    <p class="text-center text-slate-300 mb-16 max-w-2xl mx-auto">
+      {t("about.ehw.shaping")}
+    </p>
+
+    <div class="grid gap-6 lg:grid-cols-2">
+      <div
+        class="rounded-2xl border border-white/10 bg-white/5 p-8 hover:bg-white/8 transition"
+      >
+        <h3 class="text-2xl font-bold text-white">
+          {t("about.values.commitment.title")}
+        </h3>
+        <p class="mt-4 text-slate-300 leading-relaxed">
+          {t("about.values.commitment.description")}
+        </p>
+      </div>
+      <div
+        class="rounded-2xl border border-white/10 bg-white/5 p-8 hover:bg-white/8 transition"
+      >
+        <h3 class="text-2xl font-bold text-white">
+          {t("about.values.innovation.title")}
+        </h3>
+        <p class="mt-4 text-slate-300 leading-relaxed">
+          {t("about.values.innovation.description")}
+        </p>
+      </div>
+      <div
+        class="rounded-2xl border border-white/10 bg-white/5 p-8 hover:bg-white/8 transition"
+      >
+        <h3 class="text-2xl font-bold text-white">
+          {t("about.values.learning.title")}
+        </h3>
+        <p class="mt-4 text-slate-300 leading-relaxed">
+          {t("about.values.learning.description")}
+        </p>
+      </div>
+      <div
+        class="rounded-2xl border border-white/10 bg-white/5 p-8 hover:bg-white/8 transition"
+      >
+        <h3 class="text-2xl font-bold text-white">
+          {t("about.values.sustainability.title")}
+        </h3>
+        <p class="mt-4 text-slate-300 leading-relaxed">
+          {t("about.values.sustainability.description")}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bg-[#0f0f0f] px-6 py-16 md:px-10 md:py-20">
+  <div class="mx-auto max-w-6xl">
+    <div class="grid gap-8 lg:grid-cols-2 items-center">
+      <div>
+        <h2 class="text-4xl font-black text-white">{t("about.ehw.title")}</h2>
+        <p class="mt-6 text-slate-300 leading-relaxed">
+          {t("about.ehw.description")}
+        </p>
+        <p class="mt-6 text-slate-300 leading-relaxed">
+          {t("about.ehw.conclusion")}
+        </p>
+        <div class="mt-8">
+          <Button
+            variant="outline"
+            class="text-sky-300 border-sky-300/50 hover:border-sky-300 hover:bg-sky-500/10"
+          >
+            {t("about.ehw.discover")}
+          </Button>
+        </div>
+      </div>
+      <div class="space-y-4">
+        <img
+          src="/img/ehw_1.jpg"
+          alt="European Hyperloop Week"
+          class="rounded-2xl w-full h-64 object-cover"
+        />
+        <img
+          src="/img/ehw_2.jpg"
+          alt="Team Event"
+          alt="Team Event"
+          class="rounded-2xl w-full h-64 object-cover"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bg-[#0a0a0a] px-6 py-16 md:px-10 md:py-20">
+  <div class="mx-auto max-w-6xl">
+    <div class="grid gap-8 lg:grid-cols-2 items-center">
+      <div class="space-y-4 lg:order-2">
+        <img
+          src="/img/pod_1.png"
+          alt="Pod Competition"
+          class="rounded-2xl w-full h-64 object-cover"
+        />
+        <img
+          src="/img/pod_2.png"
+          alt="Team Competition"
+          class="rounded-2xl w-full h-64 object-cover"
+        />
+      </div>
+      <div class="lg:order-1">
+        <h2 class="text-4xl font-black text-white">
+          {t("about.competition.title")}
+        </h2>
+        <p class="mt-6 text-slate-300 leading-relaxed">
+          {t("about.competition.description")}
+        </p>
+        <p class="mt-6 text-slate-300 leading-relaxed">
+          {t("about.competition.conclusion")}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<SiteFooter />

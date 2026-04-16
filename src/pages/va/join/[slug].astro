@@ -1,14 +1,14 @@
 ---
 import { t, changeLanguage } from "i18next";
-import Layout from "../../layouts/Layout.astro";
-import Header from "../../components/Header.astro";
-import Breadcrumbs from "../../components/Breadcrumbs.astro";
-import ImagesCarousel from "../../components/ImagesCarousel.astro";
-import SiteFooter from "../../components/SiteFooter.astro";
-import Button from "../../components/Button.astro";
-import { contentRepository } from "../../lib/contentful/repository";
+import Layout from "../../../layouts/Layout.astro";
+import Header from "../../../components/Header.astro";
+import Breadcrumbs from "../../../components/Breadcrumbs.astro";
+import ImagesCarousel from "../../../components/ImagesCarousel.astro";
+import SiteFooter from "../../../components/SiteFooter.astro";
+import Button from "../../../components/Button.astro";
+import { contentRepository } from "../../../lib/contentful/repository";
 
-changeLanguage("en");
+changeLanguage("va");
 
 const { slug } = Astro.params;
 const job = await contentRepository.getJobOpeningBySlug(slug);

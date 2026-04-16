@@ -1,6 +1,12 @@
 ---
 import i18next, { t } from "i18next";
 import { localizePath } from "astro-i18next";
+import {
+  getNextLocale,
+  getLocaleLabel,
+  SUPPORTED_LOCALES,
+  stripLocale,
+} from "../lib/i18n";
 
 const navItems = [
   { label: t("nav.about"), href: localizePath("/about") },
@@ -11,16 +17,33 @@ const navItems = [
   { label: t("nav.contact"), href: localizePath("/contact") },
 ];
 
-const langSwitchLabel = i18next.language === "es" ? "EN" : "ES";
-const langSwitchHref = localizePath(
-  "/",
-  i18next.language === "es" ? "en" : "es",
-);
+// Language menu data
+const languageImageMap = {
+  en: "/img/en.png",
+  es: "/img/es.png",
+  va: "/img/va.png",
+};
+
+const currentLocale = i18next.language || "en";
+const nextLocale = getNextLocale(currentLocale);
+const currentLocaleLabel = getLocaleLabel(currentLocale);
+const currentLocaleImage = languageImageMap[currentLocale];
+
+// Get current page path without locale prefix
+const currentPath = stripLocale(Astro.url.pathname);
+
+const languageOptions = SUPPORTED_LOCALES.map((locale) => ({
+  label: getLocaleLabel(locale),
+  href: localizePath(currentPath, locale),
+  isActive: currentLocale === locale,
+  image: languageImageMap[locale],
+}));
+
 const homeHref = localizePath("/");
 ---
 
 <header
-  class="mt-3 mx-3 rounded-full top-0 left-0 w-full max-w-[1500px] left-1/2 -translate-x-1/2 z-[1000] flex items-center justify-between px-8 py-4 bg-[rgba(10,10,10,0.85)] backdrop-blur-xl border border-white/[0.06] fixed"
+  class="lg:mt-3 lg:mx-3 rounded-b-3xl lg:rounded-full top-0 left-0 w-full max-w-[1500px] left-1/2 -translate-x-1/2 z-[1000] flex items-center justify-between px-8 py-4 bg-[rgba(10,10,10,0.85)] backdrop-blur-xl lg:border border-white/[0.06] fixed"
 >
   <a
     href={homeHref}
@@ -30,7 +53,11 @@ const homeHref = localizePath("/");
       src="/img/isotype_white.svg"
       alt="Logo"
       class="logo-light block h-8"
-    /><img src="/img/isotype_text.svg" alt="Logo" class="logo-bold block h-4" />
+    /><img
+      src="/img/isotype_text.svg"
+      alt="Logo"
+      class="logo-bold h-4 hidden lg:block"
+    />
   </a>
 
   <nav class="hidden md:flex items-center gap-8">
@@ -44,22 +71,55 @@ const homeHref = localizePath("/");
         </a>
       ))
     }
+    <span class="flex flex-row items-center gap-3">
+      <div class="relative group hidden md:block">
+        <button
+          id="lang-switcher"
+          class="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest translate-x-3 text-white/60 hover:text-white transition-colors duration-200 no-underline border border-white/20 rounded-full px-6 py-3"
+          aria-label="Switch language"
+          aria-expanded="false"
+        >
+          <img
+            src={currentLocaleImage}
+            alt={currentLocaleLabel}
+            class="w-5 h-4 object-cover rounded"
+          />
+          {currentLocaleLabel}
+        </button>
+        <div
+          id="lang-dropdown"
+          class="absolute right-0 mt-2 w-32 bg-[rgba(10,10,10,0.95)] border border-white/20 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50"
+        >
+          {
+            languageOptions.map((option) => (
+              <a
+                href={option.href}
+                class={`flex items-center gap-2 w-full px-4 py-3 text-xs font-semibold uppercase tracking-widest transition-colors border-b border-white/10 last:border-b-0 ${
+                  option.isActive
+                    ? "text-white bg-white/10"
+                    : "text-white/60 hover:text-white hover:bg-white/5"
+                }`}
+              >
+                <img
+                  src={option.image}
+                  alt={option.label}
+                  class="w-5 h-4 object-cover rounded"
+                />
+                {option.label}
+              </a>
+            ))
+          }
+        </div>
+      </div>
 
-    <a
-      href={langSwitchHref}
-      class="hidden md:inline-flex text-xs font-semibold uppercase tracking-widest translate-x-3 text-white/60 hover:text-white transition-colors duration-200 no-underline border border-white/20 rounded-full px-3 py-1"
-      aria-label="Switch language"
-    >
-      {langSwitchLabel}
-    </a>
-
-    <a
-      href="/join"
-      class="hidden md:inline-flex text-xs font-semibold uppercase tracking-widest translate-x-3 text-black bg-white hover:bg-white/90 transition-colors duration-200 no-underline border border-white/20 rounded-full px-6 py-3"
-      aria-label="Switch language"
-    >
-      {t("header.join_us")}
-    </a>
+      <a
+        href={localizePath("/join")}
+        class="hidden md:inline-flex text-xs font-semibold uppercase tracking-widest translate-x-3 text-black bg-white hover:bg-white/90 transition-colors duration-200 no-underline border border-white/20 rounded-full px-6 py-3"
+        aria-label="Switch language"
+      >
+        {t("header.join_us")}
+      </a>
+    </span>
   </nav>
 
   <button
@@ -96,11 +156,32 @@ const homeHref = localizePath("/");
       ))
     }
     <a
-      href="/join"
+      href={localizePath("/join")}
       class="mobile-nav-link text-2xl font-semibold bg-white px-4 py-2 rounded-full text-black hover:bg-white/90 no-underline uppercase tracking-widest transition-colors duration-200"
     >
       {t("header.join_us")}
     </a>
+    <div class="flex gap-3 mt-4 pt-4 border-t border-white/20">
+      {
+        languageOptions.map((option) => (
+          <a
+            href={option.href}
+            class={`flex items-center gap-2 text-sm font-semibold uppercase tracking-widest px-3 py-2 rounded-full transition-colors ${
+              option.isActive
+                ? "text-white bg-white/10 border border-white/20"
+                : "text-white/60 hover:text-white border border-white/10"
+            }`}
+          >
+            <img
+              src={option.image}
+              alt={option.label}
+              class="w-5 h-4 object-cover rounded"
+            />
+            {option.label}
+          </a>
+        ))
+      }
+    </div>
   </nav>
 </div>
 
@@ -110,7 +191,7 @@ const homeHref = localizePath("/");
 
   gsap.registerPlugin(ScrollTrigger);
 
-  const isotypeText = document.querySelector(".logo-bold") as HTMLElement;
+  const isotypeText = document.querySelector(".logo-bold");
   if (isotypeText) {
     gsap.to(isotypeText, {
       x: -18,
@@ -124,8 +205,8 @@ const homeHref = localizePath("/");
     });
   }
 
-  const toggle = document.getElementById("menu-toggle")!;
-  const menu = document.getElementById("mobile-menu")!;
+  const toggle = document.getElementById("menu-toggle");
+  const menu = document.getElementById("mobile-menu");
   const bars = toggle.querySelectorAll(".menu-bar");
   const links = menu.querySelectorAll(".mobile-nav-link");
   let isOpen = false;

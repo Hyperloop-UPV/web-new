@@ -1,216 +1,271 @@
 ---
-import Title from './Title.astro';
-import { t } from 'i18next';
+import Title from "./Title.astro";
+import { t } from "i18next";
 interface Props {
-	title?: string;
-	description?: string;
-	images: string[];
-	imageHeight?: number;
-	class?: string;
+  title?: string;
+  description?: string;
+  images: string[];
+  imageHeight?: number;
+  mobileImageHeight?: number;
+  class?: string;
 }
 
 const {
-	title = t('mission.title'),
-	description = t('mission.description'),
-	images = [],
-	imageHeight = 300,
-	class: className = '',
+  title = t("mission.title"),
+  description = t("mission.description"),
+  images = [],
+  imageHeight = 300,
+  mobileImageHeight = 150,
+  class: className = "",
 } = Astro.props;
 
 const imagePool = images.filter(Boolean);
 ---
 
-<section class:list={['mission-hover relative min-h-screen overflow-hidden text-white', className]} data-mission-hover>
-	<div class="mission-image-layer absolute inset-0 z-0" data-mission-layer>
-		{imagePool.map((src, i) => (
-			<img
-				class="mission-image is-hidden"
-				data-mission-image
-				src={src}
-				alt={`Mission image ${i + 1}`}
-				style={`--spawn-h:${imageHeight}px;`}
-				loading="lazy"
-				decoding="async"
-			/>
-		))}
-	</div>
+<section
+  class:list={[
+    "mission-hover relative min-h-screen overflow-hidden text-white",
+    className,
+  ]}
+  data-mission-hover
+  data-desktop-height={imageHeight}
+  data-mobile-height={mobileImageHeight}
+>
+  <div class="mission-image-layer absolute inset-0 z-0" data-mission-layer>
+    {
+      imagePool.map((src, i) => (
+        <img
+          class="mission-image is-hidden"
+          data-mission-image
+          src={src}
+          alt={`Mission image ${i + 1}`}
+          style={`--spawn-h:${imageHeight}px;`}
+          loading="lazy"
+          decoding="async"
+        />
+      ))
+    }
+  </div>
 
-	<div class="mission-overlay absolute inset-0 z-[1]"></div>
+  <div class="mission-overlay absolute inset-0 z-[1]"></div>
 
-	<div class="mission-copy relative z-[2] mx-auto min-h-screen max-w-[900px] px-8 py-16 flex flex-col items-begin justify-center text-center">
-		<Title text={title} class="mb-8 text-[clamp(1.8rem,3vw,3rem)] font-black tracking-tight"/>
-		<Title text={description} class="text-[clamp(1rem,2vw,1.25rem)] leading-relaxed text-white/86"/>
-	</div>
+  <div
+    class="mission-copy relative z-[2] mx-auto min-h-screen max-w-[900px] px-8 py-16 flex flex-col items-begin justify-center text-center"
+  >
+    <Title
+      text={title}
+      class="mb-8 text-[clamp(1.8rem,3vw,3rem)] font-black tracking-tight"
+    />
+    <Title
+      text={description}
+      class="text-[clamp(1rem,2vw,1.25rem)] leading-relaxed text-white/86"
+    />
+  </div>
 </section>
 
 <script>
-	const sections = document.querySelectorAll<HTMLElement>('[data-mission-hover]');
+  // Detect mobile device (touch-capable)
+  const isMobile =
+    window.innerWidth < 768 || window.matchMedia("(hover: none)").matches;
 
-	sections.forEach((section) => {
-		if (section.dataset.hoverInit === 'true') return;
-		section.dataset.hoverInit = 'true';
+  const sections = document.querySelectorAll<HTMLElement>(
+    "[data-mission-hover]",
+  );
 
-		const layer = section.querySelector<HTMLElement>('[data-mission-layer]');
-		const templates = Array.from(section.querySelectorAll<HTMLImageElement>('[data-mission-image]'));
-		if (!layer || !templates.length) return;
+  sections.forEach((section) => {
+    if (section.dataset.hoverInit === "true") return;
+    section.dataset.hoverInit = "true";
 
-		let hoverActive = false;
-		let nextIndex = 0;
-		let lastSpawn = 0;
-		let lastSpawnX = -9999;
-		let lastSpawnY = -9999;
-		const spawned: HTMLImageElement[] = [];
+    // Disable hover effect on mobile for performance
+    if (isMobile) {
+      section.style.opacity = "1";
+      return;
+    }
 
-		const MAX_SPAWNED = 50;
-		const MOVE_THRESHOLD_PX = 120;
-		const RETIRE_MS = 360;
+    const layer = section.querySelector<HTMLElement>("[data-mission-layer]");
+    const templates = Array.from(
+      section.querySelectorAll<HTMLImageElement>("[data-mission-image]"),
+    );
+    if (!layer || !templates.length) return;
 
-		const rand = (min: number, max: number) => min + Math.random() * (max - min);
-		const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
+    let hoverActive = false;
+    let nextIndex = 0;
+    let lastSpawn = 0;
+    let lastSpawnX = -9999;
+    let lastSpawnY = -9999;
+    const spawned: HTMLImageElement[] = [];
 
-		const spawn = (x: number, y: number, spread = 0) => {
-			const template = templates[nextIndex % templates.length];
-			nextIndex += 1;
+    const MAX_SPAWNED = 50;
+    const MOVE_THRESHOLD_PX = 120;
+    const RETIRE_MS = 360;
 
-			const node = template.cloneNode(true) as HTMLImageElement;
-			node.classList.remove('is-hidden');
-			node.classList.remove('is-live');
-			node.classList.remove('is-retiring');
-			node.removeAttribute('data-mission-image');
+    const rand = (min: number, max: number) =>
+      min + Math.random() * (max - min);
+    const clamp = (n: number, min: number, max: number) =>
+      Math.max(min, Math.min(max, n));
 
-			const rect = section.getBoundingClientRect();
-			const localX = clamp(x - rect.left + rand(-spread, spread), 0, rect.width);
-			const localY = clamp(y - rect.top + rand(-spread, spread), 0, rect.height);
+    const spawn = (x: number, y: number, spread = 0) => {
+      const template = templates[nextIndex % templates.length];
+      nextIndex += 1;
 
-			const spawnH = Number.parseInt(getComputedStyle(template).getPropertyValue('--spawn-h')) || 300;
-			const aspect = rand(1.15, 1.85);
-			node.style.width = `${Math.round(spawnH * aspect)}px`;
-			node.style.left = `${localX}px`;
-			node.style.top = `${localY}px`;
-			node.style.setProperty('--spin', `${rand(-8, 8)}deg`);
-			node.style.setProperty('--drift-x', `${rand(-26, 26)}px`);
-			node.style.setProperty('--drift-y', `${rand(-44, -20)}px`);
+      const node = template.cloneNode(true) as HTMLImageElement;
+      node.classList.remove("is-hidden");
+      node.classList.remove("is-live");
+      node.classList.remove("is-retiring");
+      node.removeAttribute("data-mission-image");
 
-			layer.appendChild(node);
-			void node.offsetWidth;
-			node.classList.add('is-live');
+      const rect = section.getBoundingClientRect();
+      const localX = clamp(
+        x - rect.left + rand(-spread, spread),
+        0,
+        rect.width,
+      );
+      const localY = clamp(
+        y - rect.top + rand(-spread, spread),
+        0,
+        rect.height,
+      );
 
-			spawned.push(node);
-			if (spawned.length > MAX_SPAWNED) {
-				const oldest = spawned.shift();
-				if (oldest) {
-					oldest.classList.remove('is-live');
-					oldest.classList.add('is-retiring');
-					window.setTimeout(() => oldest.remove(), RETIRE_MS);
-				}
-			}
-		};
+      const spawnH =
+        Number.parseInt(
+          getComputedStyle(template).getPropertyValue("--spawn-h"),
+        ) || 300;
+      const aspect = rand(1.15, 1.85);
+      node.style.width = `${Math.round(spawnH * aspect)}px`;
+      node.style.left = `${localX}px`;
+      node.style.top = `${localY}px`;
+      node.style.setProperty("--spin", `${rand(-8, 8)}deg`);
+      node.style.setProperty("--drift-x", `${rand(-26, 26)}px`);
+      node.style.setProperty("--drift-y", `${rand(-44, -20)}px`);
 
-		const onMove = (e: MouseEvent) => {
-			if (!hoverActive) return;
+      layer.appendChild(node);
+      void node.offsetWidth;
+      node.classList.add("is-live");
 
-			const dx = e.clientX - lastSpawnX;
-			const dy = e.clientY - lastSpawnY;
-			const distance = Math.hypot(dx, dy);
-			if (distance < MOVE_THRESHOLD_PX) return;
+      spawned.push(node);
+      if (spawned.length > MAX_SPAWNED) {
+        const oldest = spawned.shift();
+        if (oldest) {
+          oldest.classList.remove("is-live");
+          oldest.classList.add("is-retiring");
+          window.setTimeout(() => oldest.remove(), RETIRE_MS);
+        }
+      }
+    };
 
-			const now = performance.now();
-			if (now - lastSpawn < 70) return;
+    const onMove = (e: MouseEvent) => {
+      if (!hoverActive) return;
 
-			lastSpawn = now;
-			lastSpawnX = e.clientX;
-			lastSpawnY = e.clientY;
+      const dx = e.clientX - lastSpawnX;
+      const dy = e.clientY - lastSpawnY;
+      const distance = Math.hypot(dx, dy);
+      if (distance < MOVE_THRESHOLD_PX) return;
 
-			// Exactly one spawn when threshold is met.
-			spawn(e.clientX, e.clientY, 0);
-		};
+      const now = performance.now();
+      if (now - lastSpawn < 70) return;
 
-		const onEnter = (e: MouseEvent) => {
-			hoverActive = true;
-			lastSpawnX = e.clientX;
-			lastSpawnY = e.clientY;
-			spawn(e.clientX, e.clientY, 0);
-		};
+      lastSpawn = now;
+      lastSpawnX = e.clientX;
+      lastSpawnY = e.clientY;
 
-		const onLeave = () => {
-			hoverActive = false;
-		};
+      // Exactly one spawn when threshold is met.
+      spawn(e.clientX, e.clientY, 0);
+    };
 
-		section.addEventListener('mouseenter', onEnter);
-		section.addEventListener('mousemove', onMove);
-		section.addEventListener('mouseleave', onLeave);
+    const onEnter = (e: MouseEvent) => {
+      hoverActive = true;
+      lastSpawnX = e.clientX;
+      lastSpawnY = e.clientY;
+      spawn(e.clientX, e.clientY, 0);
+    };
 
-		section.addEventListener('astro:unmount', () => {
-			section.removeEventListener('mouseenter', onEnter);
-			section.removeEventListener('mousemove', onMove);
-			section.removeEventListener('mouseleave', onLeave);
-			spawned.forEach((node) => node.remove());
-		});
-	});
+    const onLeave = () => {
+      hoverActive = false;
+    };
+
+    section.addEventListener("mouseenter", onEnter);
+    section.addEventListener("mousemove", onMove);
+    section.addEventListener("mouseleave", onLeave);
+
+    section.addEventListener("astro:unmount", () => {
+      section.removeEventListener("mouseenter", onEnter);
+      section.removeEventListener("mousemove", onMove);
+      section.removeEventListener("mouseleave", onLeave);
+      spawned.forEach((node) => node.remove());
+    });
+  });
 </script>
 
 <style>
-	.mission-overlay {
-		background:
-			radial-gradient(circle at 50% 55%, rgba(255, 255, 255, 0.08), transparent 52%),
-			linear-gradient(180deg, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.62));
-	}
+  .mission-overlay {
+    background:
+      radial-gradient(
+        circle at 50% 55%,
+        rgba(255, 255, 255, 0.08),
+        transparent 52%
+      ),
+      linear-gradient(180deg, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.62));
+  }
 
-	.mission-image {
-		position: absolute;
-		left: 0;
-		top: 0;
-		height: var(--spawn-h, 300px);
-		max-width: min(44vw, 560px);
-		object-fit: cover;
-		border-radius: 14px;
-		border: 1px solid rgba(255, 255, 255, 0.22);
-		box-shadow: 0 16px 38px rgba(0, 0, 0, 0.35);
-		transform: translate(-50%, -50%);
-		opacity: 0;
-		pointer-events: none;
-	}
+  .mission-image {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: var(--spawn-h, 300px);
+    max-width: min(44vw, 560px);
+    object-fit: cover;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 16px 38px rgba(0, 0, 0, 0.35);
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    pointer-events: none;
+  }
 
-	.mission-image.is-hidden {
-		opacity: 0;
-		visibility: hidden;
-	}
+  .mission-image.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
 
-	.mission-image.is-live {
-		visibility: visible;
-		animation: mission-pop 1.9s cubic-bezier(0.18, 0.78, 0.22, 1) forwards;
-	}
+  .mission-image.is-live {
+    visibility: visible;
+    animation: mission-pop 1.9s cubic-bezier(0.18, 0.78, 0.22, 1) forwards;
+  }
 
-	.mission-image.is-retiring {
-		visibility: visible;
-		animation: mission-retire 0.36s ease forwards;
-	}
+  .mission-image.is-retiring {
+    visibility: visible;
+    animation: mission-retire 0.36s ease forwards;
+  }
 
-	@keyframes mission-pop {
-		0% {
-			transform: translate(-50%, -50%) scale(0.84) rotate(var(--spin, 0deg));
-			opacity: 0;
-		}
-		12% {
-			opacity: 0.95;
-		}
-		70% {
-			opacity: 0.88;
-		}
-		100% {
-			transform: translate(calc(-50% + var(--drift-x, 0px)), calc(-50% + var(--drift-y, -28px))) scale(1.04) rotate(var(--spin, 0deg));
-			opacity: 1;
-		}
-	}
+  @keyframes mission-pop {
+    0% {
+      transform: translate(-50%, -50%) scale(0.84) rotate(var(--spin, 0deg));
+      opacity: 0;
+    }
+    12% {
+      opacity: 0.95;
+    }
+    70% {
+      opacity: 0.88;
+    }
+    100% {
+      transform: translate(
+          calc(-50% + var(--drift-x, 0px)),
+          calc(-50% + var(--drift-y, -28px))
+        )
+        scale(1.04) rotate(var(--spin, 0deg));
+      opacity: 1;
+    }
+  }
 
-	@keyframes mission-retire {
-		0% {
-			opacity: 1;
-			filter: blur(0px);
-		}
-		100% {
-			opacity: 0;
-			filter: blur(1.5px);
-		}
-	}
+  @keyframes mission-retire {
+    0% {
+      opacity: 1;
+      filter: blur(0px);
+    }
+    100% {
+      opacity: 0;
+      filter: blur(1.5px);
+    }
+  }
 </style>

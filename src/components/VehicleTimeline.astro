@@ -28,7 +28,7 @@ const {
 
 <section
   class:list={[
-    "horizontal-scroll-wrapper timeline-section overflow-hidden h-screen text-white",
+    "horizontal-scroll-wrapper timeline-section overflow-hidden h-auto md:h-screen text-white px-6 lg:px-0",
     className,
   ]}
 >
@@ -44,9 +44,9 @@ const {
       class="text-white/70 mt-2 text-sm md:text-base"
     />
   </div>
-  <div class="horizontal-track timeline-track flex w-fit mt-20 items-center">
+  <div class="horizontal-track timeline-track flex flex-col md:flex-row md:w-fit w-full mt-20 items-center md:items-center">
     {
-      items.map((vehicle, index) => (
+      items.slice(0,3).map((vehicle, index) => (
         <article
           class:list={[
             "panel",
@@ -104,8 +104,17 @@ const {
 
 <script>
   const initTimeline3D = () => {
+    // Detect mobile/touch device
+    const isMobile = window.innerWidth < 768;
+    const isTouchDevice = !window.matchMedia("(hover: hover)").matches;
+
     const cards = document.querySelectorAll<HTMLElement>("[data-tilt-card]");
     if (!cards.length) return;
+
+    // Only add 3D tilt on desktop with hover support
+    if (isMobile || isTouchDevice) {
+      return;
+    }
 
     cards.forEach((card) => {
       if (card.dataset.tiltInit === "true") return;
@@ -155,11 +164,37 @@ const {
   }
 
   .timeline-panel {
-    width: min(86vw, 1080px);
-    height: min(78vh, 620px);
+    width: 100%;
+    height: auto;
     position: relative;
     display: flex;
     align-items: center;
+    flex-direction: column;
+  }
+
+  @media (min-width: 768px) {
+    .timeline-panel {
+      width: min(86vw, 1080px);
+      height: min(78vh, 620px);
+      flex-direction: row;
+      shrink: 0;
+    }
+  }
+
+  .timeline-line {
+    display: none;
+    position: absolute;
+    left: -1.2rem;
+    right: -1.2rem;
+    top: 4%;
+    height: 2px;
+    background: white;
+  }
+
+  @media (min-width: 768px) {
+    .timeline-line {
+      display: block;
+    }
   }
 
   .timeline-line {
@@ -188,6 +223,7 @@ const {
   }
 
   .timeline-node {
+    display: none;
     position: absolute;
     left: 3.6rem;
     top: 50%;
@@ -199,14 +235,27 @@ const {
     box-shadow: 0 0 0 6px rgba(194, 194, 194, 0.2);
   }
 
+  @media (min-width: 768px) {
+    .timeline-node {
+      display: block;
+    }
+  }
+
   .timeline-card {
-	margin-top:500px;
+    margin-top: 500px;
     width: 100%;
     height: 100%;
     perspective: 1200px;
     --rx: 0deg;
     --ry: 0deg;
-	z-index: 0;
+    z-index: 0;
+  }
+
+  @media (max-width: 767px) {
+    .timeline-card {
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
   }
 
   .timeline-card-inner {
@@ -227,12 +276,28 @@ const {
     overflow: hidden;
   }
 
+  @media (max-width: 767px) {
+    .timeline-card-inner {
+      padding: 1.5rem;
+      gap: 1rem;
+    }
+  }
+
   .timeline-image-slot {
-	top:0;
+    top: 0;
     height: 200px;
     min-height: 280px;
-	z-index: 1;
-	position:absolute;
+    z-index: 1;
+    position: absolute;
+  }
+
+  @media (max-width: 767px) {
+    .timeline-image-slot {
+      position: relative;
+      height: 200px;
+      min-height: auto;
+      margin-bottom: 1rem;
+    }
   }
 
   .timeline-image-slot img {
@@ -299,7 +364,28 @@ const {
     color: rgba(220, 247, 251, 0.95);
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 767px) {
+    .timeline-panel {
+      width: 100%;
+      height: auto;
+    }
+
+    .timeline-card-inner {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr;
+      padding: 1.25rem;
+    }
+
+    .timeline-line {
+      top: 18%;
+    }
+
+    .timeline-node {
+      left: 1.4rem;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 900px) {
     .timeline-panel {
       width: min(94vw, 900px);
       height: min(82vh, 680px);

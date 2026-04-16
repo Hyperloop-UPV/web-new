@@ -38,11 +38,11 @@ const secondaryImage = bg[1] ?? bg[0] ?? "/img/pod_sketch.jpg";
 </section>
 
 <section
-  class="top-0 left-1/2 -translate-x-1/2 pb-32 hero-section absolute h-screen w-full max-w-[1500px] px-6 md:px-10 lg:px-16 flex items-end justify-start overflow-hidden text-white pointer-events-none z-[10]"
+  class="top-0 left-1/2 -translate-x-1/2 pb-10 lg:pb-32 hero-section absolute h-screen w-full max-w-[1500px] px-6 md:px-10 lg:px-16 flex items-end justify-start overflow-hidden text-white pointer-events-none z-[10]"
 >
   <div class="relative z-10 text-left">
     <p
-      class="hero-eyebrow text-sm font-medium uppercase tracking-[0.25em] text-white/45 mb-6"
+      class="hero-eyebrow text-sm font-medium uppercase tracking-[0.25em] text-white/45 mb-3 lg:mb-6"
     >
       Universitat Politècnica de València · H11 · EHW
     </p>
@@ -53,13 +53,13 @@ const secondaryImage = bg[1] ?? bg[0] ?? "/img/pod_sketch.jpg";
     </h1>
     <Title
 	  text={description}
-      class="hero-description mt-12 text-[clamp(1rem,2vw,1.2rem)] max-w-[700px] leading-relaxed text-white/55"
+      class="hero-description mt-6 lg:mt-12 text-[clamp(1rem,2vw,1.2rem)] max-w-[700px] leading-relaxed text-white/55"
     />
-    <div class="hero-cta mt-10 flex gap-4 flex-wrap">
-      <Button href="#about" variant="primary" pullStrength={12}>
+    <div class="hidden lg:flex hero-cta mt-10 gap-4 flex-wrap">
+      <Button href="/about" variant="primary" pullStrength={12}>
         {t("hero.discover")}
       </Button>
-      <Button href="#team" variant="outline" pullStrength={10}>
+      <Button href="/team" variant="outline" pullStrength={10}>
         {t("hero.team")}
       </Button>
     </div>

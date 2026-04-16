@@ -1,6 +1,8 @@
 {
   "site": {
-    "title": "Hyperloop UPV"
+    "title": "Hyperloop UPV",
+    "description": "Hyperloop UPV diseña y valida sistemas de transporte de alta velocidad mediante ingeniería real y pruebas.",
+    "scroll": "Haz scroll para más información"
   },
   "nav": {
     "about": "Nosotros",
@@ -8,7 +10,8 @@
     "trajectory": "Trayectoria",
     "investigation": "Investigación",
     "partners": "Socios",
-    "contact": "Contacto"
+    "contact": "Contacto",
+    "join": "Únete"
   },
   "mission": {
     "title": "Nuestra misión",
@@ -41,6 +44,9 @@
     "title": "Shaping the Future.",
     "contact": "Contacto",
     "navigate": "Navegar",
+    "mission": "Misión",
+    "subsystems": "Subsistemas",
+    "vehicles": "Vehículos",
     "support": "Apoyo",
     "sponsor": "Patrocínanos",
     "join": "Únete al equipo",
@@ -54,9 +60,15 @@
     "join_us": "Únete"
   },
   "join": {
+    "description": "Explora las posiciones abiertas y las áreas para unirte a Hyperloop UPV.",
+    "intro": "Filtra por área para encontrar el rol que encaja contigo.",
     "uncategorized": "Sin categoría",
     "all": "Todos",
     "apply": "Aplica",
+    "apply_now": "Aplica ahora",
+    "back_to_openings": "Volver a vacantes",
+    "detail_title": "Detalles de la vacante",
+    "detail_description": "Conoce más sobre este puesto en Hyperloop UPV.",
     "team": {
       "label": "El equipo",
       "title": "¿Cómo nos organizamos?"

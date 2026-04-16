@@ -1,0 +1,156 @@
+---
+import { changeLanguage, t } from "i18next";
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import PageHero from "../../components/PageHero.astro";
+import Button from "../../components/Button.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import { contentRepository } from "../../lib/contentful/repository";
+
+changeLanguage("va");
+
+const pageTitle = String(t("nav.partners"));
+const pageDescription = String(t("partners.body"));
+const partners = await contentRepository.getPartners("en-US");
+const latestDossier = await contentRepository.getLatestDossier("en-US");
+const tierStats = Object.values(partners.reduce((acc, partner) => {
+    const status = partner.status;
+    if (!status || !status.name)
+        return acc;
+    const key = status.name;
+    if (!acc[key]) {
+        acc[key] = {
+            name: status.name,
+            colorHex: status.colorHex,
+            priority: status.priority,
+            perks: status.perks?.length ? status.perks : [],
+            count: 0,
+        };
+    }
+    acc[key].count += 1;
+    return acc;
+}, {} as Record<string, {
+    name: string;
+    colorHex?: string;
+    priority?: number;
+    perks?: string[];
+    count: number;
+}>));
+const tierStatsAsc = tierStats.sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0));
+const partnersByTier: Record<string, typeof partners> = {};
+for (const partner of partners) {
+    const tier = partner.status?.name ?? "Other";
+    if (!partnersByTier[tier])
+        partnersByTier[tier] = [];
+    partnersByTier[tier].push(partner);
+}
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <Header slot="header" />
+  <PageHero
+    title={pageTitle}
+    description={pageDescription}
+    colors={["#1f1a12", "#6d4a20", "#d38a3e"]}
+  />
+
+  <section
+    class="left-1/2 -translate-x-1/2 max-w-[1200px] py-20 px-6 md:px-10 bg-[#0f0f0f] text-white relative"
+  >
+    <h2 class="text-4xl font-black mb-8">{t("partners.tiers")}</h2>
+    <div class="grid grid-cols-1 md:grid-cols-12 grid-rows-3 gap-4 mb-6">
+      {
+        tierStatsAsc.map((tier, index) => {
+          const colSpan =
+            tier.priority === 4
+              ? 6
+              : tier.priority === 2
+                ? 3
+                : tier.priority === 1
+                  ? 6
+                  : 3;
+          const rowSpan = tier.priority && tier.priority >= 1 ? 2 : 1;
+          const infoTextClass =
+            index < 3 ? "text-lg md:text-xl font-semibold" : "text-md";
+          const bgColor = tier.colorHex ? `${tier.colorHex}10` : "#181818";
+          return (
+            <article
+              class="rounded-xl border border-white/10 p-4 flex flex-col justify-between h-full hover:-translate-y-3 duration-200"
+              style={`grid-column: span ${colSpan}; grid-row: span ${rowSpan}; background-color: ${bgColor}`}
+            >
+              <h3
+                class="text-3xl font-bold mb-2"
+                style={`color: ${tier.colorHex ?? "#fff"}`}
+              >
+                {tier.name}
+              </h3>
+              <div
+                class={`list-disc list-inside ${infoTextClass} text-white/80 flex flex-col gap-3`}
+              >
+                {tier.perks?.map((perk) => (
+                  <span class="px-3 py-1 rounded-lg bg-white/10">{perk}</span>
+                ))}
+              </div>
+            </article>
+          );
+        })
+      }
+    </div>
+
+    {
+      latestDossier?.file && (
+        <div class="mb-14">
+          <Button
+            href={latestDossier.file}
+            variant="primary"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t("partners.latest_dossier")}
+          </Button>
+        </div>
+      )
+    }
+
+    <div class="mt-24 space-y-16">
+      {
+        Object.entries(partnersByTier)
+          .reverse()
+          .map(([tier, tierPartners], tierIndex) => (
+            <div>
+              <h3
+                class="text-5xl font-bold mb-4 flex items-center gap-3"
+                style={`color: ${tierStats.find((t) => t.name === tier)?.colorHex ?? "#fff"}`}
+              >
+                <span>{tier}</span>
+              </h3>
+              <div class="flex flex-wrap items-center justify-center gap-8">
+                {tierPartners.map((partner) => (
+                  <a
+                    href={partner.url || "#"}
+                    class="partner-card group relative overflow-hidden flex flex-col justify-center items-center"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    {partner.image && (
+                      <img
+                        src={partner.image}
+                        alt={partner.name}
+                        class={
+                          tierIndex === 0
+                            ? "h-64 max-w-64 object-contain"
+                            : "h-32 max-w-32 object-contain"
+                        }
+                      />
+                    )}
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))
+      }
+    </div>
+  </section>
+
+  <SiteFooter />
+</Layout>

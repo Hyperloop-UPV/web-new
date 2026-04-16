@@ -25,7 +25,11 @@ const { jobOpening } = Astro.props as Props;
   </a>
   {
     jobOpening.formLink && (
-      <Button variant="outline" href={jobOpening.formLink} class="w-full">
+      <Button
+        variant="outline"
+        externalHref={jobOpening.formLink}
+        class="w-full"
+      >
         {t("join.apply")}
       </Button>
     )

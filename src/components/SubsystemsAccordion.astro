@@ -33,7 +33,7 @@ const { items = [], class: className = "" } = Astro.props;
     text={t("subsystems.title")}
     class="mb-8 text-[clamp(1.8rem,3vw,3rem)] font-black tracking-tight"
   />
-  <div class="subsystems-accordion w-full h-[420px]" data-subsystems-accordion>
+  <div class="subsystems-accordion w-full flex flex-col md:flex-row h-auto md:h-[420px]" data-subsystems-accordion>
     {
       items.map((item, index) => (
         <a
@@ -76,6 +76,9 @@ const { items = [], class: className = "" } = Astro.props;
 
 <script>
   const initSubsystemsAnimation = () => {
+    // Detect mobile device
+    const isMobile = window.innerWidth < 768;
+
     const sections = document.querySelectorAll<HTMLElement>(
       "[data-subsystems-section]",
     );
@@ -148,23 +151,26 @@ const { items = [], class: className = "" } = Astro.props;
         }, HOVER_SWITCH_DELAY_MS);
       };
 
-      panels.forEach((panel) => {
-        const imageUrl = panel.dataset.funImage || "";
-        panel.addEventListener("mouseenter", () =>
-          scheduleFunBackground(imageUrl),
-        );
-        panel.addEventListener("focus", () => scheduleFunBackground(imageUrl));
-        panel.addEventListener("mouseleave", () => scheduleFunBackground(""));
-        panel.addEventListener("blur", () => scheduleFunBackground(""));
-      });
+      // Only add hover event listeners on desktop (non-mobile)
+      if (!isMobile) {
+        panels.forEach((panel) => {
+          const imageUrl = panel.dataset.funImage || "";
+          panel.addEventListener("mouseenter", () =>
+            scheduleFunBackground(imageUrl),
+          );
+          panel.addEventListener("focus", () => scheduleFunBackground(imageUrl));
+          panel.addEventListener("mouseleave", () => scheduleFunBackground(""));
+          panel.addEventListener("blur", () => scheduleFunBackground(""));
+        });
 
-      section.addEventListener("mouseleave", () => scheduleFunBackground(""));
-      section.addEventListener("mouseenter", () => {
-        if (decisionTimer !== null) {
-          window.clearTimeout(decisionTimer);
-          decisionTimer = null;
-        }
-      });
+        section.addEventListener("mouseleave", () => scheduleFunBackground(""));
+        section.addEventListener("mouseenter", () => {
+          if (decisionTimer !== null) {
+            window.clearTimeout(decisionTimer);
+            decisionTimer = null;
+          }
+        });
+      }
 
       section.addEventListener("astro:unmount", clearTimers);
     });
@@ -213,17 +219,20 @@ const { items = [], class: className = "" } = Astro.props;
         }, HOVER_SWITCH_DELAY_MS);
       };
 
-      panels.forEach((panel) => {
-        panel.addEventListener("mouseenter", () => scheduleActivePanel(panel));
-        panel.addEventListener("mouseleave", () => scheduleActivePanel(null));
-        panel.addEventListener("focus", () => {
-          clearHoverTimer();
-          applyActivePanel(panel);
+      // Only add hover event listeners on desktop (non-mobile)
+      if (!isMobile) {
+        panels.forEach((panel) => {
+          panel.addEventListener("mouseenter", () => scheduleActivePanel(panel));
+          panel.addEventListener("mouseleave", () => scheduleActivePanel(null));
+          panel.addEventListener("focus", () => {
+            clearHoverTimer();
+            applyActivePanel(panel);
+          });
+          panel.addEventListener("blur", () => scheduleActivePanel(null));
         });
-        panel.addEventListener("blur", () => scheduleActivePanel(null));
-      });
 
-      accordion.addEventListener("mouseleave", () => scheduleActivePanel(null));
+        accordion.addEventListener("mouseleave", () => scheduleActivePanel(null));
+      }
 
       const observer = new IntersectionObserver(
         (entries) => {
@@ -254,8 +263,17 @@ const { items = [], class: className = "" } = Astro.props;
 <style>
   .subsystems-accordion {
     display: flex;
+    flex-direction: column;
     position: relative;
     z-index: 2;
+    gap: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .subsystems-accordion {
+      flex-direction: row;
+      gap: 0;
+    }
   }
 
   .subsystems-fun-bg {
@@ -296,7 +314,7 @@ const { items = [], class: className = "" } = Astro.props;
   }
 
   .subsystem-panel {
-    flex: 1 1 0;
+    flex: 1 1 auto;
     min-width: 0;
     position: relative;
     display: flex;
@@ -321,6 +339,14 @@ const { items = [], class: className = "" } = Astro.props;
     transition: 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
     transition-delay: 0.2s;
     will-change: transform, opacity, filter;
+    height: 180px;
+  }
+
+  @media (min-width: 768px) {
+    .subsystem-panel {
+      flex: 1 1 0;
+      height: auto;
+    }
   }
 
   .subsystem-panel::after {
@@ -481,7 +507,13 @@ const { items = [], class: className = "" } = Astro.props;
     transition-delay: 0.2s;
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 767px) {
+    .subsystem-panel {
+      margin-right: 0;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 900px) {
     .subsystems-accordion {
       height: 340px;
       gap: 0.5rem;

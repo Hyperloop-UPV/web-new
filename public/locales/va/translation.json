@@ -1,0 +1,213 @@
+{
+  "site": {
+    "title": "Hyperloop UPV",
+    "description": "Hyperloop UPV dissenya i valida sistemes de transport d'alta velocitat mitjançant enginyeria real i proves.",
+    "scroll": "Fes scroll per més informació"
+  },
+  "nav": {
+    "about": "Nosaltres",
+    "team": "Equip",
+    "trajectory": "Trajectòria",
+    "investigation": "Investigació",
+    "partners": "Socis",
+    "contact": "Contacte",
+    "join": "Uneix-te"
+  },
+  "mission": {
+    "title": "La nostra missió",
+    "description": "Dissenyem i desenvolupem sistemes Hyperloop combinant enginyeria, innovació i proves reals per superar els límits del transport d'alta velocitat."
+  },
+  "hero": {
+    "discover": "Descobrir més",
+    "team": "Coneix l'equip"
+  },
+  "team": {
+    "title": "Les cares darrere del pod",
+    "subtitle": "Un equip en creixement d'enginyers, dissenyadors i creadors impulsant el pod endavant. Desplaça't per veure més persones que construeixen el futur.",
+    "roleFallback": "Membre de l'equip",
+    "cta": "Uneix-te a l'equip"
+  },
+  "vehicles": {
+    "title": "Línia temporal de vehicles",
+    "subtitle": "Les nostres creacions més recents, els pods que marquen el camí"
+  },
+  "partners": {
+    "title": "Impulsat pel teu suport",
+    "body": "Aquest any, a Hyperloop UPV apostem per una visió completament escalable, un nou vehicle prototip i la seua infraestructura. La manera d'aconseguir-ho és envoltar-nos d'empreses disposades a pertenyer a aquest equip, ja que només units aconseguirem deixar petjada en la societat. Apostar per Hyperloop UPV no sols significa construir junts el transport del futur, també presenta una sèrie d'avantatges per al present dels nostres patrocinadors.",
+    "cta": "Dona'ns suport",
+    "by_tier": "Socis per nivell",
+    "tiers": "Això és el que oferim:",
+    "dossier": "Veure dossier",
+    "latest_dossier": "Obrir l'últim dossier"
+  },
+  "footer": {
+    "title": "Shaping the Future.",
+    "contact": "Contacte",
+    "navigate": "Navegar",
+    "mission": "Missió",
+    "subsystems": "Subsistemes",
+    "vehicles": "Vehicles",
+    "support": "Suport",
+    "sponsor": "Patrocina'ns",
+    "join": "Uneix-te a l'equip",
+    "rights": "Tots els drets reservats.",
+    "made": "Fet per l'equip de programari de Hyperloop UPV.",
+    "linkedin": "LinkedIn",
+    "instagram": "Instagram",
+    "address": "Camí de Vera S/N Edifici 8N, UPV"
+  },
+  "header": {
+    "join_us": "Uneix-te"
+  },
+  "join": {
+    "description": "Explora les posicions obertes i les àrees per unir-te a Hyperloop UPV.",
+    "intro": "Filtra per àrea per trobar el rol que t'encaixa.",
+    "uncategorized": "Sense categoria",
+    "all": "Tots",
+    "apply": "Aplica",
+    "apply_now": "Aplica ara",
+    "back_to_openings": "Tornar a vacants",
+    "detail_title": "Detalls de la vacant",
+    "detail_description": "Coneix més sobre aquest lloc a Hyperloop UPV.",
+    "team": {
+      "label": "L'equip",
+      "title": "Com ens organitzem"
+    },
+    "areas": {
+      "direction": {
+        "title": "Direcció",
+        "description": "Lideratge estratègic i presa de decisions per a la visió i els objectius de l'organització."
+      },
+      "operations": {
+        "title": "Operacions",
+        "description": "Gestió eficient i coordinació de tots els processos i recursos organitzacionals."
+      },
+      "engineering": {
+        "title": "Enginyeria",
+        "description": "Innovació tècnica i implementació de solucions d'avantguarda."
+      }
+    },
+    "subsystems": {
+      "label": "Els subsistemes",
+      "title": "De què s'encarrega cada àrea?"
+    }
+  },
+  "subsystems": {
+    "title": "Subsistemes",
+    "description": "Aquestes són les persones que ajuden a impulsar aquest projecte. Fes clic en un subsistema per saber-ne més."
+  },
+  "about": {
+    "description": "Explora la nostra història, identitat i valors.",
+    "who": {
+      "title": "Qui som?",
+      "description": "Hyperloop UPV som un equip de 50 estudiants de múltiples disciplines de la Universitat Politècnica de València units amb l'objectiu de dissenyar, implementar i perfeccionar la tecnologia hyperloop.",
+      "discover": "Descobreix més",
+      "stats": {
+        "years": "10+",
+        "yearLabel": "anys",
+        "partners": "80+",
+        "partnersLabel": "socis",
+        "members": "50",
+        "membersLabel": "membres"
+      }
+    },
+    "mission": {
+      "title": "Missió",
+      "description": "Motivar joves talents a formar-se i innovar en un entorn multidisciplinari a través del desenvolupament de la tecnologia hyperloop que transforma la mobilitat de manera sostenible i responsable."
+    },
+    "vision": {
+      "title": "Visió",
+      "description": "Ser un equip universitari referent internacional, reconegut per liderar la innovació en transport del futur i generar solucions a escala global."
+    },
+    "values": {
+      "title": "Els nostres valors",
+      "commitment": {
+        "title": "Compromís",
+        "description": "Lleialtat, responsabilitat i consciència amb l'equip, la universitat i els partners"
+      },
+      "innovation": {
+        "title": "Innovació",
+        "description": "Creativitat i esperit pioner per superar límits tecnològics i explorar noves idees"
+      },
+      "learning": {
+        "title": "Aprenentatge",
+        "description": "Desenvolupament continu del talent jove i creixement multidisciplinari."
+      },
+      "sustainability": {
+        "title": "Sostenibilitat",
+        "description": "Impacte positiu i responsable amb el desenvolupament de la tecnologia hyperloop"
+      }
+    },
+    "ehw": {
+      "shaping": "Shaping the future.",
+      "title": "European Hyperloop Week",
+      "description": "En 2019, vam decidir embarcar-nos en un informe desafiant junt amb 3 de les millors universitats europees (University of Edinburgh, Delft University of Technology, ETH Zurich) en un esdeveniment de tecnologia hyperloop on pogueren compartir el millor de les nostres idees i forjar una comunitat alimentada per la visió de fer realitat el hyperloop.",
+      "conclusion": "Així va naixer la European Hyperloop Week (EHW), un esdeveniment que va molt més enlà d'una mera competició, impulsat per la curiositat insaciable d'estudiants joves i el desig d'aprendre.",
+      "discover": "Descobreix més"
+    },
+    "competition": {
+      "title": "Hyperloop Pod Competition",
+      "description": "En 2015 un equip de 5 estudiants de la Universitat Politècnica de València va decidir apuntar-se al desafiament presentat per SpaceX i canviar el món de la competició mundial en hyperloop. Aquest primer any es va presentar una proposta conceptual i l'equip universitari va viatjar fins a California per viure l'experiència de competició i va acabar guanyant múltiples premis.",
+      "conclusion": "A partir de l'èxit rotund del que hui coneixem com a 'HI - THE FUTURE CONCEPT' cada any s'ha anat realitzant l'experiència de desenvolupar un model de hyperloop per poder presentar-lo en les competicions internacionals i continuar treballant per desenvolupar el transport del futur."
+    }
+  },
+  "trajectory": {
+    "description": "Descobreix les fites que defineixen la nostra trajectòria."
+  },
+  "investigation": {
+    "description": "Cada any a Hyperloop UPV realitzem investigacions tècniques i socioeconòmiques que ens ajuden a poder desenvolupar el transport del futur.",
+    "why": {
+      "title": "Per què hyperloop?",
+      "description": "Hyperloop es presenta com una alternativa davant d'altres mitjans de transport perquè combina alta velocitat, eficiència energètica i menor impacte ambiental. A diferència d'altres mitjans convencionals, redueix temps de viatge sense dependre de combustibles fòssils.",
+      "sustainability": "Sostenibilitat",
+      "speed": "Velocitat",
+      "comfort": "Comoditat"
+    },
+    "how": {
+      "title": "Com funciona?",
+      "description": "El hyperloop és un sistema de transport d'alta velocitat que combina levitació magnètica, propulsió elèctrica i entorns de baixa pressió. El seu funcionament es basa en tres elements:",
+      "vacuum": {
+        "title": "Tub al buit",
+        "description": "En reduir la quantitat d'aire, es minimitza la resistència aerodinámica, que és el principal límit de velocitat en els sistemes de transport convencionals."
+      },
+      "capsule": {
+        "title": "Càpsula o 'pod'",
+        "description": "Els passatgers o la càrrega viatgen dins de càpsules pressuritzades. Aquestes càpsules estan dissenyades per ser lleugeres, aerodinàmiques i segures."
+      },
+      "levitation": {
+        "title": "Levitació i propulsió",
+        "description": "La càpsula es desplaca sobre la via gràcies a sistemes de levitació magnètica, eliminant la fricció. L'acceleració s'aconsegueix mitjançant motors lineals elèctrics distribuïts al llarg del recorregut."
+      }
+    }
+  },
+  "contact": {
+    "description": "Posa't en contacte amb nosaltres per a col-laboracions i consultes.",
+    "tagline": "Selecciona el teu perfil:",
+    "headline": "Vols contactar amb nosaltres?",
+    "subtitle": "Tria el teu perfil per obtenir una resposta ràpida i personalitzada.",
+    "profiles": {
+      "business": "Soc una empresa i m'interessa el projecte",
+      "student": "Soc estudiant i vull coneixer l'equip",
+      "other": "Altres"
+    },
+    "profileLabel": {
+      "business": "Empresa",
+      "student": "Estudiant",
+      "other": "Altres"
+    },
+    "info": {
+      "title": "Contacte directe",
+      "name": "Hyperloop UPV",
+      "addressLabel": "Adreça",
+      "address": "Edifici 8N, València, Espanya",
+      "phoneLabel": "Telèfon",
+      "phone": "+34 668 555 000",
+      "emailLabel": "Email",
+      "email": "contact@hyperloopupv.com",
+      "quickHelp": "Necessites ajuda?",
+      "ask": "Envia el teu missatge directament a l'equip.",
+      "description": "Responem ràpid a empreses, estudiants i altres consultes. Tria el perfil que millor s'adapte a la teua pregunta.",
+      "sendEmail": "Enviar correu"
+    }
+  }
+}

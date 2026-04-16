@@ -1,7 +1,8 @@
 {
   "site": {
     "title": "Hyperloop UPV",
-    "description": "Hyperloop UPV designs and validates high-speed transportation systems through real engineering and testing."
+    "description": "Hyperloop UPV designs and validates high-speed transportation systems through real engineering and testing.",
+    "scroll": "Scroll for more information"
   },
   "nav": {
     "about": "About",
@@ -9,7 +10,8 @@
     "trajectory": "Trajectory",
     "investigation": "Investigation",
     "partners": "Partners",
-    "contact": "Contact"
+    "contact": "Contact",
+    "join": "Join"
   },
   "mission": {
     "title": "Our mission",
@@ -58,9 +60,15 @@
     "join_us": "Join us"
   },
   "join": {
+    "description": "Explore open roles and areas to join Hyperloop UPV.",
+    "intro": "Filter by area to find the role that fits you.",
     "uncategorized": "Uncategorized",
     "all": "All",
     "apply": "Apply",
+    "apply_now": "Apply now",
+    "back_to_openings": "Back to openings",
+    "detail_title": "Opening details",
+    "detail_description": "Learn more about this role at Hyperloop UPV.",
     "team": {
       "label": "The team",
       "title": "How we organize"

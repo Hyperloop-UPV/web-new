@@ -3,6 +3,7 @@ import Button from "./Button.astro";
 import Title from "./Title.astro";
 import { Mail, Linkedin, Instagram, MapPin } from "lucide-astro";
 import { t } from "i18next";
+import { localizePath } from "../lib/i18n";
 
 import { contentRepository } from "../lib/contentful/repository";
 import i18next from "i18next";
@@ -74,7 +75,7 @@ const heroDescription =
           </li>
           <li>
             <a
-              href="https://www.linkedin.com"
+              href="https://es.linkedin.com/company/hyperloopupv"
               class="inline-flex items-center gap-2 transition-colors hover:text-white"
             >
               <Linkedin class="h-4 w-4" aria-hidden="true" />
@@ -83,7 +84,7 @@ const heroDescription =
           </li>
           <li>
             <a
-              href="https://www.instagram.com"
+              href="https://www.instagram.com/hyperloopupv/"
               class="inline-flex items-center gap-2 transition-colors hover:text-white"
             >
               <Instagram class="h-4 w-4" aria-hidden="true" />
@@ -116,7 +117,7 @@ const heroDescription =
           {
             navItems.map((item) => (
               <li>
-                <a href={`/` + item.href} class="transition-colors hover:text-white">
+                <a href={localizePath(`/${item.href}`)} class="transition-colors hover:text-white">
                   {item.label}
                 </a>
               </li>
@@ -132,10 +133,10 @@ const heroDescription =
           {t("footer.support")}
         </h3>
         <div class="mt-5 flex flex-col items-start gap-3">
-          <Button href="#" variant="primary" class="w-full"
+          <Button href="/contact" variant="primary" class="w-full"
             >{t("footer.sponsor")}</Button
           >
-          <Button href="#" variant="outline" class="w-full"
+          <Button href="/join" variant="outline" class="w-full"
             >{t("footer.join")}</Button
           >
         </div>

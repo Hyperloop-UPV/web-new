@@ -1,6 +1,9 @@
 ---
+import { localizePath } from "astro-i18next";
+
 interface Props {
   href?: string;
+  externalHref?: string;
   variant?: "primary" | "outline";
   pullStrength?: number;
   class?: string;
@@ -10,12 +13,20 @@ interface Props {
 
 const {
   href,
+  externalHref,
   variant = "primary",
   pullStrength = 10,
   class: className = "",
   target,
   rel,
 } = Astro.props as Props;
+
+// Use externalHref as-is, or localize href if provided
+const finalHref = externalHref
+  ? externalHref
+  : href
+    ? localizePath(href)
+    : undefined;
 
 const variantClasses = {
   primary: "bg-white text-[#050505] hover:bg-gray-100",
@@ -29,9 +40,9 @@ const classes = `${baseClasses} ${variantClasses[variant]} ${className}`.trim();
 ---
 
 {
-  href ? (
+  finalHref ? (
     <a
-      href={href}
+      href={finalHref}
       class={classes}
       data-pull-strength={pullStrength}
       target={target}
@@ -61,9 +72,7 @@ const classes = `${baseClasses} ${variantClasses[variant]} ${className}`.trim();
   ).matches;
 
   if (!reduceMotion) {
-    const magneticButtons = document.querySelectorAll<HTMLElement>(
-      ".js-magnetic-button",
-    );
+    const magneticButtons = document.querySelectorAll(".js-magnetic-button");
 
     for (const button of magneticButtons) {
       if (button.dataset.magneticReady === "true") continue;
@@ -83,7 +92,7 @@ const classes = `${baseClasses} ${variantClasses[variant]} ${className}`.trim();
         button.style.transition = transitionBeforeHover;
       };
 
-      button.addEventListener("pointermove", (event: PointerEvent) => {
+      button.addEventListener("pointermove", (event) => {
         const rect = button.getBoundingClientRect();
         const strength = Number(button.dataset.pullStrength ?? 10);
         const offsetX = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
