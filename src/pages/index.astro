@@ -76,20 +76,16 @@ const faceGallery = memberFaces.length
   import gsap from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   import { ScrollSmoother } from "gsap/ScrollSmoother";
-  import { Observer } from "gsap/all";
 
-  gsap.registerPlugin(ScrollTrigger, ScrollSmoother, Observer);
+  gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
-  // Detect if device prefers reduced motion
   const prefersReducedMotion = window.matchMedia(
     "(prefers-reduced-motion: reduce)",
   ).matches;
 
-  // Detect mobile (< 768px)
   const isMobile = window.innerWidth < 768;
   const isTablet = window.innerWidth < 1024;
 
-  // Only apply ScrollSmoother on desktop without reduced motion
   let smoother;
   if (!isMobile && !prefersReducedMotion) {
     smoother = ScrollSmoother.create({
@@ -98,43 +94,6 @@ const faceGallery = memberFaces.length
       smooth: 1.5,
       effects: true,
       smoothTouch: 0.1,
-    });
-  }
-
-  let heroLocked = !isMobile; // Only lock hero on desktop
-  if (smoother) {
-    smoother.paused(true);
-  }
-
-  const heroHeight =
-    document.querySelector(".hero-section")?.getBoundingClientRect().height ||
-    window.innerHeight;
-
-  // Only create hero observer on desktop
-  let heroObserver;
-  if (!isMobile && smoother) {
-    heroObserver = Observer.create({
-      target: window,
-      type: "wheel,touch",
-      onDown: () => {
-        if (!heroLocked) return;
-        heroLocked = false;
-        heroObserver.disable();
-        smoother.paused(false);
-        smoother.scrollTo(heroHeight, true, "top top");
-      },
-      tolerance: 50,
-      preventDefault: true,
-    });
-
-    ScrollTrigger.create({
-      start: 1,
-      end: 2,
-      onLeaveBack: () => {
-        heroLocked = true;
-        smoother.paused(true);
-        heroObserver.enable();
-      },
     });
   }
 

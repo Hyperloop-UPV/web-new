@@ -616,6 +616,7 @@ const safeColors =
       resize();
 
       const start = performance.now();
+      let rafId = 0;
       const frame = () => {
         resize();
 
@@ -668,10 +669,17 @@ const safeColors =
         gl.uniform3fv(renderUniforms.colors, packed);
         gl.uniform1i(renderUniforms.colorCount, safe.length);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
-        requestAnimationFrame(frame);
+        rafId = requestAnimationFrame(frame);
       };
 
-      requestAnimationFrame(frame);
+      rafId = requestAnimationFrame(frame);
+
+      section.addEventListener("astro:unmount", () => {
+        if (rafId) cancelAnimationFrame(rafId);
+        window.removeEventListener("resize", resize);
+        section.removeEventListener("pointermove", onPointerMove);
+        section.removeEventListener("pointerleave", onPointerLeave);
+      }, { once: true });
     });
   };
 

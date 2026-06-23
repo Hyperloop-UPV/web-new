@@ -40,7 +40,7 @@ const { items = [], class: className = "" } = Astro.props;
     {
       items.map((item, index) => (
         <a
-          href={item.href}
+          href={`/team#${item.label}`}
           class="subsystem-panel"
           aria-label={item.label}
           data-fun-image={item.funImage ?? item.image ?? ""}

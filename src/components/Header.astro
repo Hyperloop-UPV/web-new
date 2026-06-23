@@ -191,6 +191,16 @@ const homeHref = localizePath("/");
 
   gsap.registerPlugin(ScrollTrigger);
 
+  if ((window as any).__headerInitialized) {
+    // Already initialized on a previous page; global cleanup handled by Layout
+  } else {
+    (window as any).__headerInitialized = true;
+
+    document.addEventListener("astro:before-preparation", () => {
+      (window as any).__headerInitialized = false;
+    }, { once: true });
+  }
+
   const isotypeText = document.querySelector(".logo-bold");
   if (isotypeText) {
     gsap.to(isotypeText, {
@@ -207,6 +217,7 @@ const homeHref = localizePath("/");
 
   const toggle = document.getElementById("menu-toggle");
   const menu = document.getElementById("mobile-menu");
+  if (toggle && menu) {
   const bars = toggle.querySelectorAll(".menu-bar");
   const links = menu.querySelectorAll(".mobile-nav-link");
   let isOpen = false;
@@ -243,4 +254,5 @@ const homeHref = localizePath("/");
 
   toggle.addEventListener("click", () => (isOpen ? closeMenu() : openMenu()));
   links.forEach((link) => link.addEventListener("click", closeMenu));
+  }
 </script>

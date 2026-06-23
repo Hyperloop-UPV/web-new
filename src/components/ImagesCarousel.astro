@@ -39,8 +39,9 @@ const rootClass =
 </section>
 
 <script type="module">
-  const root = document.querySelector('[data-astro-carousel]');
+  const root = document.querySelector('[data-astro-carousel]:not([data-carousel-ready])');
   if (!root) return;
+  root.dataset.carouselReady = 'true';
 
   const images = JSON.parse(root.getAttribute('data-images') || '[]');
   const modal = root.querySelector('.js-ic-modal');

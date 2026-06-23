@@ -12,6 +12,13 @@ const pageTitle = String(t("nav.team"));
 const pageDescription = String(t("team.subtitle"));
 const subsystems = await contentRepository.getSubsystemsWithMembers("en-US");
 const homePageContent = await contentRepository.getHomePageContent("en-US");
+const gradients = [
+    "linear-gradient(160deg,rgba(255,255,255,0.06),rgba(255,255,255,0.015))",
+    "linear-gradient(160deg,rgba(100,180,255,0.08),rgba(255,255,255,0.015))",
+    "linear-gradient(160deg,rgba(120,255,198,0.06),rgba(255,255,255,0.015))",
+    "linear-gradient(160deg,rgba(255,255,255,0.06),rgba(255,255,255,0.015))",
+    "linear-gradient(160deg,rgba(167,139,250,0.07),rgba(255,255,255,0.015))",
+];
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
@@ -23,50 +30,130 @@ const homePageContent = await contentRepository.getHomePageContent("en-US");
   />
 
   <section
-    class="left-1/2 -translate-x-1/2 max-w-[1200px] py-20 px-6 md:px-10 bg-[#0f0f0f] text-white relative"
+    class="relative bg-[#0f0f0f] text-white py-24 px-6 md:px-10"
+    data-team-page
   >
-    <div class="space-y-16">
-      {
-        subsystems.map((subsystem) => (
-          <div>
-            <h3 class="text-2xl font-bold mb-4 flex items-center gap-3">
-              {subsystem.icon && (
-                <img src={subsystem.icon} alt="" class="inline w-8 h-8" />
-              )}
-              {subsystem.name}
-            </h3>
-            {subsystem.description && (
-              <p class="mb-2 text-white/70">{subsystem.description}</p>
-            )}
-            <div class="grid auto-rows-[150px] sm:auto-rows-[190px] grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-              {subsystem.members && subsystem.members.length > 0 ? (
-                subsystem.members
-                  .filter((m) => m.image)
-                  .map((member) => (
-                    <figure class="team-card group relative overflow-hidden rounded-2xl">
-                      <img
-                        src={member.image}
-                        alt={`${member.name} portrait`}
-                        loading="lazy"
-                        decoding="async"
-                        class="team-face-image h-full w-full object-contain transition-transform duration-700 ease-out group-hover:scale-110"
-                      />
-                      <figcaption class="team-face-bubble" aria-hidden="true">
-                        <span class="team-face-name">{member.name}</span>
-                        <span class="team-face-role">
-                          {member.role ?? "Member"}
-                        </span>
-                      </figcaption>
-                    </figure>
-                  ))
-              ) : (
-                <span class="text-white/40 italic">No members listed.</span>
-              )}
-            </div>
-          </div>
-        ))
-      }
+    <div class="mx-auto max-w-[1200px]">
+      <div class="relative z-[1] flex flex-col gap-8">
+        {
+          subsystems.map((sub, idx) => (
+            <article
+              href={`#${sub.name}`}
+              class="group relative grid grid-cols-1 md:grid-cols-[minmax(280px,420px)_1fr] md:min-h-[320px] rounded-[1.2rem] overflow-hidden border border-white/[0.08] backdrop-blur-xl backdrop-saturate-[1.1] opacity-0 scale-[0.97] blur-[4px] transition-[600ms] ease-[cubic-bezier(0.2,0.7,0.2,1)] [&:is(.is-visible)]:opacity-100 [&:is(.is-visible)]:scale-100 [&:is(.is-visible)]:blur-none"
+              style={`--card-index:${idx};transition-delay:calc(var(--card-index)*80ms);background:${gradients[idx % 5]}`}
+              data-team-card
+            >
+              <div class="relative overflow-hidden min-h-[220px] md:min-h-full">
+                {sub.groupImage && (
+                  <img
+                    src={sub.groupImage}
+                    alt={`${sub.name} group photo`}
+                    loading="lazy"
+                    decoding="async"
+                    class="absolute inset-0 w-full h-full object-cover object-center z-[1] transition-[700ms] ease-[cubic-bezier(0.2,0.7,0.2,1)] group-hover:opacity-0 group-hover:scale-[1.04]"
+                  />
+                )}
+                {sub.groupFunImage && (
+                  <img
+                    src={sub.groupFunImage}
+                    alt={`${sub.name} fun photo`}
+                    loading="lazy"
+                    decoding="async"
+                    class="absolute inset-0 w-full h-full object-cover object-center z-[1] opacity-0 transition-[700ms] ease-[cubic-bezier(0.2,0.7,0.2,1)] group-hover:opacity-100 group-hover:scale-[1.04]"
+                  />
+                )}
+                <div class="absolute inset-0 z-[2] pointer-events-none bg-[linear-gradient(135deg,rgba(8,10,12,0.15)_0%,rgba(8,10,12,0.5)_60%,rgba(8,10,12,0.85)_100%)] md:bg-[linear-gradient(90deg,rgba(8,10,12,0.05)_0%,rgba(8,10,12,0.4)_70%,rgba(8,10,12,0.9)_100%)]" />
+              </div>
+
+              <div class="relative z-[3] flex flex-col justify-between p-6 md:py-8 md:px-8 gap-5">
+                <div class="flex items-start gap-4">
+                  {sub.icon && (
+                    <img
+                      src={sub.icon}
+                      alt=""
+                      class="w-10 h-10 shrink-0 object-contain opacity-90 brightness-[1.1]"
+                    />
+                  )}
+                  <div>
+                    <h3 class="text-[clamp(1.15rem,1.8vw,1.45rem)] font-extrabold leading-[1.15] tracking-[-0.01em] mb-1.5 text-white/[0.96]">
+                      {sub.name}
+                    </h3>
+                    {sub.description && (
+                      <p class="m-0 text-[clamp(0.82rem,1vw,0.92rem)] leading-[1.55] text-white/[0.58] max-w-[52ch] line-clamp-3">
+                        {sub.description}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {sub.members && sub.members.length > 0 && (
+                  <div class="border-t border-white/[0.06] pt-4">
+                    <div class="flex flex-wrap gap-3 pb-1.5">
+                      {sub.members
+                        .filter((m) => m.image)
+                        .map((member) => (
+                          <div class="flex flex-col items-center gap-2 shrink-0 py-2.5 px-1.5 rounded-2xl bg-white/[0.04] border border-white/[0.07] transition-[background,border-color,transform] duration-[250ms] ease-in-out cursor-default">
+                            <img
+                              src={member.image}
+                              alt={member.name}
+                              loading="lazy"
+                              decoding="async"
+                              class="w-[150px] aspect-square object-cover shrink-0"
+                            />
+                            <span class="flex flex-col items-center gap-0.5 min-w-0 w-full">
+                              <span class="max-w-[100px] text-[0.72rem] font-semibold leading-[1.2] text-white/[0.88] max-w-full text-center">
+                                {member.name}
+                              </span>
+                              {member.role && (
+                                <span class="max-w-[100px] text-[0.62rem] font-normal leading-[1.2] text-white/45 max-w-full text-center">
+                                  {member.role}
+                                </span>
+                              )}
+                            </span>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </article>
+          ))
+        }
+      </div>
     </div>
   </section>
   <SiteFooter />
 </Layout>
+
+<script>
+  const initTeamPage = () => {
+    const page = document.querySelector<HTMLElement>("[data-team-page]");
+    if (!page) return;
+    if (page.dataset.teamInit === "true") return;
+    page.dataset.teamInit = "true";
+
+    const cards = page.querySelectorAll<HTMLElement>("[data-team-card]");
+    if (!cards.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -6% 0px" },
+    );
+
+    cards.forEach((card) => observer.observe(card));
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initTeamPage, { once: true });
+  } else {
+    initTeamPage();
+  }
+
+  document.addEventListener("astro:page-load", initTeamPage);
+</script>
