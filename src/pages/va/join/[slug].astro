@@ -15,7 +15,7 @@ const job = await contentRepository.getJobOpeningBySlug(slug);
 const pageTitle = job?.title || t("join.detail_title");
 const pageDescription = job?.fullDescriptionHtml || t("join.detail_description");
 export async function getStaticPaths() {
-    const jobs = await import("../../lib/contentful/repository").then((m) => m.contentRepository.getJobOpenings());
+    const jobs = await import("../../../lib/contentful/repository").then((m) => m.contentRepository.getJobOpenings());
     return jobs.map((job) => ({ params: { slug: job.slug } }));
 }
 ---
