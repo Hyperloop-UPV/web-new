@@ -67,11 +67,13 @@ const classes = `${baseClasses} ${variantClasses[variant]} ${className}`.trim();
 </style>
 
 <script>
-  const reduceMotion = window.matchMedia(
-    "(prefers-reduced-motion: reduce)",
-  ).matches;
+  const initMagneticButtons = () => {
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
 
-  if (!reduceMotion) {
+    if (reduceMotion) return;
+
     const magneticButtons = document.querySelectorAll(".js-magnetic-button");
 
     for (const button of magneticButtons) {
@@ -116,5 +118,13 @@ const classes = `${baseClasses} ${variantClasses[variant]} ${className}`.trim();
       });
       button.addEventListener("pointerup", reset);
     }
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initMagneticButtons, { once: true });
+  } else {
+    initMagneticButtons();
   }
+
+  document.addEventListener("astro:page-load", initMagneticButtons);
 </script>

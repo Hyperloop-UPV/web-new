@@ -79,10 +79,19 @@ const socialImageUrl = socialImage.startsWith("http")
       document.addEventListener("astro:before-preparation", () => {
         ScrollTrigger.getAll().forEach((t) => t.kill());
         Observer.getAll().forEach((o) => o.kill());
+        gsap.killTweensOf("*");
         const smoother = (window as any).homeScrollSmoother;
         if (smoother && typeof smoother.kill === "function") {
           smoother.kill();
           (window as any).homeScrollSmoother = null;
+        }
+        const smoothWrapper = document.getElementById("smooth-wrapper");
+        if (smoothWrapper) {
+          delete smoothWrapper.dataset.homeInit;
+        }
+        const heroSection = document.querySelector(".hero-section");
+        if (heroSection) {
+          delete heroSection.dataset.heroInit;
         }
       });
 

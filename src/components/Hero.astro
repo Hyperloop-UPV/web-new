@@ -69,58 +69,64 @@ const secondaryImage = bg[1] ?? bg[0] ?? "/img/pod_sketch.jpg";
 <script>
   import gsap from "gsap";
 
-  // Hero entrance animation
-  const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+  const initHero = () => {
+    const heroSection = document.querySelector(".hero-section");
+    if (!heroSection) return;
+    if (heroSection.dataset.heroInit === "true") return;
+    heroSection.dataset.heroInit = "true";
 
-  tl.from(".hero-eyebrow", {
-    y: 20,
-    opacity: 0,
-    duration: 1,
-    delay: 0.2,
-  })
-    .from(
-      ".line-1",
-      {
-        y: 80,
-        opacity: 0,
-        duration: 1.2,
-      },
-      "-=0.6",
-    )
-    .from(
-      ".hero-description",
-      {
-        y: 30,
-        opacity: 0,
-        duration: 1,
-      },
-      "-=0.6",
-    )
-    .from(
-      ".hero-cta",
-      {
-        y: 20,
-        opacity: 0,
-        duration: 0.8,
-      },
-      "-=0.5",
-    );
+    const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
 
-  // Subtle floating glow animation
-  gsap.to(".hero-glow-bg", {
-    y: 20,
-    scale: 1.05,
-    duration: 4,
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut",
-  });
+    tl.from(".hero-eyebrow", {
+      y: 20,
+      opacity: 0,
+      duration: 1,
+      delay: 0.2,
+    })
+      .from(
+        ".line-1",
+        {
+          y: 80,
+          opacity: 0,
+          duration: 1.2,
+        },
+        "-=0.6",
+      )
+      .from(
+        ".hero-description",
+        {
+          y: 30,
+          opacity: 0,
+          duration: 1,
+        },
+        "-=0.6",
+      )
+      .from(
+        ".hero-cta",
+        {
+          y: 20,
+          opacity: 0,
+          duration: 0.8,
+        },
+        "-=0.5",
+      );
 
-  // Grid drift
-  gsap.to(".hero-grid-bg", {
-    backgroundPosition: "40px 40px",
-    duration: 8,
-    repeat: -1,
-    ease: "none",
-  });
+    gsap.to(".hero-glow-bg", {
+      y: 20,
+      scale: 1.05,
+      duration: 4,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut",
+    });
+
+    gsap.to(".hero-grid-bg", {
+      backgroundPosition: "40px 40px",
+      duration: 8,
+      repeat: -1,
+      ease: "none",
+    });
+  };
+
+  document.addEventListener("astro:page-load", initHero);
 </script>

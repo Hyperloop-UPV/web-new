@@ -80,17 +80,17 @@ const subsystems = await contentRepository.getSubsystemsWithMembers("en-US");
 
                 {sub.members && sub.members.length > 0 && (
                   <div class="border-t border-white/[0.06] pt-4">
-                    <div class="flex flex-wrap gap-3 pb-1.5">
+                    <div class="grid grid-cols-2 gap-3 pb-1.5 md:flex md:flex-wrap">
                       {sub.members
                         .filter((m) => m.image)
                         .map((member) => (
-                          <div class="flex flex-col items-center gap-2 shrink-0 py-2.5 px-1.5 rounded-2xl bg-white/[0.04] border border-white/[0.07] transition-[background,border-color,transform] duration-[250ms] ease-in-out cursor-default">
+                          <div class="flex flex-col items-center gap-2 py-2.5 px-1.5 rounded-2xl bg-white/[0.04] border border-white/[0.07] transition-[background,border-color,transform] duration-[250ms] ease-in-out cursor-default md:shrink-0">
                             <img
                               src={member.image}
                               alt={member.name}
                               loading="lazy"
                               decoding="async"
-                              class="w-[150px] !aspect-square object-cover shrink-0"
+                              class="w-full aspect-square object-cover md:w-[150px]"
                             />
                             <span class="flex flex-col items-center gap-0.5 min-w-0 w-full max-w-[150px] overflow-visible">
                               <span class="text-[0.72rem] font-semibold leading-[1.2] text-white/[0.88] text-center">

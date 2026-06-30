@@ -64,136 +64,167 @@ const imagePool = images.filter(Boolean);
 </section>
 
 <script>
-  // Detect mobile device (touch-capable)
-  const isMobile =
-    window.innerWidth < 768 || window.matchMedia("(hover: none)").matches;
+  const initMissionScatter = () => {
+    const isMobile =
+      window.innerWidth < 768 || window.matchMedia("(hover: none)").matches;
 
-  const sections = document.querySelectorAll<HTMLElement>(
-    "[data-mission-hover]",
-  );
-
-  sections.forEach((section) => {
-    if (section.dataset.hoverInit === "true") return;
-    section.dataset.hoverInit = "true";
-
-    // Disable hover effect on mobile for performance
-    if (isMobile) {
-      section.style.opacity = "1";
-      return;
-    }
-
-    const layer = section.querySelector<HTMLElement>("[data-mission-layer]");
-    const templates = Array.from(
-      section.querySelectorAll<HTMLImageElement>("[data-mission-image]"),
+    const sections = document.querySelectorAll<HTMLElement>(
+      "[data-mission-hover]",
     );
-    if (!layer || !templates.length) return;
 
-    let hoverActive = false;
-    let nextIndex = 0;
-    let lastSpawn = 0;
-    let lastSpawnX = -9999;
-    let lastSpawnY = -9999;
-    const spawned: HTMLImageElement[] = [];
+    sections.forEach((section) => {
+      if (section.dataset.hoverInit === "true") return;
+      section.dataset.hoverInit = "true";
 
-    const MAX_SPAWNED = 50;
-    const MOVE_THRESHOLD_PX = 120;
-    const RETIRE_MS = 360;
-
-    const rand = (min: number, max: number) =>
-      min + Math.random() * (max - min);
-    const clamp = (n: number, min: number, max: number) =>
-      Math.max(min, Math.min(max, n));
-
-    const spawn = (x: number, y: number, spread = 0) => {
-      const template = templates[nextIndex % templates.length];
-      nextIndex += 1;
-
-      const node = template.cloneNode(true) as HTMLImageElement;
-      node.classList.remove("is-hidden");
-      node.classList.remove("is-live");
-      node.classList.remove("is-retiring");
-      node.removeAttribute("data-mission-image");
-
-      const rect = section.getBoundingClientRect();
-      const localX = clamp(
-        x - rect.left + rand(-spread, spread),
-        0,
-        rect.width,
+      const layer = section.querySelector<HTMLElement>("[data-mission-layer]");
+      const templates = Array.from(
+        section.querySelectorAll<HTMLImageElement>("[data-mission-image]"),
       );
-      const localY = clamp(
-        y - rect.top + rand(-spread, spread),
-        0,
-        rect.height,
-      );
+      if (!layer || !templates.length) return;
 
-      const spawnH =
-        Number.parseInt(
-          getComputedStyle(template).getPropertyValue("--spawn-h"),
-        ) || 300;
-      const aspect = rand(1.15, 1.85);
-      node.style.width = `${Math.round(spawnH * aspect)}px`;
-      node.style.left = `${localX}px`;
-      node.style.top = `${localY}px`;
-      node.style.setProperty("--spin", `${rand(-8, 8)}deg`);
-      node.style.setProperty("--drift-x", `${rand(-26, 26)}px`);
-      node.style.setProperty("--drift-y", `${rand(-44, -20)}px`);
+      if (isMobile) {
+        section.style.opacity = "1";
+        const rect = section.getBoundingClientRect();
+        const shuffled = [...templates].sort(() => Math.random() - 0.5);
+        const toShow = shuffled.slice(0, Math.min(5, shuffled.length));
 
-      layer.appendChild(node);
-      void node.offsetWidth;
-      node.classList.add("is-live");
+        toShow.forEach((template) => {
+          const node = template.cloneNode(true) as HTMLImageElement;
+          node.classList.remove("is-hidden");
+          node.classList.add("is-live");
+          node.removeAttribute("data-mission-image");
 
-      spawned.push(node);
-      if (spawned.length > MAX_SPAWNED) {
-        const oldest = spawned.shift();
-        if (oldest) {
-          oldest.classList.remove("is-live");
-          oldest.classList.add("is-retiring");
-          window.setTimeout(() => oldest.remove(), RETIRE_MS);
-        }
+          const spawnH =
+            Number.parseInt(
+              getComputedStyle(template).getPropertyValue("--spawn-h"),
+            ) || 150;
+          const aspect = 1.15 + Math.random() * 0.7;
+          node.style.width = `${Math.round(spawnH * aspect)}px`;
+          node.style.left = `${Math.random() * rect.width}px`;
+          node.style.top = `${Math.random() * rect.height}px`;
+          node.style.setProperty("--spin", `${(Math.random() - 0.5) * 16}deg`);
+          node.style.setProperty("--drift-x", "0px");
+          node.style.setProperty("--drift-y", "0px");
+
+          layer.appendChild(node);
+        });
+        return;
       }
-    };
 
-    const onMove = (e: MouseEvent) => {
-      if (!hoverActive) return;
+      let hoverActive = false;
+      let nextIndex = 0;
+      let lastSpawn = 0;
+      let lastSpawnX = -9999;
+      let lastSpawnY = -9999;
+      const spawned: HTMLImageElement[] = [];
 
-      const dx = e.clientX - lastSpawnX;
-      const dy = e.clientY - lastSpawnY;
-      const distance = Math.hypot(dx, dy);
-      if (distance < MOVE_THRESHOLD_PX) return;
+      const MAX_SPAWNED = 50;
+      const MOVE_THRESHOLD_PX = 120;
+      const RETIRE_MS = 360;
 
-      const now = performance.now();
-      if (now - lastSpawn < 70) return;
+      const rand = (min: number, max: number) =>
+        min + Math.random() * (max - min);
+      const clamp = (n: number, min: number, max: number) =>
+        Math.max(min, Math.min(max, n));
 
-      lastSpawn = now;
-      lastSpawnX = e.clientX;
-      lastSpawnY = e.clientY;
+      const spawn = (x: number, y: number, spread = 0) => {
+        const template = templates[nextIndex % templates.length];
+        nextIndex += 1;
 
-      // Exactly one spawn when threshold is met.
-      spawn(e.clientX, e.clientY, 0);
-    };
+        const node = template.cloneNode(true) as HTMLImageElement;
+        node.classList.remove("is-hidden");
+        node.classList.remove("is-live");
+        node.classList.remove("is-retiring");
+        node.removeAttribute("data-mission-image");
 
-    const onEnter = (e: MouseEvent) => {
-      hoverActive = true;
-      lastSpawnX = e.clientX;
-      lastSpawnY = e.clientY;
-      spawn(e.clientX, e.clientY, 0);
-    };
+        const rect = section.getBoundingClientRect();
+        const localX = clamp(
+          x - rect.left + rand(-spread, spread),
+          0,
+          rect.width,
+        );
+        const localY = clamp(
+          y - rect.top + rand(-spread, spread),
+          0,
+          rect.height,
+        );
 
-    const onLeave = () => {
-      hoverActive = false;
-    };
+        const spawnH =
+          Number.parseInt(
+            getComputedStyle(template).getPropertyValue("--spawn-h"),
+          ) || 300;
+        const aspect = rand(1.15, 1.85);
+        node.style.width = `${Math.round(spawnH * aspect)}px`;
+        node.style.left = `${localX}px`;
+        node.style.top = `${localY}px`;
+        node.style.setProperty("--spin", `${rand(-8, 8)}deg`);
+        node.style.setProperty("--drift-x", `${rand(-26, 26)}px`);
+        node.style.setProperty("--drift-y", `${rand(-44, -20)}px`);
 
-    section.addEventListener("mouseenter", onEnter);
-    section.addEventListener("mousemove", onMove);
-    section.addEventListener("mouseleave", onLeave);
+        layer.appendChild(node);
+        void node.offsetWidth;
+        node.classList.add("is-live");
 
-    section.addEventListener("astro:unmount", () => {
-      section.removeEventListener("mouseenter", onEnter);
-      section.removeEventListener("mousemove", onMove);
-      section.removeEventListener("mouseleave", onLeave);
-      spawned.forEach((node) => node.remove());
+        spawned.push(node);
+        if (spawned.length > MAX_SPAWNED) {
+          const oldest = spawned.shift();
+          if (oldest) {
+            oldest.classList.remove("is-live");
+            oldest.classList.add("is-retiring");
+            window.setTimeout(() => oldest.remove(), RETIRE_MS);
+          }
+        }
+      };
+
+      const onMove = (e: MouseEvent) => {
+        if (!hoverActive) return;
+
+        const dx = e.clientX - lastSpawnX;
+        const dy = e.clientY - lastSpawnY;
+        const distance = Math.hypot(dx, dy);
+        if (distance < MOVE_THRESHOLD_PX) return;
+
+        const now = performance.now();
+        if (now - lastSpawn < 70) return;
+
+        lastSpawn = now;
+        lastSpawnX = e.clientX;
+        lastSpawnY = e.clientY;
+
+        spawn(e.clientX, e.clientY, 0);
+      };
+
+      const onEnter = (e: MouseEvent) => {
+        hoverActive = true;
+        lastSpawnX = e.clientX;
+        lastSpawnY = e.clientY;
+        spawn(e.clientX, e.clientY, 0);
+      };
+
+      const onLeave = () => {
+        hoverActive = false;
+      };
+
+      section.addEventListener("mouseenter", onEnter);
+      section.addEventListener("mousemove", onMove);
+      section.addEventListener("mouseleave", onLeave);
+
+      section.addEventListener("astro:unmount", () => {
+        section.removeEventListener("mouseenter", onEnter);
+        section.removeEventListener("mousemove", onMove);
+        section.removeEventListener("mouseleave", onLeave);
+        spawned.forEach((node) => node.remove());
+      });
     });
-  });
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initMissionScatter, { once: true });
+  } else {
+    initMissionScatter();
+  }
+
+  document.addEventListener("astro:page-load", initMissionScatter);
 </script>
 
 <style>

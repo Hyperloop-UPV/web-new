@@ -191,68 +191,77 @@ const homeHref = localizePath("/");
 
   gsap.registerPlugin(ScrollTrigger);
 
-  if ((window as any).__headerInitialized) {
-    // Already initialized on a previous page; global cleanup handled by Layout
+  const initHeader = () => {
+    if ((window as any).__headerInitialized) {
+    } else {
+      (window as any).__headerInitialized = true;
+
+      document.addEventListener("astro:before-preparation", () => {
+        (window as any).__headerInitialized = false;
+      }, { once: true });
+    }
+
+    const isotypeText = document.querySelector(".logo-bold");
+    if (isotypeText) {
+      gsap.to(isotypeText, {
+        x: -18,
+        opacity: 0,
+        ease: "none",
+        scrollTrigger: {
+          start: 0,
+          end: 200,
+          scrub: true,
+        },
+      });
+    }
+
+    const toggle = document.getElementById("menu-toggle");
+    const menu = document.getElementById("mobile-menu");
+    if (toggle && menu) {
+    const bars = toggle.querySelectorAll(".menu-bar");
+    const links = menu.querySelectorAll(".mobile-nav-link");
+    let isOpen = false;
+
+    function openMenu() {
+      isOpen = true;
+      toggle.setAttribute("aria-expanded", "true");
+      menu.classList.remove("opacity-0", "pointer-events-none");
+      menu.classList.add("opacity-100", "pointer-events-auto");
+      document.body.style.overflow = "hidden";
+      gsap.to(bars[0], { rotate: 45, y: 5, duration: 0.3 });
+      gsap.to(bars[1], { opacity: 0, duration: 0.2 });
+      gsap.to(bars[2], { rotate: -45, y: -7, duration: 0.3 });
+      gsap.from(links, {
+        y: 30,
+        opacity: 0,
+        duration: 0.4,
+        stagger: 0.06,
+        ease: "power3.out",
+        delay: 0.1,
+      });
+    }
+
+    function closeMenu() {
+      isOpen = false;
+      toggle.setAttribute("aria-expanded", "false");
+      menu.classList.add("opacity-0", "pointer-events-none");
+      menu.classList.remove("opacity-100", "pointer-events-auto");
+      document.body.style.overflow = "";
+      gsap.to(bars[0], { rotate: 0, y: 0, duration: 0.3 });
+      gsap.to(bars[1], { opacity: 1, duration: 0.2 });
+      gsap.to(bars[2], { rotate: 0, y: 0, duration: 0.3 });
+    }
+
+    toggle.addEventListener("click", () => (isOpen ? closeMenu() : openMenu()));
+    links.forEach((link) => link.addEventListener("click", closeMenu));
+    }
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initHeader, { once: true });
   } else {
-    (window as any).__headerInitialized = true;
-
-    document.addEventListener("astro:before-preparation", () => {
-      (window as any).__headerInitialized = false;
-    }, { once: true });
+    initHeader();
   }
 
-  const isotypeText = document.querySelector(".logo-bold");
-  if (isotypeText) {
-    gsap.to(isotypeText, {
-      x: -18,
-      opacity: 0,
-      ease: "none",
-      scrollTrigger: {
-        start: 0,
-        end: 200,
-        scrub: true,
-      },
-    });
-  }
-
-  const toggle = document.getElementById("menu-toggle");
-  const menu = document.getElementById("mobile-menu");
-  if (toggle && menu) {
-  const bars = toggle.querySelectorAll(".menu-bar");
-  const links = menu.querySelectorAll(".mobile-nav-link");
-  let isOpen = false;
-
-  function openMenu() {
-    isOpen = true;
-    toggle.setAttribute("aria-expanded", "true");
-    menu.classList.remove("opacity-0", "pointer-events-none");
-    menu.classList.add("opacity-100", "pointer-events-auto");
-    document.body.style.overflow = "hidden";
-    gsap.to(bars[0], { rotate: 45, y: 5, duration: 0.3 });
-    gsap.to(bars[1], { opacity: 0, duration: 0.2 });
-    gsap.to(bars[2], { rotate: -45, y: -7, duration: 0.3 });
-    gsap.from(links, {
-      y: 30,
-      opacity: 0,
-      duration: 0.4,
-      stagger: 0.06,
-      ease: "power3.out",
-      delay: 0.1,
-    });
-  }
-
-  function closeMenu() {
-    isOpen = false;
-    toggle.setAttribute("aria-expanded", "false");
-    menu.classList.add("opacity-0", "pointer-events-none");
-    menu.classList.remove("opacity-100", "pointer-events-auto");
-    document.body.style.overflow = "";
-    gsap.to(bars[0], { rotate: 0, y: 0, duration: 0.3 });
-    gsap.to(bars[1], { opacity: 1, duration: 0.2 });
-    gsap.to(bars[2], { rotate: 0, y: 0, duration: 0.3 });
-  }
-
-  toggle.addEventListener("click", () => (isOpen ? closeMenu() : openMenu()));
-  links.forEach((link) => link.addEventListener("click", closeMenu));
-  }
+  document.addEventListener("astro:page-load", initHeader);
 </script>
