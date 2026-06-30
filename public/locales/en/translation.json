@@ -29,7 +29,8 @@
   },
   "vehicles": {
     "title": "Vehicle Timeline",
-    "subtitle": "Our latest creations, the pods that take flight"
+    "subtitle": "Our latest creations, the pods that take flight",
+    "view_all": "View all"
   },
   "partners": {
     "title": "Powered by your support",
@@ -38,7 +39,8 @@
     "by_tier": "Partners by Tier",
     "tiers": "Here's what we offer:",
     "dossier": "View dossier",
-    "latest_dossier": "Open latest dossier"
+    "latest_dossier": "Open latest dossier",
+    "partners": "Meet our partners"
   },
   "footer": {
     "title": "Shaping the Future.",

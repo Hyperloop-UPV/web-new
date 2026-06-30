@@ -51,7 +51,7 @@ for (const partner of partners) {
   <PageHero
     title={pageTitle}
     description={pageDescription}
-    colors={["#1f1a12", "#6d4a20", "#d38a3e"]}
+    colors={["#ff7f24", "#20274c", "#20274c"]}
   />
 
   <section
@@ -113,6 +113,7 @@ for (const partner of partners) {
     }
 
     <div class="mt-24 space-y-16">
+    <h1 class="text-4xl xl:text-6xl font-black mb-20">{t("partners.partners")}</h1>
       {
         Object.entries(partnersByTier)
           .reverse()

@@ -29,7 +29,8 @@
   },
   "vehicles": {
     "title": "Vehículos recientes",
-    "subtitle": "Nuestras creaciones más recientes, los pods que marcan el camino"
+    "subtitle": "Nuestras creaciones más recientes, los pods que marcan el camino",
+    "view_all": "Ver todos"
   },
   "partners": {
     "title": "Impulsado por tu apoyo",
@@ -38,7 +39,8 @@
     "by_tier": "Socios por nivel",
     "tiers": "Esto es lo que ofrecemos:",
     "dossier": "Ver dossier",
-    "latest_dossier": "Abrir último dossier"
+    "latest_dossier": "Abrir último dossier",
+    "partners": "Conoce a nuestros patrocinadores"
   },
   "footer": {
     "title": "Shaping the Future.",

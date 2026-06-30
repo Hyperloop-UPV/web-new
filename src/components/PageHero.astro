@@ -30,7 +30,7 @@ const safeColors =
 
 <section
   class:list={[
-    "page-hero relative isolate min-h-[70vh] md:min-h-[78vh] overflow-hidden border-b border-white/10",
+    "page-hero relative isolate h-dvh overflow-hidden border-b border-white/10",
     className,
   ]}
   data-page-hero
@@ -41,9 +41,9 @@ const safeColors =
   <div class="page-hero-vignette" aria-hidden="true"></div>
 
   <div
-    class="relative z-10 mx-auto flex flex-col items-start justify-between min-h-[70vh] md:min-h-[78vh] w-full max-w-6xl px-6 py-12 md:px-10 md:py-16"
+    class="relative z-10 mx-auto flex flex-col items-start justify-between h-dvh w-full max-w-6xl px-6 py-12 md:px-10 md:py-16"
   >
-  <span></span>
+    <span></span>
     <div class="max-w-3xl">
       <Title
         text={title}
@@ -71,12 +71,12 @@ const safeColors =
         )
       }
     </div>
-          <div class="scroll-indicator" aria-hidden="true">
-        <div class="scroll-mouse">
-          <div class="scroll-wheel"></div>
-        </div>
-        <span class="scroll-indicator-label">Scroll for more information</span>
+    <div class="scroll-indicator" aria-hidden="true">
+      <div class="scroll-mouse">
+        <div class="scroll-wheel"></div>
       </div>
+      <span class="scroll-indicator-label">Scroll for more information</span>
+    </div>
   </div>
 </section>
 
@@ -674,12 +674,16 @@ const safeColors =
 
       rafId = requestAnimationFrame(frame);
 
-      section.addEventListener("astro:unmount", () => {
-        if (rafId) cancelAnimationFrame(rafId);
-        window.removeEventListener("resize", resize);
-        section.removeEventListener("pointermove", onPointerMove);
-        section.removeEventListener("pointerleave", onPointerLeave);
-      }, { once: true });
+      section.addEventListener(
+        "astro:unmount",
+        () => {
+          if (rafId) cancelAnimationFrame(rafId);
+          window.removeEventListener("resize", resize);
+          section.removeEventListener("pointermove", onPointerMove);
+          section.removeEventListener("pointerleave", onPointerLeave);
+        },
+        { once: true },
+      );
     });
   };
 

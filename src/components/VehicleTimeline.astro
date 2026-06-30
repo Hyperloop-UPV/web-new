@@ -33,7 +33,7 @@ const {
   ]}
 >
   <div
-    class="timeline-heade max-w-[1500px] left-1/2 -translate-x-1/2 pt-28 relative"
+    class="ml-5 timeline-heade max-w-[1500px] left-1/2 -translate-x-1/2 pt-28 relative"
   >
     <Title
       text={String(title)}
@@ -48,7 +48,7 @@ const {
     class="horizontal-track timeline-track flex flex-col md:flex-row md:w-fit w-full mt-20 items-center md:items-center"
   >
     {
-      items.slice(0, 3).map((vehicle, index) => (
+      items.slice(0, 5).map((vehicle, index) => (
         <article
           class:list={[
             "panel",
@@ -102,6 +102,13 @@ const {
       ))
     }
   </div>
+  <div class="timeline-footer mt-20 text-center">
+    <a
+      href="/vehicles"
+      class="text-white/70 hover:text-white transition-colors duration-200 text-sm md:text-base font-semibold tracking-wide"
+    >
+      {t("vehicles.view_all")}
+    </a>
 </section>
 
 <script>

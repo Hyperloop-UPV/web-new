@@ -5,11 +5,13 @@ import Header from "../../components/Header.astro";
 import PageHero from "../../components/PageHero.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
 import Button from "../../components/Button.astro";
+import { contentRepository } from "../../lib/contentful/repository";
 
 changeLanguage("es");
 
 const pageTitle = String(t("nav.about"));
 const pageDescription = String(t("about.description"));
+const groupPhoto = await contentRepository.getLatestGroupPhoto("en-US");
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
@@ -22,7 +24,8 @@ const pageDescription = String(t("about.description"));
 
   <section class="bg-[#0f0f0f] px-6 py-16 md:px-10 md:py-20">
     <div
-      class="h-200 flex flex-col justify-end p-8 bg-[url('/img/team.jpg')] bg-cover bg-center rounded-2xl mb-16 relative overflow-hidden"
+      class="h-200 flex flex-col justify-end p-8 bg-cover bg-center rounded-2xl mb-16 relative overflow-hidden"
+      style={`background-image:url('${groupPhoto ?? "/img/team.jpg"}')`}
     >
       <div
         class="absolute inset-0 rounded-2xl z-10"
@@ -129,40 +132,40 @@ const pageDescription = String(t("about.description"));
       <div
         class="rounded-2xl border border-white/10 bg-white/5 p-8 hover:bg-white/8 transition"
       >
-        <h3 class="text-2xl font-bold text-white">
+        <h3 class="text-2xl font-bold text-orange-400">
           {t("about.values.commitment.title")}
         </h3>
-        <p class="mt-4 text-slate-300 leading-relaxed">
+        <p class="mt-4 text-white leading-relaxed">
           {t("about.values.commitment.description")}
         </p>
       </div>
       <div
         class="rounded-2xl border border-white/10 bg-white/5 p-8 hover:bg-white/8 transition"
       >
-        <h3 class="text-2xl font-bold text-white">
+        <h3 class="text-2xl font-bold text-orange-400">
           {t("about.values.innovation.title")}
         </h3>
-        <p class="mt-4 text-slate-300 leading-relaxed">
+        <p class="mt-4 text-white leading-relaxed">
           {t("about.values.innovation.description")}
         </p>
       </div>
       <div
         class="rounded-2xl border border-white/10 bg-white/5 p-8 hover:bg-white/8 transition"
       >
-        <h3 class="text-2xl font-bold text-white">
+        <h3 class="text-2xl font-bold text-orange-400">
           {t("about.values.learning.title")}
         </h3>
-        <p class="mt-4 text-slate-300 leading-relaxed">
+        <p class="mt-4 text-white leading-relaxed">
           {t("about.values.learning.description")}
         </p>
       </div>
       <div
         class="rounded-2xl border border-white/10 bg-white/5 p-8 hover:bg-white/8 transition"
       >
-        <h3 class="text-2xl font-bold text-white">
+        <h3 class="text-2xl font-bold text-orange-400">
           {t("about.values.sustainability.title")}
         </h3>
-        <p class="mt-4 text-slate-300 leading-relaxed">
+        <p class="mt-4 text-white leading-relaxed">
           {t("about.values.sustainability.description")}
         </p>
       </div>

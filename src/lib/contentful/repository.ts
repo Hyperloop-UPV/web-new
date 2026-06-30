@@ -413,6 +413,19 @@ export const contentRepository = {
     }));
   },
 
+  async getLatestGroupPhoto(locale = "en-US") {
+    const entries = await getEntries({
+      content_type: "groupPhoto",
+      include: 1,
+      order: ["-sys.createdAt"],
+      limit: 1,
+      locale,
+    });
+    const entry = entries[0];
+    if (!entry) return undefined;
+    return getAssetUrl(entry.fields?.image);
+  },
+
   async getInvestigations(locale = "en-US"): Promise<InvestigationFields[]> {
     const entries = await getEntries({
       content_type: "investigation",

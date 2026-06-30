@@ -11,14 +11,6 @@ changeLanguage("en");
 const pageTitle = String(t("nav.team"));
 const pageDescription = String(t("team.subtitle"));
 const subsystems = await contentRepository.getSubsystemsWithMembers("en-US");
-const homePageContent = await contentRepository.getHomePageContent("en-US");
-const gradients = [
-    "linear-gradient(160deg,rgba(255,255,255,0.06),rgba(255,255,255,0.015))",
-    "linear-gradient(160deg,rgba(100,180,255,0.08),rgba(255,255,255,0.015))",
-    "linear-gradient(160deg,rgba(120,255,198,0.06),rgba(255,255,255,0.015))",
-    "linear-gradient(160deg,rgba(255,255,255,0.06),rgba(255,255,255,0.015))",
-    "linear-gradient(160deg,rgba(167,139,250,0.07),rgba(255,255,255,0.015))",
-];
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
@@ -26,7 +18,7 @@ const gradients = [
   <PageHero
     title={pageTitle}
     description={pageDescription}
-    colors={["#0f1829", "#24426d", "#4f86c6"]}
+    colors={["#ff7f24", "#20274c", "#20274c"]}
   />
 
   <section
@@ -40,7 +32,7 @@ const gradients = [
             <article
               href={`#${sub.name}`}
               class="group relative grid grid-cols-1 md:grid-cols-[minmax(280px,420px)_1fr] md:min-h-[320px] rounded-[1.2rem] overflow-hidden border border-white/[0.08] backdrop-blur-xl backdrop-saturate-[1.1] opacity-0 scale-[0.97] blur-[4px] transition-[600ms] ease-[cubic-bezier(0.2,0.7,0.2,1)] [&:is(.is-visible)]:opacity-100 [&:is(.is-visible)]:scale-100 [&:is(.is-visible)]:blur-none"
-              style={`--card-index:${idx};transition-delay:calc(var(--card-index)*80ms);background:${gradients[idx % 5]}`}
+              style={`--card-index:${idx};transition-delay:calc(var(--card-index)*80ms);background:linear-gradient(160deg,${sub.color ?? "rgba(255,255,255,0.06)"}14,rgba(255,255,255,0.015))`}
               data-team-card
             >
               <div class="relative overflow-hidden min-h-[220px] md:min-h-full">
@@ -79,7 +71,7 @@ const gradients = [
                       {sub.name}
                     </h3>
                     {sub.description && (
-                      <p class="m-0 text-[clamp(0.82rem,1vw,0.92rem)] leading-[1.55] text-white/[0.58] max-w-[52ch] line-clamp-3">
+                      <p class="m-0 text-[clamp(0.82rem,1vw,0.92rem)] leading-[1.55] text-white/[0.58]">
                         {sub.description}
                       </p>
                     )}
@@ -98,14 +90,14 @@ const gradients = [
                               alt={member.name}
                               loading="lazy"
                               decoding="async"
-                              class="w-[150px] aspect-square object-cover shrink-0"
+                              class="w-[150px] !aspect-square object-cover shrink-0"
                             />
-                            <span class="flex flex-col items-center gap-0.5 min-w-0 w-full">
-                              <span class="max-w-[100px] text-[0.72rem] font-semibold leading-[1.2] text-white/[0.88] max-w-full text-center">
+                            <span class="flex flex-col items-center gap-0.5 min-w-0 w-full max-w-[150px] overflow-visible">
+                              <span class="text-[0.72rem] font-semibold leading-[1.2] text-white/[0.88] text-center">
                                 {member.name}
                               </span>
                               {member.role && (
-                                <span class="max-w-[100px] text-[0.62rem] font-normal leading-[1.2] text-white/45 max-w-full text-center">
+                                <span class="text-[0.62rem] font-normal leading-[1.2] text-white/45 text-center">
                                   {member.role}
                                 </span>
                               )}

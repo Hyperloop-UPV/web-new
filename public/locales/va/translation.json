@@ -29,7 +29,8 @@
   },
   "vehicles": {
     "title": "Línia temporal de vehicles",
-    "subtitle": "Les nostres creacions més recents, els pods que marquen el camí"
+    "subtitle": "Les nostres creacions més recents, els pods que marquen el camí",
+    "view_all": "Veure tots"
   },
   "partners": {
     "title": "Impulsat pel teu suport",
@@ -38,7 +39,8 @@
     "by_tier": "Socis per nivell",
     "tiers": "Això és el que oferim:",
     "dossier": "Veure dossier",
-    "latest_dossier": "Obrir l'últim dossier"
+    "latest_dossier": "Obrir l'últim dossier",
+    "partners": "Coneix els nostres patrocinadors"
   },
   "footer": {
     "title": "Shaping the Future.",
