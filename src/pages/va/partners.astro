@@ -116,7 +116,11 @@ for (const partner of partners) {
     <h1 class="text-4xl xl:text-6xl font-black mb-20">{t("partners.partners")}</h1>
       {
         Object.entries(partnersByTier)
-          .reverse()
+          .sort(([a], [b]) => {
+            const pa = tierStatsAsc.find((t) => t.name === a)?.priority ?? 0;
+            const pb = tierStatsAsc.find((t) => t.name === b)?.priority ?? 0;
+            return pa - pb;
+          })
           .map(([tier, tierPartners], tierIndex) => (
             <div>
               <h3
