@@ -26,7 +26,6 @@ const grouped = jobOpenings.reduce((acc: Record<string, any>, job: any) => {
     jobs: any[];
 }>);
 const subgroups = ["all", ...Object.keys(grouped)];
-const subsystems: any[] = await contentRepository.getSubsystemsWithMembers("en-US");
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
@@ -98,47 +97,6 @@ const subsystems: any[] = await contentRepository.getSubsystemsWithMembers("en-U
             {t("join.areas.engineering.description")}
           </p>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="py-20 px-6 md:px-10 text-white">
-    <div class="mx-auto max-w-6xl">
-      <div class="mb-12">
-        <p class="text-sm uppercase tracking-[0.35em] text-sky-300/80">
-          {t("join.subsystems.label")}
-        </p>
-        <h2 class="mt-2 text-5xl font-black text-white">
-          {t("join.subsystems.title")}
-        </h2>
-      </div>
-
-      <div class="space-y-4">
-        {
-          subsystems.map((subsystem) => (
-            <details class="group rounded-2xl border border-white/10 bg-white/5 p-6 transition hover:bg-white/8 cursor-pointer">
-              <summary class="flex items-start justify-between gap-4 list-none">
-                <div>
-                  <h3 class="text-2xl font-bold text-white">
-                    {subsystem.name}
-                  </h3>
-                </div>
-                {subsystem.icon && (
-                  <img
-                    src={subsystem.icon}
-                    alt={subsystem.name}
-                    class="w-12 h-12 shrink-0 opacity-80 group-open:opacity-100"
-                  />
-                )}
-              </summary>
-              {subsystem.description && (
-                <p class="mt-4 text-base text-slate-300">
-                  {subsystem.description}
-                </p>
-              )}
-            </details>
-          ))
-        }
       </div>
     </div>
   </section>
