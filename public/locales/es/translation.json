@@ -186,7 +186,7 @@
     "description": "Ponte en contacto con nosotros para colaboraciones y consultas.",
     "tagline": "Selecciona tu perfil:",
     "headline": "¿Quieres contactar con nosotros?",
-    "subtitle": "Elige tu perfil para obtener una respuesta rápida y personalizada.",
+    "subtitle": "Escríbenos y te responderemos lo antes posible.",
     "profiles": {
       "business": "Soy empresa y me interesa el proyecto",
       "student": "Soy estudiante y quiero conocer el equipo",
@@ -208,7 +208,7 @@
       "email": "contact@hyperloopupv.com",
       "quickHelp": "¿Necesitas ayuda?",
       "ask": "Escribe tu mensaje directamente al equipo.",
-      "description": "Respondemos rápido a empresas, estudiantes y otras consultas. Elige el perfil que mejor se ajuste a tu pregunta.",
+      "description": "Respondemos rápido a empresas, estudiantes y cualquier otra consulta. Escríbenos directamente por email o teléfono.",
       "sendEmail": "Enviar correo"
     }
   }

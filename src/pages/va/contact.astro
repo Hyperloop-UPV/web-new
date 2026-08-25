@@ -27,7 +27,6 @@ const profiles = [
         id: "other",
         label: t("contact.profiles.other"),
         icon: Users,
-        image: "/img/pod_full.jpeg",
     },
 ];
 ---
@@ -57,15 +56,15 @@ const profiles = [
             const Icon = profile.icon;
             return (
               <article class="group rounded-4xl border border-white/10 bg-white/5 shadow-2xl shadow-slate-950/40 transition duration-300 hover:-translate-y-1 p-6 flex flex-col">
-                {profile.image && (
-                  <div class="mb-4 h-32 overflow-hidden rounded-2xl">
+                <div class="mb-4 h-32 overflow-hidden rounded-2xl">
+                  {profile.image && (
                     <img
                       src={profile.image}
                       alt={profile.label}
                       class="h-full w-full object-cover"
                     />
-                  </div>
-                )}
+                  )}
+                </div>
                 <div class="flex items-center justify-between gap-4">
                   <div>
                     <p class="text-sm uppercase tracking-[0.35em] text-sky-300/70">
@@ -98,7 +97,7 @@ const profiles = [
         >
           <div class="overflow-hidden rounded-3xl mb-6 flex-1">
             <iframe
-              src="https://www.openstreetmap.org/export/embed.html?bbox=-0.3506,39.4635,-0.3406,39.4735&layer=mapnik&marker=39.4685,-0.3456"
+              src="https://www.openstreetmap.org/export/embed.html?bbox=-0.342462,39.473987,-0.332462,39.483987&layer=mapnik&marker=39.478987,-0.337462"
               class="h-80 w-full border-0"
               allowfullscreen=""
               loading="lazy"
