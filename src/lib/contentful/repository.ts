@@ -187,16 +187,8 @@ export const contentRepository = {
       description: entry.fields?.description
         ? String(entry.fields.description)
         : undefined,
-      image: getAssetUrl(entry.fields?.groupImage, {
-        width: 800,
-        height: 1200,
-        fit: "fill",
-      }),
-      funImage: getAssetUrl(entry.fields?.groupFunImage, {
-        width: 800,
-        height: 1200,
-        fit: "fill",
-      }),
+      image: getAssetUrl(entry.fields?.groupImage, { width: 960 }),
+      funImage: getAssetUrl(entry.fields?.groupFunImage, { width: 960 }),
       icon: getAssetUrl(entry.fields?.icon, { width: 96 }),
     }));
 
