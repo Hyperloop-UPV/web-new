@@ -15,7 +15,13 @@ const { jobOpening } = Astro.props as Props;
   class="border border-slate-500/30 p-8 bg-[#20274c]/[.15] rounded-xl flex flex-col sm:items-start sm:justify-between gap-4 hover:-translate-y-0.5 hover:bg-[#20274c]/[.25] duration-200"
 >
   <a href={`/join/${jobOpening.slug}`}>
-    <img src={jobOpening.icon} alt="Job Icon" class="w-10 h-10 mb-2" />
+    <img
+      src={jobOpening.icon}
+      alt="Job Icon"
+      loading="lazy"
+      decoding="async"
+      class="w-10 h-10 mb-2"
+    />
     <h3 class="text-xl font-semibold text-white">{jobOpening.title}</h3>
     {
       jobOpening.shortDescription && (

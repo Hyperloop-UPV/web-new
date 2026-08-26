@@ -39,6 +39,8 @@ export async function getStaticPaths() {
               <img
                 src={job.icon}
                 alt="Job Icon"
+                loading="lazy"
+                decoding="async"
                 class="w-18 h-18 rounded bg-white/10 p-4"
               />
             )

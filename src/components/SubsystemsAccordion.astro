@@ -58,7 +58,13 @@ const { items = [], class: className = "" } = Astro.props;
             )}
           </div>
           <div class="subsystem-content h-full flex flex-col justify-between">
-            <img src={item.icon} class="subsystem-icon w-12 mb-3" />
+            <img
+              src={item.icon}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              class="subsystem-icon w-12 mb-3"
+            />
             <span>
               <span class="subsystem-label">{item.label}</span>
               {item.description && (

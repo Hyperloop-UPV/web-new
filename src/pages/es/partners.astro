@@ -141,6 +141,8 @@ for (const partner of partners) {
                       <img
                         src={partner.image}
                         alt={partner.name}
+                        loading="lazy"
+                        decoding="async"
                         class={
                           tierIndex === 0
                             ? "h-64 max-w-64 object-contain"
