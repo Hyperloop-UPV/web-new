@@ -24,22 +24,50 @@ type CtfEntry = {
   fields?: Record<string, unknown>;
 };
 
-const getAssetUrl = (assetLike: unknown): string | undefined => {
+type ImageOpts = {
+  width?: number;
+  height?: number;
+  fit?: "fill" | "pad";
+  quality?: number;
+};
+
+const buildImageUrl = (url: string, opts?: ImageOpts): string => {
+  const params = new URLSearchParams();
+  params.set("fm", "webp");
+  params.set("q", String(opts?.quality ?? 75));
+  if (opts?.width) params.set("w", String(opts.width));
+  if (opts?.height) params.set("h", String(opts.height));
+  if (opts?.fit) params.set("fit", opts.fit);
+  return `${url}?${params.toString()}`;
+};
+
+const getAssetUrl = (
+  assetLike: unknown,
+  opts?: ImageOpts,
+): string | undefined => {
+  const asset = assetLike as CtfAsset | undefined;
+  const rawUrl = asset?.fields?.file?.url;
+  if (!rawUrl || typeof rawUrl !== "string") return undefined;
+  const url = rawUrl.startsWith("http") ? rawUrl : `https:${rawUrl}`;
+  return buildImageUrl(url, opts);
+};
+
+const getAssetUrls = (assetLike: unknown, opts?: ImageOpts): string[] => {
+  if (Array.isArray(assetLike)) {
+    return assetLike
+      .map((asset) => getAssetUrl(asset, opts))
+      .filter((value): value is string => Boolean(value));
+  }
+
+  const single = getAssetUrl(assetLike, opts);
+  return single ? [single] : [];
+};
+
+const getFileUrl = (assetLike: unknown): string | undefined => {
   const asset = assetLike as CtfAsset | undefined;
   const rawUrl = asset?.fields?.file?.url;
   if (!rawUrl || typeof rawUrl !== "string") return undefined;
   return rawUrl.startsWith("http") ? rawUrl : `https:${rawUrl}`;
-};
-
-const getAssetUrls = (assetLike: unknown): string[] => {
-  if (Array.isArray(assetLike)) {
-    return assetLike
-      .map((asset) => getAssetUrl(asset))
-      .filter((value): value is string => Boolean(value));
-  }
-
-  const single = getAssetUrl(assetLike);
-  return single ? [single] : [];
 };
 
 const getEntries = async (
@@ -71,7 +99,11 @@ export const contentRepository = {
       const members = membersRaw.map((member) => ({
         name: String(member.fields?.name ?? ""),
         role: member.fields?.role ? String(member.fields.role) : undefined,
-        image: getAssetUrl(member.fields?.image),
+        image: getAssetUrl(member.fields?.image, {
+          width: 400,
+          height: 400,
+          fit: "fill",
+        }),
         socials:
           (member.fields?.socials as Record<string, unknown> | undefined) ?? {},
       }));
@@ -80,10 +112,18 @@ export const contentRepository = {
         description: entry.fields?.description
           ? String(entry.fields.description)
           : undefined,
-        groupImage: getAssetUrl(entry.fields?.groupImage),
-        groupFunImage: getAssetUrl(entry.fields?.groupFunImage),
+        groupImage: getAssetUrl(entry.fields?.groupImage, {
+          width: 840,
+          height: 640,
+          fit: "fill",
+        }),
+        groupFunImage: getAssetUrl(entry.fields?.groupFunImage, {
+          width: 840,
+          height: 640,
+          fit: "fill",
+        }),
         color: entry.fields?.color ? String(entry.fields.color) : undefined,
-        icon: getAssetUrl(entry.fields?.icon),
+        icon: getAssetUrl(entry.fields?.icon, { width: 80 }),
         members,
       };
     });
@@ -130,13 +170,15 @@ export const contentRepository = {
     ]);
 
     const heroEntry = heroEntries[0];
-    const heroBackgroundImages = getAssetUrls(heroEntry?.fields?.bg);
+    const heroBackgroundImages = getAssetUrls(heroEntry?.fields?.bg, {
+      width: 1920,
+    });
     const heroDescription = heroEntry?.fields?.description
       ? String(heroEntry.fields.description)
       : undefined;
 
     const missionImages = galleryEntries
-      .map((entry) => getAssetUrl(entry.fields?.image))
+      .map((entry) => getAssetUrl(entry.fields?.image, { width: 640 }))
       .filter((value): value is string => Boolean(value));
 
     const subsystemItems = subsystemEntries.map((entry) => ({
@@ -145,9 +187,17 @@ export const contentRepository = {
       description: entry.fields?.description
         ? String(entry.fields.description)
         : undefined,
-      image: getAssetUrl(entry.fields?.groupImage),
-      funImage: getAssetUrl(entry.fields?.groupFunImage),
-      icon: getAssetUrl(entry.fields?.icon),
+      image: getAssetUrl(entry.fields?.groupImage, {
+        width: 800,
+        height: 1200,
+        fit: "fill",
+      }),
+      funImage: getAssetUrl(entry.fields?.groupFunImage, {
+        width: 800,
+        height: 1200,
+        fit: "fill",
+      }),
+      icon: getAssetUrl(entry.fields?.icon, { width: 96 }),
     }));
 
     const vehicleTimeline = vehicleEntries.map((entry) => ({
@@ -158,11 +208,11 @@ export const contentRepository = {
       accolades: Array.isArray(entry.fields?.accolades)
         ? (entry.fields?.accolades as unknown[]).map((item) => String(item))
         : [],
-      image: getAssetUrl(entry.fields?.image) ?? "",
+      image: getAssetUrl(entry.fields?.image, { width: 1080 }) ?? "",
     }));
 
     const partnerLogos = partnerEntries
-      .map((entry) => getAssetUrl(entry.fields?.image))
+      .map((entry) => getAssetUrl(entry.fields?.image, { width: 320 }))
       .filter((value): value is string => Boolean(value));
 
     return {
@@ -208,7 +258,7 @@ export const contentRepository = {
       return {
         name: String(entry.fields?.name ?? ""),
         url: entry.fields?.url ? String(entry.fields.url) : undefined,
-        image: getAssetUrl(entry.fields?.image),
+        image: getAssetUrl(entry.fields?.image, { width: 512 }),
         status,
       };
     });
@@ -250,7 +300,7 @@ export const contentRepository = {
       return {
         name: String(partner.fields?.name ?? ""),
         url: partner.fields?.url ? String(partner.fields.url) : undefined,
-        image: getAssetUrl(partner.fields?.image),
+        image: getAssetUrl(partner.fields?.image, { width: 512 }),
         status,
       };
     });
@@ -284,7 +334,9 @@ export const contentRepository = {
         ? (opening.fields?.imagesCarousel as unknown[])
         : [];
       const imagesCarousel = imagesRaw
-        .map((asset) => getAssetUrl(asset))
+        .map((asset) =>
+          getAssetUrl(asset, { width: 768, height: 384, fit: "fill" }),
+        )
         .filter((value): value is string => Boolean(value));
 
       return {
@@ -296,7 +348,11 @@ export const contentRepository = {
         fullDescription: opening.fields?.fullDescription as
           | Document
           | undefined,
-        icon: getAssetUrl(opening.fields?.icon),
+        icon: getAssetUrl(opening.fields?.icon, {
+          width: 144,
+          height: 144,
+          fit: "pad",
+        }),
         imagesCarousel,
         formLink: opening.fields?.formLink
           ? String(opening.fields.formLink)
@@ -333,7 +389,9 @@ export const contentRepository = {
       ? (opening.fields?.imagesCarousel as unknown[])
       : [];
     const imagesCarousel = imagesRaw
-      .map((asset) => getAssetUrl(asset))
+      .map((asset) =>
+        getAssetUrl(asset, { width: 768, height: 384, fit: "fill" }),
+      )
       .filter((value): value is string => Boolean(value));
     const fullDescription = opening.fields?.fullDescription as
       | Document
@@ -347,7 +405,11 @@ export const contentRepository = {
         : undefined,
       fullDescription,
       fullDescriptionHtml: toHtml(fullDescription),
-      icon: getAssetUrl(opening.fields?.icon),
+      icon: getAssetUrl(opening.fields?.icon, {
+        width: 144,
+        height: 144,
+        fit: "pad",
+      }),
       imagesCarousel,
       formLink: opening.fields?.formLink
         ? String(opening.fields.formLink)
@@ -374,7 +436,7 @@ export const contentRepository = {
     if (!dossier) return null;
 
     return {
-      file: getAssetUrl(dossier.fields?.file),
+      file: getFileUrl(dossier.fields?.file),
     };
   },
 
@@ -407,7 +469,7 @@ export const contentRepository = {
     return entries.map((entry) => ({
       name: String(entry.fields?.name ?? ""),
       role: entry.fields?.role ? String(entry.fields.role) : undefined,
-      image: getAssetUrl(entry.fields?.image),
+      image: getAssetUrl(entry.fields?.image, { width: 400 }),
       socials:
         (entry.fields?.socials as Record<string, unknown> | undefined) ?? {},
     }));
@@ -423,7 +485,7 @@ export const contentRepository = {
     });
     const entry = entries[0];
     if (!entry) return undefined;
-    return getAssetUrl(entry.fields?.image);
+    return getAssetUrl(entry.fields?.image, { width: 1920 });
   },
 
   async getInvestigations(locale = "en-US"): Promise<InvestigationFields[]> {
@@ -435,8 +497,12 @@ export const contentRepository = {
     });
     return entries.map((entry) => ({
       title: String(entry.fields?.title ?? ""),
-      cover: getAssetUrl(entry.fields?.cover),
-      document: getAssetUrl(entry.fields?.document),
+      cover: getAssetUrl(entry.fields?.cover, {
+        width: 760,
+        height: 416,
+        fit: "fill",
+      }),
+      document: getFileUrl(entry.fields?.document),
       description: entry.fields?.description
         ? String(entry.fields.description)
         : undefined,

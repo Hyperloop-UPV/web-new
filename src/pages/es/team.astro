@@ -63,6 +63,8 @@ const subsystems = await contentRepository.getSubsystemsWithMembers("en-US");
                     <img
                       src={sub.icon}
                       alt=""
+                      loading="lazy"
+                      decoding="async"
                       class="w-10 h-10 shrink-0 object-contain opacity-90 brightness-[1.1]"
                     />
                   )}
